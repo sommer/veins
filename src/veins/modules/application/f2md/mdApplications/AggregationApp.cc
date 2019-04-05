@@ -239,6 +239,125 @@ bool AggrigationApp::CheckNodeForReport(unsigned long myPseudonym,
                 mbTypes::intMbs[bsm->getSenderMbType()]);
     }
 
+    //std::cout<< "kalmanPSCP" << '\n';
+    for (int var = 0; var < bsmCheckListSize; ++var) {
+        factorList[var] = bsmCheckList[var].getKalmanPSCP();
+    }
+    tempFactor = AggregateFactorsListDouble(bsmCheck->getKalmanPSCP(),
+            factorList, bsmCheckListSize);
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::kalmanPSCP,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPSCP,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPSCS" << '\n';
+    for (int var = 0; var < bsmCheckListSize; ++var) {
+        factorList[var] = bsmCheckList[var].getKalmanPSCS();
+    }
+    tempFactor = AggregateFactorsListDouble(bsmCheck->getKalmanPSCS(),
+            factorList, bsmCheckListSize);
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::kalmanPSCS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPSCS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPSCSP" << '\n';
+    for (int var = 0; var < bsmCheckListSize; ++var) {
+        factorList[var] = bsmCheckList[var].getKalmanPSCSP();
+    }
+    tempFactor = AggregateFactorsListDouble(bsmCheck->getKalmanPSCSP(),
+            factorList, bsmCheckListSize);
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::kalmanPSCSP,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPSCSP,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPSCSS" << '\n';
+    for (int var = 0; var < bsmCheckListSize; ++var) {
+        factorList[var] = bsmCheckList[var].getKalmanPSCSS();
+    }
+    tempFactor = AggregateFactorsListDouble(bsmCheck->getKalmanPSCSS(),
+            factorList, bsmCheckListSize);
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::kalmanPSCSS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPSCSS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPCS" << '\n';
+    for (int var = 0; var < bsmCheckListSize; ++var) {
+        factorList[var] = bsmCheckList[var].getKalmanPCC();
+    }
+    tempFactor = AggregateFactorsListDouble(bsmCheck->getKalmanPCC(),
+            factorList, bsmCheckListSize);
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::kalmanPCC,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPCC,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPACS" << '\n';
+    for (int var = 0; var < bsmCheckListSize; ++var) {
+        factorList[var] = bsmCheckList[var].getKalmanPACS();
+    }
+    tempFactor = AggregateFactorsListDouble(bsmCheck->getKalmanPACS(),
+            factorList, bsmCheckListSize);
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::kalmanPACS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPACS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanSCC" << '\n';
+    for (int var = 0; var < bsmCheckListSize; ++var) {
+        factorList[var] = bsmCheckList[var].getKalmanSCC();
+    }
+    tempFactor = AggregateFactorsListDouble(bsmCheck->getKalmanSCC(),
+            factorList, bsmCheckListSize);
+    if (tempFactor < minFactor) {
+        minFactor = tempFactor;
+    }
+    if (tempFactor < Threshold) {
+        checkFailed = true;
+        prntApp->incFlags(mdChecksTypes::kalmanSCC,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanSCC,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
     InterTest inter = bsmCheck->getIntersection();
     for (int var = 0; var < inter.getInterNum(); ++var) {
         double curInferFactor = inter.getInterValue(var);

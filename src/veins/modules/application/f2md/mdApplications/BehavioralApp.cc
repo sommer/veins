@@ -159,7 +159,6 @@ bool BehavioralApp::CheckNodeForReport(unsigned long myPseudonym,
     }
 
     //std::cout<< "PositionHeadingConsistancy" << '\n';
-
     tempFactor = bsmCheck->getPositionHeadingConsistancy();
     if (tempFactor < minFactor) {
         minFactor = tempFactor;
@@ -168,6 +167,91 @@ bool BehavioralApp::CheckNodeForReport(unsigned long myPseudonym,
         prntApp->incFlags(mdChecksTypes::PositionHeadingConsistancy,
                 mbTypes::intMbs[bsm->getSenderMbType()]);
         prntAppInst->incFlags(mdChecksTypes::PositionHeadingConsistancy,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+
+    //std::cout<< "kalmanPSCP" << '\n';
+    if (bsmCheck->getKalmanPSCP() < minFactor) {
+        minFactor = bsmCheck->getKalmanPSCP();
+    }
+    if (bsmCheck->getKalmanPSCP() < Threshold) {
+
+        prntApp->incFlags(mdChecksTypes::kalmanPSCP,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPSCP,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPSCS" << '\n';
+    if (bsmCheck->getKalmanPSCS() < minFactor) {
+        minFactor = bsmCheck->getKalmanPSCS();
+    }
+    if (bsmCheck->getKalmanPSCS() < Threshold) {
+
+        prntApp->incFlags(mdChecksTypes::kalmanPSCS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPSCS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPSCSP" << '\n';
+    if (bsmCheck->getKalmanPSCSP() < minFactor) {
+        minFactor = bsmCheck->getKalmanPSCSP();
+    }
+    if (bsmCheck->getKalmanPSCSP() < Threshold) {
+
+        prntApp->incFlags(mdChecksTypes::kalmanPSCSP,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPSCSP,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPSCSS" << '\n';
+    if (bsmCheck->getKalmanPSCSS() < minFactor) {
+        minFactor = bsmCheck->getKalmanPSCSS();
+    }
+    if (bsmCheck->getKalmanPSCSS() < Threshold) {
+
+        prntApp->incFlags(mdChecksTypes::kalmanPSCSS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPSCSS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPCS" << '\n';
+
+    if (bsmCheck->getKalmanPCC() < minFactor) {
+        minFactor = bsmCheck->getKalmanPCC();
+    }
+    if (bsmCheck->getKalmanPCC() < Threshold) {
+
+        prntApp->incFlags(mdChecksTypes::kalmanPCC,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPCC,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanPACS" << '\n';
+
+    if (bsmCheck->getKalmanPACS() < minFactor) {
+        minFactor = bsmCheck->getKalmanPACS();
+    }
+    if (bsmCheck->getKalmanPACS() < Threshold) {
+        prntApp->incFlags(mdChecksTypes::kalmanPACS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanPACS,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+    }
+
+    //std::cout<< "kalmanSCC" << '\n';
+    if (bsmCheck->getKalmanSCC() < minFactor) {
+        minFactor = bsmCheck->getKalmanSCC();
+    }
+    if (bsmCheck->getKalmanSCC() < Threshold) {
+        prntApp->incFlags(mdChecksTypes::kalmanSCC,
+                mbTypes::intMbs[bsm->getSenderMbType()]);
+        prntAppInst->incFlags(mdChecksTypes::kalmanSCC,
                 mbTypes::intMbs[bsm->getSenderMbType()]);
     }
 

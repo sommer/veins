@@ -43,6 +43,8 @@ simple TraCIMobility extends BaseMobility
         @display("i=block/cogwheel");
         double hostPositionOffset @unit("m") = default(0.0m);  // shift OMNeT++ module this far from front of the car
         bool setHostSpeed = default(false);  // whether to update the speed of the host (along with its position)
+        bool setHostAccel = default(false);  // whether to update the accel of the host (along with its position)
+       
         int accidentCount = default(0);  // number of accidents
         double accidentStart @unit("s") = default(uniform(30s,60s));  // time until first accident, relative to departure time
         volatile double accidentDuration @unit("s") = default(uniform(30s,60s));  // duration of accident

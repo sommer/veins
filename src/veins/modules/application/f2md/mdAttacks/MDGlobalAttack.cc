@@ -74,3 +74,10 @@ void MDGlobalAttack::setCurSpeedConfidence(Coord* curSpeedConfidence) {
     this->curSpeedConfidence = curSpeedConfidence;
 }
 
+void MDGlobalAttack::setCurAccel(Coord* curAccel) {
+    this->curAccel = curAccel;
+}
+
+void MDGlobalAttack::setCurAccelConfidence(Coord* curAccelConfidence) {
+    this->curAccelConfidence = curAccelConfidence;
+}

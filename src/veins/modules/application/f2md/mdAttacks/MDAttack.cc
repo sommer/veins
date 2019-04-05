@@ -78,6 +78,14 @@ void MDAttack::setCurSpeedConfidence(Coord* curSpeedConfidence) {
     this->curSpeedConfidence = curSpeedConfidence;
 }
 
+void MDAttack::setCurAccel(Coord* curAccel) {
+    this->curAccel = curAccel;
+}
+
+void MDAttack::setCurAccelConfidence(Coord* curAccelConfidence) {
+    this->curAccelConfidence = curAccelConfidence;
+}
+
 void MDAttack::setDetectedNodes(NodeTable* detectedNodes) {
     this->detectedNodes = detectedNodes;
 }
@@ -137,6 +145,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
         attackBsm.setSenderSpeed(*curSpeed);
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
 
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
+
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
 
@@ -156,6 +167,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
 
         attackBsm.setSenderSpeed(*curSpeed);
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
 
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
@@ -178,6 +192,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
 
         attackBsm.setSenderSpeed(*curSpeed);
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
 
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
@@ -204,6 +221,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
         attackBsm.setSenderSpeed(*curSpeed);
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
 
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
+
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
 
@@ -220,8 +240,11 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
         attackBsm.setSenderPosConfidence(*curPositionConfidence);
 
         attackBsm.setSenderSpeed(
-                Coord(ConstSpeedX, ConstSpeedY, (*curSpeed).z));
+                Coord(ConstSpeedX, ConstSpeedY, 0));
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
 
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
@@ -242,6 +265,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
                 Coord((*curSpeed).x + ConstSpeedOffsetX, (*curSpeed).y + ConstSpeedOffsetY,
                         (*curSpeed).z));
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
 
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
@@ -264,6 +290,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
 
         attackBsm.setSenderSpeed(Coord(sx, sy, (*curSpeed).z));
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
 
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
@@ -293,6 +322,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
                 Coord((*curSpeed).x + sx, (*curSpeed).y + sy, (*curSpeed).z));
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
 
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
+
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
 
@@ -314,6 +346,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
 
                 StopBsm.setSenderSpeed(Coord(0, 0, 0));
                 StopBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+                StopBsm.setSenderAccel(Coord(0, 0, 0));
+                StopBsm.setSenderAccelConfidence(*curAccelConfidence);
 
                 StopBsm.setSenderHeading(*curHeading);
                 StopBsm.setSenderHeadingConfidence(*curHeadingConfidence);
@@ -363,6 +398,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
         attackBsm.setSenderSpeed(*curSpeed);
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
 
+        attackBsm.setSenderAccel(*curAccel);
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
+
         attackBsm.setSenderHeading(*curHeading);
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
 
@@ -386,6 +424,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
         double sx = genLib.RandomDouble(0, RandomSpeedX);
         double sy = genLib.RandomDouble(0, RandomSpeedY);
 
+        double ax = genLib.RandomDouble(0, RandomAccelX);
+        double ay = genLib.RandomDouble(0, RandomAccelY);
+
         double hx = genLib.RandomDouble(-1, 1);
         double hy = genLib.RandomDouble(-1, 1);
 
@@ -394,6 +435,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
 
         attackBsm.setSenderSpeed(Coord(sx, sy, (*curSpeed).z));
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+        attackBsm.setSenderAccel(Coord(ax, ay, (*curAccel).z));
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
 
         attackBsm.setSenderHeading(Coord(hx, hy, (*curHeading).z));
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
@@ -532,6 +576,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
             attackBsm.setSenderSpeed(*curSpeed);
             attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
 
+            attackBsm.setSenderSpeed(*curAccel);
+            attackBsm.setSenderSpeedConfidence(*curAccelConfidence);
+
             attackBsm.setSenderHeading(*curHeading);
             attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);
 
@@ -590,6 +637,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
         double sx = genLib.RandomDouble(0, RandomSpeedX);
         double sy = genLib.RandomDouble(0, RandomSpeedY);
 
+        double ax = genLib.RandomDouble(0, RandomAccelX);
+        double ay = genLib.RandomDouble(0, RandomAccelY);
+
         double hx = genLib.RandomDouble(-1, 1);
         double hy = genLib.RandomDouble(-1, 1);
 
@@ -598,6 +648,9 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType, Lin
 
         attackBsm.setSenderSpeed(Coord(sx, sy, (*curSpeed).z));
         attackBsm.setSenderSpeedConfidence(*curSpeedConfidence);
+
+        attackBsm.setSenderAccel(Coord(ax, ay, (*curAccel).z));
+        attackBsm.setSenderAccelConfidence(*curAccelConfidence);
 
         attackBsm.setSenderHeading(Coord(hx, hy, (*curHeading).z));
         attackBsm.setSenderHeadingConfidence(*curHeadingConfidence);

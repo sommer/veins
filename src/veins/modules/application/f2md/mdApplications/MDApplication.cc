@@ -50,16 +50,30 @@ void MDApplication::saveLine(std::string path, std::string serial, double densit
     char fileNameApp[64];
     char fileNameAppInst[64];
 
+    char fileNameAppFlags[64];
+    char fileNameAppFlagsInst[64];
+
     if(version == 1){
         strcpy(fileNameApp,AppV1Name);
         strcat(fileNameApp, ".dat");
         strcpy(fileNameAppInst,AppV1Name);
         strcat(fileNameAppInst, "Inst.dat");
+
+        strcpy(fileNameAppFlags,AppV1Name);
+        strcat(fileNameAppFlags, "Flags.dat");
+        strcpy(fileNameAppFlagsInst,AppV1Name);
+        strcat(fileNameAppFlagsInst, "FlagsInst.dat");
+
     }else{
         strcpy(fileNameApp,AppV2Name);
         strcat(fileNameApp, ".dat");
         strcpy(fileNameAppInst,AppV2Name);
         strcat(fileNameAppInst, "Inst.dat");
+
+        strcpy(fileNameAppFlags,AppV2Name);
+        strcat(fileNameAppFlags, "Flags.dat");
+        strcpy(fileNameAppFlagsInst,AppV2Name);
+        strcat(fileNameAppFlagsInst, "FlagsInst.dat");
     }
 
     char outChar[1024];
@@ -91,6 +105,21 @@ void MDApplication::saveLine(std::string path, std::string serial, double densit
     strcat(filePathGen, fileNameAppInst);
 
     prntAppInst->getPrintable(outChar, density, deltaT, printOut);
+    prntAppInst->writeFile(filePathGen, outChar);
+
+
+    strcpy(filePathGen, directoryPathGen);
+    strcat(filePathGen, "/");
+    strcat(filePathGen, fileNameAppFlags);
+
+    prntApp->getFlagsPrintable(outChar, density, deltaT, printOut);
+    prntApp->writeFile(filePathGen, outChar);
+
+    strcpy(filePathGen, directoryPathGen);
+    strcat(filePathGen, "/");
+    strcat(filePathGen, fileNameAppFlagsInst);
+
+    prntAppInst->getFlagsPrintable(outChar, density, deltaT, printOut);
     prntAppInst->writeFile(filePathGen, outChar);
 
 }

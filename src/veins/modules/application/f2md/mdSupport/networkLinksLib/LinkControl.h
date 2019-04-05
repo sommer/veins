@@ -30,7 +30,7 @@
 #include "float.h"
 #include <omnetpp.h>
 #include <veins/modules/application/f2md/F2MDParameters.h>
-#include <veins/modules/application/f2md/mdSupport/NetworkLinksLib/Link.h>
+#include <veins/modules/application/f2md/mdSupport/networkLinksLib/Link.h>
 #include "veins/base/utils/Coord.h"
 #include <list>
 #include <tuple>

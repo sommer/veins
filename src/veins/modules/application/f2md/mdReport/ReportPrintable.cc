@@ -59,6 +59,36 @@ std::string ReportPrintable::getCheckXml(BsmCheck Check){
      xml.writeString(std::to_string(Check.getBeaconFrequency()));
      xml.writeEndElementTag();
 
+
+     xml.writeStartElementTag("kPACS");
+     xml.writeString(std::to_string(Check.getKalmanPACS()));
+     xml.writeEndElementTag();
+
+     xml.writeStartElementTag("kPCS");
+     xml.writeString(std::to_string(Check.getKalmanPCC()));
+     xml.writeEndElementTag();
+
+     xml.writeStartElementTag("kPSCP");
+     xml.writeString(std::to_string(Check.getKalmanPSCP()));
+     xml.writeEndElementTag();
+
+     xml.writeStartElementTag("kPSCS");
+     xml.writeString(std::to_string(Check.getKalmanPSCS()));
+     xml.writeEndElementTag();
+
+     xml.writeStartElementTag("kPSCSP");
+     xml.writeString(std::to_string(Check.getKalmanPSCSP()));
+     xml.writeEndElementTag();
+
+     xml.writeStartElementTag("kPSCSS");
+     xml.writeString(std::to_string(Check.getKalmanPSCSS()));
+     xml.writeEndElementTag();
+
+     xml.writeStartElementTag("kSCC");
+     xml.writeString(std::to_string(Check.getKalmanSCC()));
+     xml.writeEndElementTag();
+
+
      tempStr = "n=\"";
      tempStr = tempStr + std::to_string(Check.getIntersection().getInterNum());
      tempStr = tempStr + "\"";
@@ -141,6 +171,28 @@ std::string ReportPrintable::getBsmXml(BasicSafetyMessage bsm){
      xml.writeString(tempStr);
      xml.writeEndElementTag();
 
+     xml.writeStartElementTag("Accel");
+     tempStr = "(";
+     tempStr = tempStr + std::to_string(bsm.getSenderAccel().x);
+     tempStr = tempStr +",";
+     tempStr = tempStr + std::to_string(bsm.getSenderAccel().y);
+     tempStr = tempStr +",";
+     tempStr = tempStr + std::to_string(bsm.getSenderAccel().z);
+     tempStr = tempStr + ")";
+     xml.writeString(tempStr);
+     xml.writeEndElementTag();
+
+     xml.writeStartElementTag("AccelConfidence");
+     tempStr = "(";
+     tempStr = tempStr + std::to_string(bsm.getSenderAccelConfidence().x);
+     tempStr = tempStr +",";
+     tempStr = tempStr + std::to_string(bsm.getSenderAccelConfidence().y);
+     tempStr = tempStr +",";
+     tempStr = tempStr + std::to_string(bsm.getSenderAccelConfidence().z);
+     tempStr = tempStr + ")";
+     xml.writeString(tempStr);
+     xml.writeEndElementTag();
+
      xml.writeStartElementTag("Heading");
      tempStr = "(";
      tempStr = tempStr + std::to_string(bsm.getSenderHeading().x);
@@ -217,6 +269,22 @@ std::string ReportPrintable::getCheckJson(BsmCheck Check){
 
     tempStr = jw.getSimpleTag("bF", std::to_string(Check.getBeaconFrequency()),true);
     jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("kPACS", std::to_string(Check.getKalmanPACS()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPCS", std::to_string(Check.getKalmanPCC()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPSCP", std::to_string(Check.getKalmanPSCP()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPSCS", std::to_string(Check.getKalmanPSCS()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPSCSP", std::to_string(Check.getKalmanPSCSP()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPSCSS", std::to_string(Check.getKalmanPSCSS()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kSCC", std::to_string(Check.getKalmanSCC()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
 
      jw.openJsonElementList("inT");
 
@@ -302,6 +370,20 @@ std::string ReportPrintable::getBsmJson(BasicSafetyMessage bsm){
     jw.addTagToElement("SpeedConfidence", std::to_string(bsm.getSenderSpeedConfidence().y));
     jw.addFinalTagToElement("SpeedConfidence", std::to_string(bsm.getSenderSpeedConfidence().z));
     tempStr = jw.getJsonElementList("SpeedConfidence");
+    jw.addTagToElement("Bsm", tempStr);
+
+    jw.openJsonElementList("Accel");
+    jw.addTagToElement("Accel", std::to_string(bsm.getSenderAccel().x));
+    jw.addTagToElement("Accel", std::to_string(bsm.getSenderAccel().y));
+    jw.addFinalTagToElement("Accel", std::to_string(bsm.getSenderAccel().z));
+    tempStr = jw.getJsonElementList("Accel");
+    jw.addTagToElement("Bsm", tempStr);
+
+    jw.openJsonElementList("AccelConfidence");
+    jw.addTagToElement("AccelConfidence", std::to_string(bsm.getSenderAccelConfidence().x));
+    jw.addTagToElement("AccelConfidence", std::to_string(bsm.getSenderAccelConfidence().y));
+    jw.addFinalTagToElement("AccelConfidence", std::to_string(bsm.getSenderAccelConfidence().z));
+    tempStr = jw.getJsonElementList("AccelConfidence");
     jw.addTagToElement("Bsm", tempStr);
 
     jw.openJsonElementList("Heading");

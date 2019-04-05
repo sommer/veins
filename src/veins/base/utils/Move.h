@@ -49,6 +49,8 @@ protected:
     Coord direction;
     /** @brief speed of the host in meters per second **/
     double speed;
+    /** @brief accel of the host in meters per second per second **/
+    double accel;
 
 public:
     Move()
@@ -58,6 +60,7 @@ public:
         , orientation()
         , direction()
         , speed(0.0)
+        , accel(0.0)
     {
     }
     Move(const Move& mSrc)
@@ -67,7 +70,24 @@ public:
         , orientation(mSrc.orientation)
         , direction(mSrc.direction)
         , speed(mSrc.speed)
+        , accel(mSrc.accel)
     {
+    }
+
+    /**
+     * @brief Returns the current accel.
+     */
+    double getAccel() const
+    {
+        return accel;
+    }
+
+    /**
+     * @brief Sets the current accel in meters per second per second.
+     */
+    void setAccel(double accel)
+    {
+        this->accel = accel;
     }
 
     /**

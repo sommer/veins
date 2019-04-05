@@ -16,16 +16,18 @@ MDMLib mdmLib = MDMLib();
 GeneralLib genLib = GeneralLib();
 
 RelativeOffset::RelativeOffset(Coord *curPosConfidence,
-        Coord *curSpeedConfidence, Coord* curHeadingConfidence,
+        Coord *curSpeedConfidence, Coord* curHeadingConfidence,Coord* curAccelConfidence,
         double* deltaRPosition, double* deltaThetaPosition, double* deltaSpeed,
-        double* deltaHeading) {
+        double* deltaHeading,double* deltaAccel) {
     this->curPosConfidence = curPosConfidence;
     this->curSpeedConfidence = curSpeedConfidence;
     this->curHeadingConfidence = curHeadingConfidence;
+    this->curAccelConfidence = curAccelConfidence;
     this->deltaRPosition = deltaRPosition;
     this->deltaThetaPosition = deltaThetaPosition;
     this->deltaSpeed = deltaSpeed;
     this->deltaHeading = deltaHeading;
+    this->deltaAccel = deltaAccel;
 }
 
 double RelativeOffset::getGaussianRand(double mean, double stddev) {
@@ -97,6 +99,30 @@ Coord RelativeOffset::OffsetSpeed(Coord curSpeed) {
         }
     }
     return Coord(curSpeed.x + *deltaSpeed, curSpeed.y + *deltaSpeed, 0);
+
+}
+
+Coord RelativeOffset::OffsetAccel(Coord curAccel) {
+    double stepS = fabs(getGaussianRand(0, STEP_G * curAccelConfidence->x / 3));
+    double gsim = 0.5;
+    if (*deltaAccel > curAccelConfidence->x / 2) {
+        gsim = mdmLib.gaussianSum(*deltaAccel, curAccelConfidence->x);
+    }
+
+    double upDownProb = genLib.RandomDouble(0, 1);
+    if (upDownProb < gsim) {
+        if (*deltaAccel > stepS) {
+            *deltaAccel = *deltaAccel - stepS;
+        } else {
+            *deltaAccel = *deltaAccel + stepS;
+        }
+    } else {
+        *deltaAccel = *deltaAccel + stepS;
+        if (*deltaAccel > curAccelConfidence->x) {
+            *deltaAccel = *deltaAccel - stepS;
+        }
+    }
+    return Coord(curAccel.x + *deltaAccel, curAccel.y + *deltaAccel, 0);
 
 }
 

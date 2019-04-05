@@ -23,10 +23,14 @@
 #define MAX_CONFIDENCE_RANGE 10 //3
 #define MAX_PLAUSIBLE_RANGE 420 // 417
 
-#define MAX_TIME_DELTA 1.1
+#define MAX_TIME_DELTA 3.1
 #define MAX_DELTA_INTER 2.0 //1.001
 #define MAX_SA_RANGE 210 // 420/2
 #define MAX_SA_TIME 2.1 // 2.1
+
+#define MAX_KALMAN_TIME 3.1
+#define KALMAN_POS_RANGE 1.0
+#define KALMAN_SPEED_RANGE 4.0
 
 #define MIN_MAX_SPEED 40 // 40
 #define MIN_MAX_ACCEL 3 // 3
@@ -64,13 +68,15 @@
 #define RandomPosOffsetY 70.0
 #define RandomSpeedX 40.0
 #define RandomSpeedY 40.0
+#define RandomAccelX 2.0
+#define RandomAccelY 2.0
 #define RandomSpeedOffsetX 7.0
 #define RandomSpeedOffsetY 7.0
 #define StopProb 0.01
 #define StaleMessages_Buffer 9 //less than 20
 #define DosMultipleFreq 4 // times faster
 #define DosMultipleFreqSybil 1 // times faster
-#define SybilVehNumber 9 // max 10
+#define SybilVehNumber 5 // max 10
 #define SelfSybil true // default true
 #define SybilDistanceX 5 // 5 meters
 #define SybilDistanceY 2 // 2 meters

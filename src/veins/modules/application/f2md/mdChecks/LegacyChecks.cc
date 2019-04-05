@@ -26,9 +26,10 @@ using namespace boost;
 
 static double print_count = 0;
 
-LegacyChecks::LegacyChecks(unsigned long myPseudonym, Coord myPosition,
-        Coord mySpeed, Coord myHeading, Coord mySize, Coord myLimits,
-        LinkControl* LinkC) {
+LegacyChecks::LegacyChecks(int version, unsigned long myPseudonym,
+        Coord myPosition, Coord mySpeed, Coord myHeading, Coord mySize,
+        Coord myLimits, LinkControl* LinkC) {
+    this->version = version;
     this->myPseudonym = myPseudonym;
     this->myPosition = myPosition;
     this->mySpeed = mySpeed;
@@ -119,21 +120,19 @@ double LegacyChecks::PositionSpeedMaxConsistancyCheck(Coord *curPosition,
     }
 }
 
-
 double LegacyChecks::PositionSpeedConsistancyCheck(Coord *curPosition,
         Coord * oldPosition, double curSpeed, double oldspeed, double time) {
     if (time < MAX_TIME_DELTA) {
         double distance = mdmLib.calculateDistancePtr(curPosition, oldPosition);
         double curminspeed = std::min(curSpeed, oldspeed);
         //double theoreticalSpeed = distance / time;
-        double retDistance [2];
+        double retDistance[2];
         mdmLib.calculateMaxMinDist(curSpeed, oldspeed, time,
-                MAX_PLAUSIBLE_ACCEL, MAX_PLAUSIBLE_DECEL,
-                MAX_PLAUSIBLE_SPEED, retDistance);
-
+                MAX_PLAUSIBLE_ACCEL, MAX_PLAUSIBLE_DECEL, MAX_PLAUSIBLE_SPEED,
+                retDistance);
 
         double addon_mgt_range = MAX_MGT_RNG_DOWN + 0.3571 * curminspeed
-                - 0.01694 * curminspeed*curminspeed;
+                - 0.01694 * curminspeed * curminspeed;
         if (addon_mgt_range < 0) {
             addon_mgt_range = 0;
         }
@@ -333,6 +332,220 @@ double LegacyChecks::PositionHeadingConsistancyCheck(Coord * curHeading,
     }
 }
 
+
+void LegacyChecks::KalmanPositionSpeedConsistancyCheck(Coord * curPosition,
+        Coord * curPositionConfidence, Coord * curSpeed,Coord * curAccel,
+        Coord * curSpeedConfidence, double time, Kalman_SVI * kalmanSVI,
+        double retVal[]) {
+
+    if (!kalmanSVI->isInit()) {
+        retVal[0] = 1;
+        retVal[1] = 1;
+    } else {
+        if(time < MAX_KALMAN_TIME){
+            float Delta[4];
+
+            double Ax = curAccel->x;
+            double Ay = curAccel->y;
+
+//            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("X0a", kalmanSVI->kalmanFilterJ_SVI.X0, 4);
+//            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("Xa", kalmanSVI->kalmanFilterJ_SVI.X, 4);
+
+            kalmanSVI->getDeltaPos(time, curPosition->x, curPosition->y,
+                    curSpeed->x, curSpeed->y,Ax,Ay, curPositionConfidence->x,
+                    curPositionConfidence->y, curSpeedConfidence->x,
+                    curSpeedConfidence->y, Delta);
+
+
+            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[2], 2.0)) / (KALMAN_POS_RANGE*curPositionConfidence->x*time);
+            if(isnan(ret_1)){
+                ret_1 = 0;
+            }
+
+
+            if(ret_1<0.5){
+                ret_1 = 0;
+            }else{
+                ret_1 = 1;
+            }
+
+            double ret_2 = 1 - sqrt(pow(Delta[1], 2.0) + pow(Delta[3], 2.0)) / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time);
+            if(isnan(ret_2)){
+                ret_2 = 0;
+            }
+
+            if(ret_2<0.5){
+                ret_2 = 0;
+            }else{
+                ret_2 = 1;
+            }
+
+
+//            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("Xb", kalmanSVI->kalmanFilterJ_SVI.X, 4);
+//            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("Delta", Delta, 4);
+
+            retVal[0] = ret_1;
+            retVal[1] = ret_2;
+
+        }else{
+            retVal[0] = 1;
+            retVal[1] = 1;
+            kalmanSVI->setInitial(curPosition->x, curPosition->y, curSpeed->x, curSpeed->y);
+        }
+    }
+}
+
+void LegacyChecks::KalmanPositionSpeedScalarConsistancyCheck(Coord * curPosition, Coord * oldPosition,
+        Coord * curPositionConfidence, Coord * curSpeed, Coord * curAccel,
+        Coord * curSpeedConfidence, double time, Kalman_SC * kalmanSC,
+        double retVal[]) {
+
+    if (!kalmanSC->isInit()) {
+        retVal[0] = 1;
+        retVal[1] = 1;
+    } else {
+        if(time < MAX_KALMAN_TIME){
+
+
+            float Delta[2];
+
+            double distance = mdmLib.calculateDistancePtr(curPosition, oldPosition);
+            double curspd = mdmLib.calculateSpeedPtr(curSpeed);
+            double curacl = mdmLib.calculateSpeedPtr(curAccel);
+
+            kalmanSC->getDeltaPos(time, distance,
+                    curspd,curacl, curacl, curPositionConfidence->x, curSpeedConfidence->x, Delta);
+
+            double ret_1 = 1 - (Delta[0] / (KALMAN_POS_RANGE*curPositionConfidence->x*time));
+            if(isnan(ret_1)){
+                ret_1 = 0;
+            }
+
+
+            if(ret_1<0.5){
+                ret_1 = 0;
+            }else{
+                ret_1 = 1;
+            }
+            double ret_2 = 1 - (Delta[1] / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time));
+            if(isnan(ret_2)){
+                ret_2 = 0;
+            }
+            if(ret_2<0.5){
+                ret_2 = 0;
+            }else{
+                ret_2 = 1;
+            }
+//            kalmanSC->kalmanFilterJ_SC.matrixOp_SC.printVec("Xb", kalmanSC->kalmanFilterJ_SC.X, 2);
+//            kalmanSC->kalmanFilterJ_SC.matrixOp_SC.printVec("Delta", Delta, 2);
+
+            retVal[0] = ret_1;
+            retVal[1] = ret_2;
+
+        }else{
+            retVal[0] = 1;
+            retVal[1] = 1;
+            double curspd = mdmLib.calculateSpeedPtr(curSpeed);
+            kalmanSC->setInitial(0, curspd);
+        }
+    }
+}
+
+double LegacyChecks::KalmanPositionConsistancyCheck(Coord * curPosition, Coord * oldPosition, Coord * curPosConfidence,
+         double time, Kalman_SI * kalmanSI){
+    if (!kalmanSI->isInit()) {
+        return 1;
+    } else {
+        if(time < MAX_KALMAN_TIME){
+            float Delta[2];
+            double Ax = (curPosition->x - oldPosition->x)/time;
+            double Ay = (curPosition->y - oldPosition->y)/time;
+
+            kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y,
+                    curPosConfidence->x,
+                    curPosConfidence->y, Delta);
+
+            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (4*KALMAN_POS_RANGE* curPosConfidence->x*time);
+            if(isnan(ret_1)){
+                ret_1 = 0;
+            }
+            if(ret_1<0.5){
+                ret_1 = 0;
+            }else{
+                ret_1 = 1;
+            }
+
+            return ret_1;
+        }else{
+            kalmanSI->setInitial(curPosition->x, curPosition->y);
+            return 1;
+        }
+    }
+}
+
+
+double LegacyChecks::KalmanPositionAccConsistancyCheck(Coord * curPosition, Coord * curSpeed, Coord * curPosConfidence,
+         double time, Kalman_SI * kalmanSI){
+    if (!kalmanSI->isInit()) {
+        return 1;
+    } else {
+        if(time < MAX_KALMAN_TIME){
+            float Delta[2];
+            double Ax = curSpeed->x;
+            double Ay = curSpeed->y;
+
+            kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y,Ax,Ay,
+                    curPosConfidence->x,
+                    curPosConfidence->y, Delta);
+
+            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (4*KALMAN_POS_RANGE*curPosConfidence->x*time);
+            if(isnan(ret_1)){
+                ret_1 = 0;
+            }
+
+            if(ret_1<0.5){
+                ret_1 = 0;
+            }else{
+                ret_1 = 1;
+            }
+
+            return ret_1;
+        }else{
+            kalmanSI->setInitial(curPosition->x, curPosition->y);
+            return 1;
+        }
+    }
+}
+double LegacyChecks::KalmanSpeedConsistancyCheck(Coord * curSpeed, Coord *curAccel, Coord * curSpeedConfidence,
+         double time, Kalman_SI * kalmanSI){
+    if (!kalmanSI->isInit()) {
+        return 1;
+    } else {
+        if(time < MAX_KALMAN_TIME){
+            float Delta[2];
+            kalmanSI->getDeltaPos(time, curSpeed->x, curSpeed->y,curAccel->x,curAccel->y,
+                    curSpeedConfidence->x,
+                    curSpeedConfidence->y, Delta);
+
+            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time);
+            if(isnan(ret_1)){
+                ret_1 = 0;
+            }
+            if(ret_1<0.5){
+                ret_1 = 0;
+            }else{
+                ret_1 = 1;
+            }
+
+            return ret_1;
+        }else{
+            kalmanSI->setInitial(curSpeed->x, curSpeed->y);
+            return 1;
+        }
+    }
+}
+
+
 BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
         NodeTable *detectedNodes) {
     BsmCheck bsmCheck = BsmCheck();
@@ -343,6 +556,8 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
 
     NodeHistory * senderNode = detectedNodes->getNodeHistoryAddr(
             senderPseudonym);
+
+    MDMHistory * senderMDM = detectedNodes->getMDMHistoryAddr(senderPseudonym);
 
     bsmCheck.setRangePlausibility(
             RangePlausibilityCheck(&myPosition, &bsm->getSenderPos()));
@@ -402,11 +617,74 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
                         mdmLib.calculateDeltaTime(bsm,
                                 senderNode->getLatestBSMAddr())));
 
-
-        if(mdmLib.calculateDeltaTime(bsm,senderNode->getLatestBSMAddr()) > MAX_SA_TIME){
+        if (mdmLib.calculateDeltaTime(bsm,
+                senderNode->getLatestBSMAddr()) > MAX_SA_TIME) {
             bsmCheck.setSuddenAppearence(
                     SuddenAppearenceCheck(&senderPos, &myPosition));
         }
+
+        double retVal[2];
+        double retValSC[2];
+
+        Kalman_SVI * kalmanSVI;
+        if(version == 2){
+            kalmanSVI = senderMDM->getKalmanSviv2();
+        }else{
+            kalmanSVI = senderMDM->getKalmanSviv1();
+        }
+
+        Kalman_SI * kalmanSI;
+        if(version == 2){
+            kalmanSI = senderMDM->getKalmanSiv2();
+        }else{
+            kalmanSI = senderMDM->getKalmanSiv1();
+        }
+
+        Kalman_SC * kalmanSC;
+        if(version == 2){
+            kalmanSC = senderMDM->getKalmanSvsiv2();
+        }else{
+            kalmanSC = senderMDM->getKalmanSvsiv1();
+        }
+
+
+        Kalman_SI * kalmanSAI;
+        if(version == 2){
+            kalmanSAI = senderMDM->getKalmanSaiv2();
+        }else{
+            kalmanSAI = senderMDM->getKalmanSaiv1();
+        }
+
+        Kalman_SI * kalmanVI;
+        if(version == 2){
+            kalmanVI = senderMDM->getKalmanViv2();
+        }else{
+            kalmanVI = senderMDM->getKalmanViv1();
+        }
+
+        KalmanPositionSpeedConsistancyCheck(&senderPos, &senderPosConfidence,
+                &bsm->getSenderSpeed(),&bsm->getSenderAccel(), &bsm->getSenderSpeedConfidence(),
+                mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()),
+                kalmanSVI , retVal);
+        bsmCheck.setKalmanPSCP(retVal[0]);
+        bsmCheck.setKalmanPSCS(retVal[1]);
+
+        KalmanPositionSpeedScalarConsistancyCheck(&senderPos,&senderNode->getLatestBSMAddr()->getSenderPos(), &senderPosConfidence,
+                &bsm->getSenderSpeed(),&bsm->getSenderAccel(), &bsm->getSenderSpeedConfidence(),
+                mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()),
+                kalmanSC , retValSC);
+
+        bsmCheck.setKalmanPSCSP(retValSC[0]);
+        bsmCheck.setKalmanPSCSS(retValSC[1]);
+
+        bsmCheck.setKalmanPCC(KalmanPositionConsistancyCheck(&senderPos,&senderNode->getLatestBSMAddr()->getSenderPos(), &senderPosConfidence,
+                mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()), kalmanSI));
+
+        bsmCheck.setKalmanPACS( KalmanPositionAccConsistancyCheck(&senderPos,&senderNode->getLatestBSMAddr()->getSenderSpeed(), &senderPosConfidence,
+                mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()), kalmanSI));
+
+        bsmCheck.setKalmanSCC(KalmanSpeedConsistancyCheck(&bsm->getSenderSpeed(),&bsm->getSenderAccel(), &bsm->getSenderSpeedConfidence(),
+                mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()), kalmanVI));
 
     } else {
         bsmCheck.setSuddenAppearence(

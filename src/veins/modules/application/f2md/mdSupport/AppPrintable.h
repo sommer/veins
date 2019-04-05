@@ -43,6 +43,13 @@ private:
     double flagsIntersection_1 = 0;
     double flagsSuddenAppearence_1 = 0;
     double flagsPositionHeadingConsistancy_1 = 0;
+    double flagskalmanPSCP_1=0;
+    double flagskalmanPSCS_1=0;
+    double flagskalmanPSCSP_1=0;
+    double flagskalmanPSCSS_1=0;
+    double flagskalmanPCS_1=0;
+    double flagskalmanPACS_1=0;
+    double flagskalmanSCC_1=0;
 
     double flagsRangePlausibility_2 = 0;
     double flagsPositionPlausibility_2 = 0;
@@ -55,6 +62,13 @@ private:
     double flagsIntersection_2 = 0;
     double flagsSuddenAppearence_2 = 0;
     double flagsPositionHeadingConsistancy_2 = 0;
+    double flagskalmanPSCP_2=0;
+    double flagskalmanPSCS_2=0;
+    double flagskalmanPSCSP_2=0;
+    double flagskalmanPSCSS_2=0;
+    double flagskalmanPCS_2=0;
+    double flagskalmanPACS_2=0;
+    double flagskalmanSCC_2=0;
 
     double cumulFlags_1 = 0;
     double cumulFlags_2 = 0;
@@ -77,7 +91,8 @@ public:
     void incFlags(mdChecksTypes::Checks check, mbTypes::Mbs mbType);
     void resetAll();
     void getPrintable(char* outStr, double density,double deltaT, bool printOut);
-
+    void getFlagsPrintable(char* outStr, double density, double deltaT,
+            bool printOut);
     void writeFile(std::string path, char* printStr);
 };
 

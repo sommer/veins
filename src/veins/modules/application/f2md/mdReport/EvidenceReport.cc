@@ -93,6 +93,49 @@ void EvidenceReport::addEvidence(BasicSafetyMessage myBsm,
             eviNum = 2;
         }
     }
+
+    if (reportedCheck.getKalmanPACS() < 1) {
+        if (eviNum < 2) {
+            eviNum = 2;
+        }
+    }
+
+    if (reportedCheck.getKalmanPCC() < 1) {
+        if (eviNum < 2) {
+            eviNum = 2;
+        }
+    }
+
+    if (reportedCheck.getKalmanPSCP() < 1) {
+        if (eviNum < 2) {
+            eviNum = 2;
+        }
+    }
+
+    if (reportedCheck.getKalmanPSCS() < 1) {
+        if (eviNum < 2) {
+            eviNum = 2;
+        }
+    }
+
+    if (reportedCheck.getKalmanPSCSP() < 1) {
+        if (eviNum < 2) {
+            eviNum = 2;
+        }
+    }
+
+    if (reportedCheck.getKalmanPSCSS() < 1) {
+        if (eviNum < 2) {
+            eviNum = 2;
+        }
+    }
+
+    if (reportedCheck.getKalmanSCC() < 1) {
+        if (eviNum < 2) {
+            eviNum = 2;
+        }
+    }
+
     if (reportedCheck.getIntersection().getInterNum() > 0) {
         if (eviNum < 1) {
             eviNum = 1;

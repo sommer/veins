@@ -14,12 +14,12 @@
 
 #include <tuple>
 #include <omnetpp.h>
+#include <veins/modules/application/f2md/mdSupport/networkLinksLib/LinkControl.h>
 
 #include "../mdBase/NodeTable.h"
 #include "../mdPCPolicies/PCPolicy.h"
 
 #include "../F2MDParameters.h"
-#include <veins/modules/application/f2md/mdSupport/NetworkLinksLib/LinkControl.h>
 
 using namespace veins;
 using namespace omnetpp;
@@ -41,6 +41,9 @@ protected:
     Coord* curSpeedConfidence;
     Coord* curHeading;
     Coord* curHeadingConfidence;
+    Coord* curAccel;
+    Coord* curAccelConfidence;
+
 
     double* myWidth;
     double* myLength;
@@ -93,6 +96,9 @@ public:
     void setCurPositionConfidence(Coord* curPositionConfidence);
     void setCurSpeed(Coord* curSpeed);
     void setCurSpeedConfidence(Coord* curSpeedConfidence);
+    void setCurAccel(Coord* curAccel);
+    void setCurAccelConfidence(Coord* curAccelConfidence);
+
     void setDetectedNodes(NodeTable* detectedNodes);
     void setMyBsm(BasicSafetyMessage* myBsm);
     void setMyBsmNum(int* myBsmNum);

@@ -479,6 +479,10 @@ const uint8_t VAR_ACCEL = 0x46;
 // max. deceleration (get: vehicle types)
 const uint8_t VAR_DECEL = 0x47;
 
+//joseph
+// max. acceleration (get: vehicle types)
+const uint8_t VAR_ACCEL_INST = 0x72;
+
 // driver reaction time (get: vehicle types)
 const uint8_t VAR_TAU = 0x48;
 

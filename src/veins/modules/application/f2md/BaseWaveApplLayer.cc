@@ -78,9 +78,11 @@ void BaseWaveApplLayer::initialize(int stage) {
         curPositionConfidence = Coord(0, 0, 0);
         curSpeedConfidence = Coord(0, 0, 0);
         curHeadingConfidence = Coord(0, 0, 0);
+        curAccelConfidence = Coord(0, 0, 0);
         myWidth = 0;
         myLength = 0;
         curHeading = Coord(0, 0, 0);
+        curAccel = Coord(0, 0, 0);
         myMdType = mbTypes::Genuine;
         myAttackType = attackTypes::Attacks::Genuine;
         //attackBsm.setSenderAddress(0);
@@ -209,6 +211,9 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
         bsm->setSenderHeading(curHeading);
         bsm->setSenderHeadingConfidence(curHeadingConfidence);
 
+        bsm->setSenderAccel(curAccel);
+        bsm->setSenderAccelConfidence(curAccelConfidence);
+
         bsm->setSenderWidth(myWidth);
         bsm->setSenderLength(myLength);
 
@@ -236,6 +241,10 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
                 bsm->setSenderHeadingConfidence(
                         attackBsm.getSenderHeadingConfidence());
 
+                bsm->setSenderAccel(attackBsm.getSenderAccel());
+                bsm->setSenderAccelConfidence(
+                        attackBsm.getSenderAccelConfidence());
+
                 bsm->setSenderWidth(attackBsm.getSenderWidth());
                 bsm->setSenderLength(attackBsm.getSenderLength());
             } else {
@@ -252,6 +261,9 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
 
                 bsm->setSenderHeading(curHeading);
                 bsm->setSenderHeadingConfidence(curHeadingConfidence);
+
+                bsm->setSenderAccel(curAccel);
+                bsm->setSenderAccelConfidence(curAccelConfidence);
 
                 bsm->setSenderWidth(myWidth);
                 bsm->setSenderLength(myLength);
@@ -298,20 +310,16 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
             ChannelMobilityPtrType>(obj);
 
     RelativeOffset relativeOffset = RelativeOffset(&curPositionConfidence,
-            &curSpeedConfidence, &curHeadingConfidence, &deltaRPosition,
-            &deltaThetaPosition, &deltaSpeed, &deltaHeading);
+            &curSpeedConfidence, &curHeadingConfidence, &curAccelConfidence, &deltaRPosition,
+            &deltaThetaPosition, &deltaSpeed, &deltaHeading, &deltaAccel);
 
 //    GaussianRandom relativeOffset = GaussianRandom(&curPositionConfidence,
 //            &curSpeedConfidence, &curHeadingConfidence);
 
-    Coord speedlocal = Coord(
-            this->mobility->getSpeed() * mobility->getCurrentDirection().x,
-            this->mobility->getSpeed() * mobility->getCurrentDirection().y);
-
-    curPosition = relativeOffset.OffsetPosition(
-            this->mobility->getPositionAt(simTime()));
-    curSpeed = relativeOffset.OffsetSpeed(speedlocal);
+    curPosition = relativeOffset.OffsetPosition(mobility->getPositionAt(simTime()));
+    curSpeed = relativeOffset.OffsetSpeed(mobility->getCurrentSpeed());
     curHeading = relativeOffset.OffsetHeading(mobility->getCurrentDirection());
+    curAccel = relativeOffset.OffsetAccel(mobility->getCurrentAccel());
 
 }
 

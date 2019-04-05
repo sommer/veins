@@ -37,6 +37,8 @@ packet BasicSafetyMessage extends BaseFrame1609_4 {
     Coord senderSpeedConfidence;
     Coord senderHeading;
     Coord senderHeadingConfidence;
+    Coord senderAccel;
+    Coord senderAccelConfidence;
     double senderWidth;
     double senderLength;
     int senderMbType;

@@ -20,6 +20,7 @@ Define_Module(JosephVeinsApp);
 #define confPos 5.0
 #define confSpd 1.0
 #define confHea 0.0
+#define confAcc 0.0
 
 #define SAVE_PERIOD 1 //60 seconds
 #define PRINT_PERIOD 60 //60 seconds
@@ -34,17 +35,17 @@ static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
-#define LOCAL_ATTACK_TYPE attackTypes::ConstSpeedOffset
+#define LOCAL_ATTACK_TYPE attackTypes::DoSRandomSybil
 
 static attackTypes::Attacks MixLocalAttacksList[] =
-        { attackTypes::ConstPos, attackTypes::RandomPos,
-                attackTypes::StaleMessages, attackTypes::DoSRandomSybil,
-                attackTypes::ConstPosOffset, attackTypes::ConstSpeed,
-                attackTypes::DoS, attackTypes::RandomPosOffset,
-                attackTypes::DataReplaySybil, attackTypes::DoSDisruptive,
-                attackTypes::ConstSpeedOffset, attackTypes::RandomSpeedOffset,
-                attackTypes::EventualStop, attackTypes::DoSDisruptiveSybil,
-                attackTypes::Disruptive, attackTypes::DataReplay,
+        { attackTypes::ConstPos, attackTypes::Disruptive,
+                attackTypes::RandomPos, attackTypes::StaleMessages,
+                attackTypes::DoSRandomSybil, attackTypes::ConstPosOffset,
+                attackTypes::ConstSpeed, attackTypes::DoS,
+                attackTypes::RandomPosOffset, attackTypes::DataReplaySybil,
+                attackTypes::DoSDisruptive, attackTypes::ConstSpeedOffset,
+                attackTypes::RandomSpeedOffset, attackTypes::EventualStop,
+                attackTypes::DoSDisruptiveSybil, attackTypes::DataReplay,
                 attackTypes::DoSRandom, attackTypes::GridSybil,
                 attackTypes::RandomSpeed };
 
@@ -69,7 +70,7 @@ static bool SaveStatsV1 = true;
 static bool SaveStatsV2 = true;
 
 static mdChecksVersionTypes::ChecksVersion checksVersionV1 =
-        mdChecksVersionTypes::LegacyChecks;
+        mdChecksVersionTypes::CatchChecks;
 static mdChecksVersionTypes::ChecksVersion checksVersionV2 =
         mdChecksVersionTypes::CatchChecks;
 
@@ -91,7 +92,7 @@ static bool writeListReportsV1 = false;
 static bool writeListReportsV2 = false;
 
 static bool sendReportsV1 = false;
-static bool sendReportsV2 = false;
+static bool sendReportsV2 = true;
 static std::string maHostV1 = "localhost";
 static std::string maHostV2 = "localhost";
 //static std::string maHostV2 = "10.3.218.34";
@@ -123,18 +124,6 @@ void JosephVeinsApp::initialize(int stage) {
         MAX_PLAUSIBLE_DECEL = traciVehicle->getDeccel() + 0.01;
         MAX_PLAUSIBLE_SPEED = traciVehicle->getMaxSpeed() + 0.01;
 
-        /*
-         if (MAX_PLAUSIBLE_ACCEL < MIN_MAX_ACCEL) {
-         MAX_PLAUSIBLE_ACCEL = MIN_MAX_ACCEL;
-         }
-         if (MAX_PLAUSIBLE_DECEL < MIN_MAX_DECEL) {
-         MAX_PLAUSIBLE_DECEL = MIN_MAX_DECEL;
-         }
-         if (MAX_PLAUSIBLE_SPEED < MIN_MAX_SPEED) {
-         MAX_PLAUSIBLE_SPEED = MIN_MAX_SPEED;
-         }
-         */
-
         myWidth = traciVehicle->getWidth();
         myLength = traciVehicle->getLength();
 
@@ -158,17 +147,21 @@ void JosephVeinsApp::initialize(int stage) {
         //pseudonym-------------------------------
 
         if (randomConf) {
-            double randConfPos = genLib.RandomDouble(confPos/5, confPos);
-            double randConfSpeed = genLib.RandomDouble(confSpd/5, confSpd);
-            double randConfHeading = genLib.RandomDouble(confHea/5, confHea);
+            double randConfPos = genLib.RandomDouble(confPos / 5.0, confPos);
+            double randConfSpeed = genLib.RandomDouble(confSpd / 5.0, confSpd);
+            double randConfHeading = genLib.RandomDouble(confHea / 5.0,
+                    confHea);
+            double randConfAccel = genLib.RandomDouble(confAcc / 5.0, confAcc);
 
             curPositionConfidence = Coord(randConfPos, randConfPos, 0);
             curSpeedConfidence = Coord(randConfSpeed, randConfSpeed, 0);
             curHeadingConfidence = Coord(randConfHeading, randConfHeading, 0);
+            curAccelConfidence = Coord(randConfAccel, randConfAccel, 0);
         } else {
             curPositionConfidence = Coord(confPos, confPos, 0);
             curSpeedConfidence = Coord(confSpd, confSpd, 0);
             curHeadingConfidence = Coord(confHea, confHea, 0);
+            curAccelConfidence = Coord(confAcc, confAcc, 0);
         }
 
         myReportType = REPORT_VERSION;
@@ -192,6 +185,8 @@ void JosephVeinsApp::initialize(int stage) {
             mdGlobalAttack.setCurPositionConfidence(&curPositionConfidence);
             mdGlobalAttack.setCurSpeed(&curSpeed);
             mdGlobalAttack.setCurSpeedConfidence(&curSpeedConfidence);
+            mdGlobalAttack.setCurAccel(&curAccel);
+            mdGlobalAttack.setCurAccelConfidence(&curAccelConfidence);
             mdGlobalAttack.setTraci(traci);
 
             mdGlobalAttack.init(myAttackType);
@@ -236,6 +231,8 @@ void JosephVeinsApp::initialize(int stage) {
             mdAttack.setCurPositionConfidence(&curPositionConfidence);
             mdAttack.setCurSpeed(&curSpeed);
             mdAttack.setCurSpeedConfidence(&curSpeedConfidence);
+            mdAttack.setCurAccel(&curAccel);
+            mdAttack.setCurAccelConfidence(&curAccelConfidence);
             mdAttack.setDetectedNodes(&detectedNodes);
             mdAttack.setMyBsm(myBsm);
             mdAttack.setMyBsmNum(&myBsmNum);
@@ -357,7 +354,6 @@ mbTypes::Mbs JosephVeinsApp::induceMisbehavior(double localAttacker,
 
 void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
 
-
     unsigned long senderPseudonym = bsm->getSenderPseudonym();
 
     if (EnableV1) {
@@ -372,9 +368,11 @@ void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
         MDMHistory newMDM(senderPseudonym);
         if (EnableV1) {
             newMDM.addBsmCheck(bsmCheckV1, 1);
+            newMDM.initKalman(bsm, 1);
         }
         if (EnableV2) {
             newMDM.addBsmCheck(bsmCheckV2, 2);
+            newMDM.initKalman(bsm, 2);
         }
         detectedNodes.put(senderPseudonym, newNode, newMDM);
     } else {
@@ -448,24 +446,25 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
         switch (checksVersionV1) {
 
         case mdChecksVersionTypes::LegacyChecks: {
-            LegacyChecks mdm(myPseudonym, curPosition, curSpeed, curHeading,
-                    Coord(myWidth, myLength),
+            LegacyChecks mdm(version, myPseudonym, curPosition, curSpeed,
+                    curHeading, Coord(myWidth, myLength),
                     Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
                             MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV1 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
         case mdChecksVersionTypes::CatchChecks: {
-            CaTChChecks mdm(myPseudonym, curPosition, curPositionConfidence,
-                    curHeading, curHeadingConfidence, Coord(myWidth, myLength),
+            CaTChChecks mdm(version, myPseudonym, curPosition,
+                    curPositionConfidence, curHeading, curHeadingConfidence,
+                    Coord(myWidth, myLength),
                     Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
                             MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV1 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
         default: {
-            LegacyChecks mdm(myPseudonym, curPosition, curSpeed, curHeading,
-                    Coord(myWidth, myLength),
+            LegacyChecks mdm(version, myPseudonym, curPosition, curSpeed,
+                    curHeading, Coord(myWidth, myLength),
                     Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
                             MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV1 = mdm.CheckBSM(bsm, &detectedNodes);
@@ -586,24 +585,25 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
 
         switch (checksVersionV2) {
         case mdChecksVersionTypes::LegacyChecks: {
-            LegacyChecks mdm(myPseudonym, curPosition, curSpeed, curHeading,
-                    Coord(myWidth, myLength),
+            LegacyChecks mdm(version, myPseudonym, curPosition, curSpeed,
+                    curHeading, Coord(myWidth, myLength),
                     Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
                             MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV2 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
         case mdChecksVersionTypes::CatchChecks: {
-            CaTChChecks mdm(myPseudonym, curPosition, curPositionConfidence,
-                    curHeading, curHeadingConfidence, Coord(myWidth, myLength),
+            CaTChChecks mdm(version, myPseudonym, curPosition,
+                    curPositionConfidence, curHeading, curHeadingConfidence,
+                    Coord(myWidth, myLength),
                     Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
                             MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV2 = mdm.CheckBSM(bsm, &detectedNodes);
         }
             break;
         default: {
-            LegacyChecks mdm(myPseudonym, curPosition, curSpeed, curHeading,
-                    Coord(myWidth, myLength),
+            LegacyChecks mdm(version, myPseudonym, curPosition, curSpeed,
+                    curHeading, Coord(myWidth, myLength),
                     Coord(MAX_PLAUSIBLE_SPEED, MAX_PLAUSIBLE_ACCEL,
                             MAX_PLAUSIBLE_DECEL), &linkControl);
             bsmCheckV2 = mdm.CheckBSM(bsm, &detectedNodes);
@@ -837,6 +837,9 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         break;
     }
 
+//    std::cout<<reportStr<<"\n";
+//    exit(0);
+
     if (!version.compare("V1")) {
         HTTPRequest httpr = HTTPRequest(maPortV1, maHostV1);
         std::string response = httpr.Request(reportStr);
@@ -846,9 +849,6 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         HTTPRequest httpr = HTTPRequest(maPortV2, maHostV2);
         std::string response = httpr.Request(reportStr);
     }
-
-    //std::cout<<reportStr<<"\n";
-    //exit(0);
 
 }
 
@@ -998,9 +998,11 @@ void JosephVeinsApp::removeAccusedNode(unsigned long id) {
     }
     accusedNodesLength--;
 }
+
 void JosephVeinsApp::clearAccusedNodes() {
     accusedNodesLength = 0;
 }
+
 bool JosephVeinsApp::isAccusedNode(unsigned long id) {
     for (int var = 0; var < accusedNodesLength; ++var) {
         if (accusedNodes[var] == id) {

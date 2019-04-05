@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#include <veins/modules/application/f2md/mdSupport/NetworkLinksLib/Link.h>
+#include <veins/modules/application/f2md/mdSupport/networkLinksLib/Link.h>
 #include <set>
 #include "math.h"
 #include "float.h"

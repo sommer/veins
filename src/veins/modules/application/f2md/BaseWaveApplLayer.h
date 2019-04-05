@@ -195,6 +195,8 @@ protected:
     Coord curSpeedConfidence;
     Coord curHeading;
     Coord curHeadingConfidence;
+    Coord curAccel;
+    Coord curAccelConfidence;
     double myWidth;
     double myLength;
     mbTypes::Mbs myMdType;
@@ -211,6 +213,7 @@ protected:
     double deltaThetaPosition = 0;
     double deltaSpeed = 0;
     double deltaHeading = 0;
+    double deltaAccel = 0;
 };
 
 } // namespace Veins

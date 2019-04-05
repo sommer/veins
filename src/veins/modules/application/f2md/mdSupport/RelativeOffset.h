@@ -37,23 +37,26 @@ private:
     Coord* curPosConfidence;
     Coord* curSpeedConfidence;
     Coord* curHeadingConfidence;
+    Coord* curAccelConfidence;
 
     double* deltaRPosition = 0;
     double* deltaThetaPosition = 0;
     double* deltaSpeed = 0;
     double* deltaHeading = 0;
+    double* deltaAccel = 0;
 
     double getGaussianRand(double mean, double stddev);
 
 public:
 
     RelativeOffset(Coord* curPosConfidence, Coord *curSpeedConfidence,
-            Coord *curHeadingConfidence, double* deltaRPosition,
+            Coord *curHeadingConfidence,Coord *curAccelConfidence, double* deltaRPosition,
             double* deltaThetaPosition, double* deltaSpeed,
-            double* deltaHeadin);
+            double* deltaHeadin,double* deltaAccel);
     Coord OffsetPosition(Coord curPosition);
     Coord OffsetSpeed(Coord curSpeed);
     Coord OffsetHeading(Coord curHeading);
+    Coord OffsetAccel(Coord curAccel);
 
 };
 

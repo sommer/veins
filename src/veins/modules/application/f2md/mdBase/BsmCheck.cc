@@ -23,6 +23,13 @@ BsmCheck::BsmCheck() {
      beaconFrequency = 1;
      positionPlausibility = 1;
      positionHeadingConsistancy = 1;
+     kalmanPSCP=1;
+     kalmanPSCS=1;
+     kalmanPSCSP=1;
+     kalmanPSCSS=1;
+     kalmanPCC=1;
+     kalmanPACS=1;
+     kalmanSCC=1;
 
      reported = false;
 }
@@ -123,4 +130,58 @@ void BsmCheck::setReported(bool reported) {
     this->reported = reported;
 }
 
+double BsmCheck::getKalmanPACS() {
+    return kalmanPACS;
+}
 
+void BsmCheck::setKalmanPACS(double kalmanPacs) {
+    kalmanPACS = kalmanPacs;
+}
+
+double BsmCheck::getKalmanPCC() {
+    return kalmanPCC;
+}
+
+void BsmCheck::setKalmanPCC(double kalmanPcc) {
+    kalmanPCC = kalmanPcc;
+}
+
+double BsmCheck::getKalmanPSCP() {
+    return kalmanPSCP;
+}
+
+void BsmCheck::setKalmanPSCP(double kalmanPscp) {
+    kalmanPSCP = kalmanPscp;
+}
+
+double BsmCheck::getKalmanPSCS() {
+    return kalmanPSCS;
+}
+
+void BsmCheck::setKalmanPSCS(double kalmanPscs) {
+    kalmanPSCS = kalmanPscs;
+}
+
+double BsmCheck::getKalmanPSCSP() {
+    return kalmanPSCSP;
+}
+
+void BsmCheck::setKalmanPSCSP(double kalmanPscsp) {
+    kalmanPSCSP = kalmanPscsp;
+}
+
+double BsmCheck::getKalmanPSCSS() {
+    return kalmanPSCSS;
+}
+
+void BsmCheck::setKalmanPSCSS(double kalmanPscss) {
+    kalmanPSCSS = kalmanPscss;
+}
+
+double BsmCheck::getKalmanSCC() {
+    return kalmanSCC;
+}
+
+void BsmCheck::setKalmanSCC(double kalmanScc) {
+    kalmanSCC = kalmanScc;
+}

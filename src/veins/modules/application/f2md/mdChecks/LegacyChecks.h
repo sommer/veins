@@ -18,7 +18,7 @@
 #include <veins/modules/application/f2md/mdBase/NodeTable.h>
 #include <veins/modules/application/f2md/mdReport/MDReport.h>
 #include <veins/modules/application/f2md/mdStats/MDStatistics.h>
-#include <veins/modules/application/f2md/mdSupport/NetworkLinksLib/LinkControl.h>
+#include <veins/modules/application/f2md/mdSupport/networkLinksLib/LinkControl.h>
 #include "../mdSupport/MDMLib.h"
 #include "veins/modules/obstacle/ObstacleControl.h"
 #include "veins/modules/obstacle/Obstacle.h"
@@ -30,7 +30,7 @@ using namespace omnetpp;
 class LegacyChecks {
 
 private:
-
+    int version = 0;
     unsigned long myPseudonym;
     Coord myPosition;
     Coord mySpeed;
@@ -63,6 +63,25 @@ private:
             Coord *curPosition, Coord *oldPosition, double deltaTime,
             double curSpeed);
 
+    void KalmanPositionSpeedConsistancyCheck(Coord * curPosition,
+            Coord * curPositionConfidence, Coord * curSpeed, Coord * oldSpeed,
+            Coord * curSpeedConfidence, double time, Kalman_SVI * kalmanSVI,
+            double retVal[]);
+
+    void KalmanPositionSpeedScalarConsistancyCheck(Coord * curPosition,Coord * oldPosition,
+            Coord * curPositionConfidence, Coord * curSpeed, Coord * oldSpeed,
+            Coord * curSpeedConfidence, double time, Kalman_SC * kalmanSC,
+            double retVal[]);
+
+    double KalmanPositionConsistancyCheck(Coord * curPosition, Coord * oldPosition, Coord * curPosConfidence,
+             double time, Kalman_SI * kalmanSI);
+
+    double KalmanPositionAccConsistancyCheck(Coord * curPosition, Coord * curSpeed, Coord * curPosConfidence,
+             double time, Kalman_SI * kalmanSI);
+
+    double KalmanSpeedConsistancyCheck(Coord * curSpeed, Coord * oldSpeed, Coord * curSpeedConfidence,
+            double time, Kalman_SI * kalmanSI);
+
     InterTest MultipleIntersectionCheck(NodeTable * detectedNodes,
             BasicSafetyMessage * bsm);
 
@@ -70,7 +89,7 @@ private:
 
 public:
 
-    LegacyChecks(unsigned long myPseudonym, Coord myPosition, Coord mySpeed,
+    LegacyChecks(int version, unsigned long myPseudonym, Coord myPosition, Coord mySpeed,
             Coord myHeading, Coord mySize, Coord myLimits, LinkControl* LinkC);
     BsmCheck CheckBSM(BasicSafetyMessage * bsm, NodeTable * detectedNodes);
 

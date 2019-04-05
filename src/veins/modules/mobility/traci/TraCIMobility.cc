@@ -75,6 +75,7 @@ void TraCIMobility::initialize(int stage)
 
         hostPositionOffset = par("hostPositionOffset");
         setHostSpeed = par("setHostSpeed");
+        setHostAccel = par("setHostAccel");
         accidentCount = par("accidentCount");
 
         currentPosXVec.setName("posx");
@@ -153,7 +154,7 @@ void TraCIMobility::handleSelfMsg(cMessage* msg)
     }
 }
 
-void TraCIMobility::preInitialize(std::string external_id, const Coord& position, std::string road_id, double speed, Heading heading)
+void TraCIMobility::preInitialize(std::string external_id, const Coord& position, std::string road_id, double speed, Heading heading, double accel_inst)
 {
     this->external_id = external_id;
     this->lastUpdate = 0;
@@ -161,8 +162,10 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
     this->road_id = road_id;
     this->speed = speed;
     this->heading = heading;
+    this->accel_inst = accel_inst;
     this->hostPositionOffset = par("hostPositionOffset");
     this->setHostSpeed = par("setHostSpeed");
+    this->setHostAccel = par("setHostAccel");
 
     Coord nextPos = calculateHostPosition(roadPosition);
     nextPos.z = move.getStartPosition().z;
@@ -172,17 +175,21 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
     if (this->setHostSpeed) {
         move.setSpeed(speed);
     }
+    if (this->setHostAccel) {
+        move.setAccel(accel_inst);
+    }
 
     isPreInitialized = true;
 }
 
-void TraCIMobility::nextPosition(const Coord& position, std::string road_id, double speed, Heading heading, VehicleSignalSet signals)
+void TraCIMobility::nextPosition(const Coord& position, std::string road_id, double speed, Heading heading, VehicleSignalSet signals, double accel_inst)
 {
     EV_DEBUG << "nextPosition " << position.x << " " << position.y << " " << road_id << " " << speed << " " << heading << std::endl;
     isPreInitialized = false;
     this->roadPosition = position;
     this->road_id = road_id;
     this->speed = speed;
+    this->accel_inst = accel_inst;
     this->heading = heading;
     this->signals = signals;
 
@@ -241,6 +248,9 @@ void TraCIMobility::changePosition()
     move.setDirectionByVector(heading.toCoord());
     if (this->setHostSpeed) {
         move.setSpeed(speed);
+    }
+    if (this->setHostAccel) {
+        move.setAccel(accel_inst);
     }
     fixIfHostGetsOutside();
     updatePosition();

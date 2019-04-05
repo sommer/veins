@@ -30,6 +30,9 @@ protected:
     Coord* curSpeedConfidence;
     Coord* curHeading;
     Coord* curHeadingConfidence;
+    Coord* curAccel;
+    Coord* curAccelConfidence;
+
 
 public:
 
@@ -49,6 +52,8 @@ public:
     void setCurPositionConfidence(Coord* curPositionConfidence);
     void setCurSpeed(Coord* curSpeed);
     void setCurSpeedConfidence(Coord* curSpeedConfidence);
+    void setCurAccel(Coord* curAccel);
+    void setCurAccelConfidence(Coord* curAccelConfidence);
 };
 
 #endif

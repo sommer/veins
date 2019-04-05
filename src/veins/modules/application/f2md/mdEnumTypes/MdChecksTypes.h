@@ -28,13 +28,23 @@ enum Checks {
     Intersection,
     SuddenAppearence,
     PositionHeadingConsistancy,
+    kalmanPSCP,
+    kalmanPSCS,
+    kalmanPSCSP,
+    kalmanPSCSS,
+    kalmanPCC,
+    kalmanPACS,
+    kalmanSCC,
     SIZE_OF_ENUM
 };
 
 static const char* ChecksNames[] = { "RangePlausibility",
         "PositionPlausibility", "SpeedPlausibility", "PositionConsistancy",
-        "PositionSpeedConsistancy","PositionSpeedMaxConsistancy", "SpeedConsistancy", "BeaconFrequency",
-        "Intersection", "SuddenAppearence", "PositionHeadingConsistancy" };
+        "PositionSpeedConsistancy", "PositionSpeedMaxConsistancy",
+        "SpeedConsistancy", "BeaconFrequency", "Intersection",
+        "SuddenAppearence", "PositionHeadingConsistancy", "kalmanPSCP",
+        "kalmanPSCS", "kalmanPSCSP", "kalmanPSCSS", "kalmanPCC", "kalmanPACS",
+        "kalmanSCC", };
 
 static_assert(sizeof(mdChecksTypes::ChecksNames)/sizeof(char*) == mdChecksTypes::SIZE_OF_ENUM
         , "sizes dont match");

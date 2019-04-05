@@ -180,6 +180,12 @@ public:
         return move.getDirection() * move.getSpeed();
     }
 
+    /** @brief Returns the current accel at the current simulation time. */
+    virtual Coord getCurrentAccel() const
+    {
+        return move.getDirection() * move.getAccel();
+    }
+
     virtual Coord getCurrentDirection() const
     {
         return move.getDirection();
