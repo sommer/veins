@@ -158,7 +158,6 @@ void EvidenceReport::addEvidence(BasicSafetyMessage myBsm,
                 if(!myBsmAdded){
                     addBsmToList(myBsm);
                 }
-
             } else {
                 if(detectedNodes->includes(reportedCheck.getIntersection().getInterId(var))){
                     addBsmToList(
@@ -218,6 +217,7 @@ std::string EvidenceReport::getReportPrintableJson() {
             jw.addFinalTagToElement("BSMs",rp.getBsmJson(bsmList[var]));
         }
     }
+
     jw.addFinalTagToElement("Report",jw.getJsonElementList("BSMs"));
     jw.addElement(jw.getJsonElement("Report"));
     jw.writeFooter();

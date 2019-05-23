@@ -321,6 +321,94 @@ std::string ReportPrintable::getCheckJson(BsmCheck Check){
 
 }
 
+std::string ReportPrintable::getCheckJsonList(BsmCheck Check){
+
+    std::string tempStr = "";
+    JsonWriter jw;
+
+    jw.openJsonElement("BsmCheck",true);
+
+    tempStr = jw.getSimpleTag("rP", std::to_string(Check.getRangePlausibility()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("pP", std::to_string(Check.getPositionPlausibility()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("sP", std::to_string(Check.getSpeedPlausibility()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("pC", std::to_string(Check.getPositionConsistancy()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("sC", std::to_string(Check.getSpeedConsistancy()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("psC", std::to_string(Check.getPositionSpeedConsistancy()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("psmC", std::to_string(Check.getPositionSpeedMaxConsistancy()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("phC", std::to_string(Check.getPositionHeadingConsistancy()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("sA", std::to_string(Check.getSuddenAppearence()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("bF", std::to_string(Check.getBeaconFrequency()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+    tempStr = jw.getSimpleTag("kPACS", std::to_string(Check.getKalmanPACS()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPCS", std::to_string(Check.getKalmanPCC()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPSCP", std::to_string(Check.getKalmanPSCP()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPSCS", std::to_string(Check.getKalmanPSCS()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPSCSP", std::to_string(Check.getKalmanPSCSP()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kPSCSS", std::to_string(Check.getKalmanPSCSS()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+    tempStr = jw.getSimpleTag("kSCC", std::to_string(Check.getKalmanSCC()),true);
+    jw.addTagToElement("BsmCheck", tempStr);
+
+
+     jw.openJsonElementList("inT");
+
+     JsonWriter jw2;
+     jw2.openJsonElementList("inT");
+     std::string inTStr = jw2.getJsonElementList("inT");
+
+     for (int var = 0; var < Check.getIntersection().getInterNum(); ++var) {
+         jw.openJsonElement("veh",true);
+         tempStr = jw.getSimpleTag("pseudonym", std::to_string(Check.getIntersection().getInterId(var)),true);
+         jw.addTagToElement("veh", tempStr);
+
+         tempStr = jw.getSimpleTag("uVal", std::to_string(Check.getIntersection().getInterValue(var)),true);
+         jw.addFinalTagToElement("veh", tempStr);
+
+         tempStr = jw.getJsonElement("veh");
+
+//         std::cout<<tempStr<<"\n";
+//         std::size_t found = tempStr.find("{");
+//         if (!(found!=std::string::npos)){
+//             exit(0);
+//         }
+
+         if(var < Check.getIntersection().getInterNum() -1){
+             jw.addTagToElement("inT", tempStr);
+         }else{
+             jw.addFinalTagToElement("inT", tempStr);
+         }
+    }
+
+     inTStr = jw.getJsonElementList("inT");
+     jw.addFinalTagToElement("BsmCheck", inTStr);
+     return jw.getJsonElement("BsmCheck");
+
+}
+
 
 std::string ReportPrintable::getBsmJson(BasicSafetyMessage bsm){
 

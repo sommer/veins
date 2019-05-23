@@ -9,33 +9,38 @@
  * All rights reserved.
  *******************************************************************************/
 
-#ifndef __VEINS_ReportPrintable_H_
-#define __VEINS_ReportPrintable_H_
+#ifndef __VEINS_ProtocolReport_H_
+#define __VEINS_ProtocolReport_H_
 
 #include <omnetpp.h>
 #include <veins/modules/application/f2md/mdMessages/BasicSafetyMessage_m.h>
 #include <veins/modules/application/f2md/mdReport/MDReport.h>
+#include <veins/modules/application/f2md/mdReport/ReportPrintable.h>
 #include "../BaseWaveApplLayer.h"
 #include "../mdSupport/XmlWriter.h"
 #include "../mdSupport/JsonWriter.h"
+#include "../mdBase/NodeTable.h"
 
 using namespace omnetpp;
-using namespace veins;
 
-class ReportPrintable {
+#define MAX_EVI_BSM 25
+
+class ProtocolReport: public MDReport {
 
 private:
+    void setReportedCheck(BsmCheck reportedCheck);
+    void addBsmToList(BasicSafetyMessage bsm, BsmCheck check);
+
+    BsmCheck reportedCheck;
+    BasicSafetyMessage bsmList[MAX_EVI_BSM];
+    BsmCheck checksList[MAX_EVI_BSM];
+    int bsmListNum;
 
 public:
-
-
-    std::string getCheckXml(BsmCheck Check);
-    std::string getBsmXml(BasicSafetyMessage bsm);
-
-    std::string getCheckJson(BsmCheck Check);
-    std::string getCheckJsonList(BsmCheck Check);
-    std::string getBsmJson(BasicSafetyMessage bsm);
-
+    ProtocolReport(MDReport baseReport);
+    void addEvidence(BasicSafetyMessage myBsm,
+            NodeTable * detectedNodes, double curTime, double deltaTime, int version);
+    std::string getReportPrintableJson();
 };
 
 #endif

@@ -603,16 +603,36 @@ void CaTChChecks::KalmanPositionSpeedConsistancyCheck(Coord * curPosition,
             double Ax = curAccel->x;
             double Ay = curAccel->y;
 
+            double curPosConfX = curPositionConfidence->x;
+            if(curPosConfX<KALMAN_MIN_POS_RANGE){
+                curPosConfX = KALMAN_MIN_POS_RANGE;
+            }
+
+            double curPosConfY = curPositionConfidence->y;
+            if(curPosConfY<KALMAN_MIN_POS_RANGE){
+                curPosConfY = KALMAN_MIN_POS_RANGE;
+            }
+
+            double curSpdConfX = curSpeedConfidence->x;
+            if(curSpdConfX<KALMAN_MIN_SPEED_RANGE){
+                curSpdConfX = KALMAN_MIN_SPEED_RANGE;
+            }
+
+            double curSpdConfY = curSpeedConfidence->y;
+            if(curSpdConfY<KALMAN_MIN_SPEED_RANGE){
+                curSpdConfY = KALMAN_MIN_SPEED_RANGE;
+            }
+
 //            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("X0a", kalmanSVI->kalmanFilterJ_SVI.X0, 4);
 //            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("Xa", kalmanSVI->kalmanFilterJ_SVI.X, 4);
 
             kalmanSVI->getDeltaPos(time, curPosition->x, curPosition->y,
-                    curSpeed->x, curSpeed->y,Ax,Ay, curPositionConfidence->x,
-                    curPositionConfidence->y, curSpeedConfidence->x,
-                    curSpeedConfidence->y, Delta);
+                    curSpeed->x, curSpeed->y,Ax,Ay, curPosConfX,
+                    curPosConfY, curSpdConfX,
+                    curSpdConfY, Delta);
 
 
-            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[2], 2.0)) / (KALMAN_POS_RANGE*curPositionConfidence->x*time);
+            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[2], 2.0)) / (KALMAN_POS_RANGE*curPosConfX*time);
             if(isnan(ret_1)){
                 ret_1 = 0;
             }
@@ -624,7 +644,7 @@ void CaTChChecks::KalmanPositionSpeedConsistancyCheck(Coord * curPosition,
                 ret_1 = 0;
             }
 
-            double ret_2 = 1 - sqrt(pow(Delta[1], 2.0) + pow(Delta[3], 2.0)) / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time);
+            double ret_2 = 1 - sqrt(pow(Delta[1], 2.0) + pow(Delta[3], 2.0)) / (KALMAN_SPEED_RANGE*curSpdConfX*time);
             if(isnan(ret_2)){
                 ret_2 = 0;
             }
@@ -669,10 +689,20 @@ void CaTChChecks::KalmanPositionSpeedScalarConsistancyCheck(Coord * curPosition,
             double curspd = mdmLib.calculateSpeedPtr(curSpeed);
             double curacl = mdmLib.calculateSpeedPtr(curAccel);
 
-            kalmanSC->getDeltaPos(time, distance,
-                    curspd,curacl, curacl, curPositionConfidence->x, curSpeedConfidence->x, Delta);
+            double curPosConfX = curPositionConfidence->x;
+            if(curPosConfX<KALMAN_MIN_POS_RANGE){
+                curPosConfX = KALMAN_MIN_POS_RANGE;
+            }
 
-            double ret_1 = 1 - (Delta[0] / (KALMAN_POS_RANGE*curPositionConfidence->x*time));
+            double curSpdConfX = curSpeedConfidence->x;
+            if(curSpdConfX<KALMAN_MIN_SPEED_RANGE){
+                curSpdConfX = KALMAN_MIN_SPEED_RANGE;
+            }
+
+            kalmanSC->getDeltaPos(time, distance,
+                    curspd,curacl, curacl, curPosConfX, curSpdConfX, Delta);
+
+            double ret_1 = 1 - (Delta[0] / (KALMAN_POS_RANGE*curPosConfX*time));
             if(isnan(ret_1)){
                 ret_1 = 0;
             }
@@ -683,7 +713,7 @@ void CaTChChecks::KalmanPositionSpeedScalarConsistancyCheck(Coord * curPosition,
             if(ret_1<0){
                 ret_1 = 0;
             }
-            double ret_2 = 1 - (Delta[1] / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time));
+            double ret_2 = 1 - (Delta[1] / (KALMAN_SPEED_RANGE*curSpdConfX*time));
             if(isnan(ret_2)){
                 ret_2 = 0;
             }
@@ -718,11 +748,21 @@ double CaTChChecks::KalmanPositionConsistancyCheck(Coord * curPosition, Coord * 
             double Ax = (curPosition->x - oldPosition->x)/time;
             double Ay = (curPosition->y - oldPosition->y)/time;
 
-            kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y,
-                    curPosConfidence->x,
-                    curPosConfidence->y, Delta);
+            double curPosConfX = curPosConfidence->x;
+            if(curPosConfX<KALMAN_MIN_POS_RANGE){
+                curPosConfX = KALMAN_MIN_POS_RANGE;
+            }
 
-            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (4*KALMAN_POS_RANGE* curPosConfidence->x*time);
+            double curPosConfY = curPosConfidence->y;
+            if(curPosConfY<KALMAN_MIN_POS_RANGE){
+                curPosConfY = KALMAN_MIN_POS_RANGE;
+            }
+
+            kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y,
+                    curPosConfX,
+                    curPosConfY, Delta);
+
+            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (4*KALMAN_POS_RANGE* curPosConfX*time);
             if(isnan(ret_1)){
                 ret_1 = 0;
             }
@@ -753,11 +793,21 @@ double CaTChChecks::KalmanPositionAccConsistancyCheck(Coord * curPosition, Coord
             double Ax = curSpeed->x;
             double Ay = curSpeed->y;
 
-            kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y,Ax,Ay,
-                    curPosConfidence->x,
-                    curPosConfidence->y, Delta);
+            double curPosConfX = curPosConfidence->x;
+            if(curPosConfX<KALMAN_MIN_POS_RANGE){
+                curPosConfX = KALMAN_MIN_POS_RANGE;
+            }
 
-            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (4*KALMAN_POS_RANGE*curPosConfidence->x*time);
+            double curPosConfY = curPosConfidence->y;
+            if(curPosConfY<KALMAN_MIN_POS_RANGE){
+                curPosConfY = KALMAN_MIN_POS_RANGE;
+            }
+
+            kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y,Ax,Ay,
+                    curPosConfX,
+                    curPosConfY, Delta);
+
+            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (4*KALMAN_POS_RANGE*curPosConfX*time);
             if(isnan(ret_1)){
                 ret_1 = 0;
             }
@@ -783,11 +833,21 @@ double CaTChChecks::KalmanSpeedConsistancyCheck(Coord * curSpeed, Coord *curAcce
     } else {
         if(time < MAX_KALMAN_TIME){
             float Delta[2];
-            kalmanSI->getDeltaPos(time, curSpeed->x, curSpeed->y,curAccel->x,curAccel->y,
-                    curSpeedConfidence->x,
-                    curSpeedConfidence->y, Delta);
+            double curSpdConfX = curSpeedConfidence->x;
+            if(curSpdConfX<KALMAN_MIN_SPEED_RANGE){
+                curSpdConfX = KALMAN_MIN_SPEED_RANGE;
+            }
 
-            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time);
+            double curSpdConfY = curSpeedConfidence->y;
+            if(curSpdConfY<KALMAN_MIN_SPEED_RANGE){
+                curSpdConfY = KALMAN_MIN_SPEED_RANGE;
+            }
+
+            kalmanSI->getDeltaPos(time, curSpeed->x, curSpeed->y,curAccel->x,curAccel->y,
+                    curSpdConfX,
+                    curSpdConfY, Delta);
+
+            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (KALMAN_SPEED_RANGE*curSpdConfX*time);
             if(isnan(ret_1)){
                 ret_1 = 0;
             }

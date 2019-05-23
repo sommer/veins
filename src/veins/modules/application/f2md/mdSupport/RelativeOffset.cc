@@ -11,9 +11,7 @@
 
 #include <veins/modules/application/f2md/mdSupport/RelativeOffset.h>
 #define EPSILON_G 0.05
-#define STEP_G 0.1
-MDMLib mdmLib = MDMLib();
-GeneralLib genLib = GeneralLib();
+#define STEP_G 0.12
 
 RelativeOffset::RelativeOffset(Coord *curPosConfidence,
         Coord *curSpeedConfidence, Coord* curHeadingConfidence,Coord* curAccelConfidence,
@@ -42,7 +40,8 @@ double RelativeOffset::getGaussianRand(double mean, double stddev) {
 }
 
 Coord RelativeOffset::OffsetPosition(Coord curPosition) {
-
+    MDMLib mdmLib = MDMLib();
+    GeneralLib genLib = GeneralLib();
     double stepr = fabs(getGaussianRand(0, STEP_G * curPosConfidence->x / 3));
 
     double gsim = 0.5;
@@ -79,6 +78,8 @@ Coord RelativeOffset::OffsetPosition(Coord curPosition) {
 }
 
 Coord RelativeOffset::OffsetSpeed(Coord curSpeed) {
+    MDMLib mdmLib = MDMLib();
+    GeneralLib genLib = GeneralLib();
     double stepS = fabs(getGaussianRand(0, STEP_G * curSpeedConfidence->x / 3));
     double gsim = 0.5;
     if (*deltaSpeed > curSpeedConfidence->x / 2) {
@@ -99,10 +100,11 @@ Coord RelativeOffset::OffsetSpeed(Coord curSpeed) {
         }
     }
     return Coord(curSpeed.x + *deltaSpeed, curSpeed.y + *deltaSpeed, 0);
-
 }
 
 Coord RelativeOffset::OffsetAccel(Coord curAccel) {
+    MDMLib mdmLib = MDMLib();
+    GeneralLib genLib = GeneralLib();
     double stepS = fabs(getGaussianRand(0, STEP_G * curAccelConfidence->x / 3));
     double gsim = 0.5;
     if (*deltaAccel > curAccelConfidence->x / 2) {
@@ -127,6 +129,8 @@ Coord RelativeOffset::OffsetAccel(Coord curAccel) {
 }
 
 Coord RelativeOffset::OffsetHeading(Coord curHeading) {
+    MDMLib mdmLib = MDMLib();
+    GeneralLib genLib = GeneralLib();
     double headingAngle = mdmLib.calculateHeadingAngle(curHeading);
 
     double stepH = fabs(

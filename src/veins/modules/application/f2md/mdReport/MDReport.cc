@@ -178,6 +178,7 @@ std::string MDReport::getBaseReportJson(std::string reportTypeStr) {
 bool MDReport::writeStrToFile(const std::string strFileCnst,
         const std::string serial, const std::string version,
         const std::string outStr,const std::string curDate) {
+
     int gentime = generationTime;
     int gentime0000 = (generationTime - gentime) * 10000;
 

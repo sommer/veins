@@ -74,7 +74,13 @@ void BaseWaveApplLayer::initialize(int stage) {
         receivedWSAs = 0;
         receivedWSMs = 0;
 
+
         // F2MD
+        curPositionConfidenceOrig = Coord(0, 0, 0);
+        curSpeedConfidenceOrig = Coord(0, 0, 0);
+        curHeadingConfidenceOrig = Coord(0, 0, 0);
+        curAccelConfidenceOrig = Coord(0, 0, 0);
+
         curPositionConfidence = Coord(0, 0, 0);
         curSpeedConfidence = Coord(0, 0, 0);
         curHeadingConfidence = Coord(0, 0, 0);
@@ -186,7 +192,6 @@ void BaseWaveApplLayer::addMyBsm(BasicSafetyMessage bsm) {
     myBsm[0] = bsm;
 }
 
-
 void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
         LAddress::L2Type rcvId, int serial) {
     wsm->setRecipientAddress(rcvId);
@@ -273,6 +278,23 @@ void BaseWaveApplLayer::populateWSM(BaseFrame1609_4* wsm,
             }
         }
 
+//        GeneralLib genLib = GeneralLib();
+//        Coord posConf = bsm->getSenderPosConfidence();
+//        posConf = Coord(posConf.x + genLib.RandomDouble(0, 0.1*posConf.x) ,posConf.y + genLib.RandomDouble(0, 0.1*posConf.y),posConf.z);
+//        bsm->setSenderPosConfidence(posConf);
+//
+//        Coord spdConf = bsm->getSenderSpeedConfidence();
+//        spdConf = Coord(spdConf.x + genLib.RandomDouble(0, 0.1*spdConf.x) ,spdConf.y + genLib.RandomDouble(0, 0.1*spdConf.y),spdConf.z);
+//        bsm->setSenderSpeedConfidence(spdConf);
+//
+//        Coord accConf = bsm->getSenderAccelConfidence();
+//        accConf = Coord(accConf.x + genLib.RandomDouble(0, 0.1*accConf.x) ,accConf.y + genLib.RandomDouble(0, 0.1*accConf.y),accConf.z);
+//        bsm->setSenderAccelConfidence(accConf);
+//
+//        Coord headConf = bsm->getSenderHeadingConfidence();
+//        headConf = Coord(headConf.x + genLib.RandomDouble(0, 0.1*headConf.x) ,headConf.y + genLib.RandomDouble(0, 0.1*headConf.y),headConf.z);
+//        bsm->setSenderHeadingConfidence(headConf);
+
         bsm->setPsid(-1);
         bsm->setChannelNumber(static_cast<int>(Channel::cch));
         bsm->addBitLength(beaconLengthBits);
@@ -309,14 +331,25 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
     ChannelMobilityPtrType const mobility = check_and_cast<
             ChannelMobilityPtrType>(obj);
 
+    RelativeOffsetConf relativeOffsetConfidence = RelativeOffsetConf(&ConfPosMax,
+            &ConfSpeedMax, &ConfHeadMax, &ConfAccelMax, &deltaConfPos,
+            &deltaConfSpeed, &deltaConfHead, &deltaConfAccel);
+
+    curPositionConfidence = relativeOffsetConfidence.OffsetPosConf(curPositionConfidenceOrig);
+    curSpeedConfidence = relativeOffsetConfidence.OffsetSpeedConf(curSpeedConfidenceOrig);
+    curHeadingConfidence = relativeOffsetConfidence.OffsetHeadingConf(curHeadingConfidenceOrig);
+    curAccelConfidence = relativeOffsetConfidence.OffsetAccelConf(curAccelConfidenceOrig);
+
     RelativeOffset relativeOffset = RelativeOffset(&curPositionConfidence,
-            &curSpeedConfidence, &curHeadingConfidence, &curAccelConfidence, &deltaRPosition,
-            &deltaThetaPosition, &deltaSpeed, &deltaHeading, &deltaAccel);
+            &curSpeedConfidence, &curHeadingConfidence, &curAccelConfidence,
+            &deltaRPosition, &deltaThetaPosition, &deltaSpeed, &deltaHeading,
+            &deltaAccel);
 
 //    GaussianRandom relativeOffset = GaussianRandom(&curPositionConfidence,
 //            &curSpeedConfidence, &curHeadingConfidence);
 
-    curPosition = relativeOffset.OffsetPosition(mobility->getPositionAt(simTime()));
+    curPosition = relativeOffset.OffsetPosition(
+            mobility->getPositionAt(simTime()));
     curSpeed = relativeOffset.OffsetSpeed(mobility->getCurrentSpeed());
     curHeading = relativeOffset.OffsetHeading(mobility->getCurrentDirection());
     curAccel = relativeOffset.OffsetAccel(mobility->getCurrentAccel());
@@ -352,7 +385,7 @@ void BaseWaveApplLayer::handleSelfMsg(cMessage* msg) {
     case SEND_BEACON_EVT: {
         BasicSafetyMessage* bsm = new BasicSafetyMessage();
         populateWSM(bsm);
-        if(bsm->getSenderPseudonym()!= 1){
+        if (bsm->getSenderPseudonym() != 1) {
             sendDown(bsm);
         }
         scheduleAt(simTime() + beaconInterval, sendBeaconEvt);

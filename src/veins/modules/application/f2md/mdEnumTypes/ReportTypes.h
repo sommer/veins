@@ -19,11 +19,12 @@ namespace reportTypes {
 enum Report {
     OneMessageReport = 0,
     EvidenceReport,
+    ProtocolReport,
     BasicCheckReport,
     SIZE_OF_ENUM
 };
 
-static const char* ReportNames[] = { "OneMessageReport", "EvidenceReport", "BasicCheckReport"};
+static const char* ReportNames[] = { "OneMessageReport", "EvidenceReport", "ProtocolReport", "BasicCheckReport"};
 
 static_assert(sizeof(reportTypes::ReportNames)/sizeof(char*) == reportTypes::SIZE_OF_ENUM
         , "sizes dont match");

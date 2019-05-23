@@ -17,7 +17,8 @@ Define_Module(JosephVeinsApp);
 #define savePath "../../../../mdmSave/"
 
 #define randomConf true
-#define confPos 5.0
+#define variableConf true
+#define confPos 7.0
 #define confSpd 1.0
 #define confHea 0.0
 #define confAcc 0.0
@@ -35,7 +36,14 @@ static bool RandomLocalMix = false;
 static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
-#define LOCAL_ATTACK_TYPE attackTypes::DoSRandomSybil
+#define LOCAL_ATTACK_TYPE attackTypes::StaleMessages
+
+//static attackTypes::Attacks MixLocalAttacksList[] = {
+//        attackTypes::ConstPosOffset,
+//        attackTypes::DoSRandomSybil, attackTypes::ConstSpeed,
+//        attackTypes::DataReplaySybil, attackTypes::RandomPosOffset,
+//        attackTypes::DoSDisruptiveSybil, attackTypes::ConstSpeedOffset,
+//        attackTypes::GridSybil, attackTypes::RandomSpeedOffset };
 
 static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::ConstPos, attackTypes::Disruptive,
@@ -92,7 +100,7 @@ static bool writeListReportsV1 = false;
 static bool writeListReportsV2 = false;
 
 static bool sendReportsV1 = false;
-static bool sendReportsV2 = true;
+static bool sendReportsV2 = false;
 static std::string maHostV1 = "localhost";
 static std::string maHostV2 = "localhost";
 //static std::string maHostV2 = "10.3.218.34";
@@ -150,18 +158,67 @@ void JosephVeinsApp::initialize(int stage) {
             double randConfPos = genLib.RandomDouble(confPos / 5.0, confPos);
             double randConfSpeed = genLib.RandomDouble(confSpd / 5.0, confSpd);
             double randConfHeading = genLib.RandomDouble(confHea / 5.0,
-                    confHea);
+            confHea);
             double randConfAccel = genLib.RandomDouble(confAcc / 5.0, confAcc);
+
+            if (variableConf) {
+                ConfPosMax = Coord(randConfPos / 5.0, randConfPos / 5.0, 0);
+                ConfSpeedMax = Coord(randConfSpeed / 5.0, randConfSpeed / 5.0,
+                        0);
+                ConfHeadMax = Coord(randConfHeading / 5.0,
+                        randConfHeading / 5.0, 0);
+                ConfAccelMax = Coord(randConfAccel / 5.0, randConfAccel / 5.0,
+                        0);
+            } else {
+                ConfPosMax = Coord(0.0, 0.0, 0.0);
+                ConfSpeedMax = Coord(0.0, 0.0, 0.0);
+                ConfHeadMax = Coord(0.0, 0.0, 0.0);
+                ConfAccelMax = Coord(0.0, 0.0, 0.0);
+            }
+
+            randConfPos = ((int) (randConfPos * 100 + .5) / 100.0);
+            randConfSpeed = ((int) (randConfSpeed * 100 + .5) / 100.0);
+            randConfHeading = ((int) (randConfHeading * 100 + .5) / 100.0);
+            randConfAccel = ((int) (randConfAccel * 100 + .5) / 100.0);
+
+            curPositionConfidenceOrig = Coord(randConfPos, randConfPos, 0);
+            curSpeedConfidenceOrig = Coord(randConfSpeed, randConfSpeed, 0);
+            curHeadingConfidenceOrig = Coord(randConfHeading, randConfHeading,
+                    0);
+            curAccelConfidenceOrig = Coord(randConfAccel, randConfAccel, 0);
 
             curPositionConfidence = Coord(randConfPos, randConfPos, 0);
             curSpeedConfidence = Coord(randConfSpeed, randConfSpeed, 0);
             curHeadingConfidence = Coord(randConfHeading, randConfHeading, 0);
             curAccelConfidence = Coord(randConfAccel, randConfAccel, 0);
+
         } else {
-            curPositionConfidence = Coord(confPos, confPos, 0);
-            curSpeedConfidence = Coord(confSpd, confSpd, 0);
-            curHeadingConfidence = Coord(confHea, confHea, 0);
-            curAccelConfidence = Coord(confAcc, confAcc, 0);
+            if (variableConf) {
+                ConfPosMax = Coord(confPos / 5.0, confPos / 5.0, 0);
+                ConfSpeedMax = Coord(confSpd / 5.0, confSpd / 5.0, 0);
+                ConfHeadMax = Coord(confHea / 5.0, confHea / 5.0, 0);
+                ConfAccelMax = Coord(confAcc / 5.0, confAcc / 5.0, 0);
+            } else {
+                ConfPosMax = Coord(0.0, 0.0, 0.0);
+                ConfSpeedMax = Coord(0.0, 0.0, 0.0);
+                ConfHeadMax = Coord(0.0, 0.0, 0.0);
+                ConfAccelMax = Coord(0.0, 0.0, 0.0);
+            }
+
+            double ConfPosR = ((int) (confPos * 100 + .5) / 100.0);
+            double ConfSpeedR = ((int) (confSpd * 100 + .5) / 100.0);
+            double ConfHeadingR = ((int) (confHea * 100 + .5) / 100.0);
+            double ConfAccelR = ((int) (confAcc * 100 + .5) / 100.0);
+
+            curPositionConfidenceOrig = Coord(ConfPosR, ConfPosR, 0);
+            curSpeedConfidenceOrig = Coord(ConfSpeedR, ConfSpeedR, 0);
+            curHeadingConfidenceOrig = Coord(ConfHeadingR, ConfHeadingR, 0);
+            curAccelConfidenceOrig = Coord(ConfAccelR, ConfAccelR, 0);
+
+            curPositionConfidence = Coord(ConfPosR, ConfPosR, 0);
+            curSpeedConfidence = Coord(ConfSpeedR, ConfSpeedR, 0);
+            curHeadingConfidence = Coord(ConfHeadingR, ConfHeadingR, 0);
+            curAccelConfidence = Coord(ConfAccelR, ConfAccelR, 0);
         }
 
         myReportType = REPORT_VERSION;
@@ -507,30 +564,30 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
             mdStats.getReport(nameV1, reportBase);
 
             if (writeReportsV1) {
-                writeReport(reportBase, mdv, bsmCheckV1, bsm);
+                writeReport(reportBase, version, mdv, bsmCheckV1, bsm);
             }
 
             if (writeListReportsV1) {
-                writeListReport(reportBase, mdv, bsmCheckV1, bsm);
+                writeListReport(reportBase, version, mdv, bsmCheckV1, bsm);
             }
 
             if (sendReportsV1) {
-                sendReport(reportBase, mdv, bsmCheckV1, bsm);
+                sendReport(reportBase, version, mdv, bsmCheckV1, bsm);
             }
         } else if (myMdType == mbTypes::GlobalAttacker) {
             MDReport reportBase = mdGlobalAttack.launchAttack(myAttackType,
                     bsm);
 
             if (writeReportsV1) {
-                writeReport(reportBase, mdv, bsmCheckV1, bsm);
+                writeReport(reportBase, version, mdv, bsmCheckV1, bsm);
             }
 
             if (writeListReportsV1) {
-                writeListReport(reportBase, mdv, bsmCheckV1, bsm);
+                writeListReport(reportBase, version, mdv, bsmCheckV1, bsm);
             }
 
             if (sendReportsV1) {
-                sendReport(reportBase, mdv, bsmCheckV1, bsm);
+                sendReport(reportBase, version, mdv, bsmCheckV1, bsm);
             }
         }
 
@@ -646,15 +703,15 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
             mdStats.getReport(nameV2, reportBase);
 
             if (writeReportsV2) {
-                writeReport(reportBase, mdv, bsmCheckV2, bsm);
+                writeReport(reportBase, version, mdv, bsmCheckV2, bsm);
             }
 
             if (writeListReportsV2) {
-                writeListReport(reportBase, mdv, bsmCheckV2, bsm);
+                writeListReport(reportBase, version, mdv, bsmCheckV2, bsm);
             }
 
             if (sendReportsV2) {
-                sendReport(reportBase, mdv, bsmCheckV2, bsm);
+                sendReport(reportBase, version, mdv, bsmCheckV2, bsm);
             }
 
         } else if (myMdType == mbTypes::GlobalAttacker) {
@@ -662,15 +719,15 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
                     bsm);
 
             if (writeReportsV2) {
-                writeReport(reportBase, mdv, bsmCheckV2, bsm);
+                writeReport(reportBase, version, mdv, bsmCheckV2, bsm);
             }
 
             if (writeListReportsV2) {
-                writeListReport(reportBase, mdv, bsmCheckV2, bsm);
+                writeListReport(reportBase, version, mdv, bsmCheckV2, bsm);
             }
 
             if (sendReportsV2) {
-                sendReport(reportBase, mdv, bsmCheckV2, bsm);
+                sendReport(reportBase, version, mdv, bsmCheckV2, bsm);
             }
 
         }
@@ -727,13 +784,13 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
 
 }
 
-void JosephVeinsApp::writeReport(MDReport reportBase, std::string version,
-        BsmCheck bsmCheck, BasicSafetyMessage *bsm) {
+void JosephVeinsApp::writeReport(MDReport reportBase, int version,
+        std::string maversion, BsmCheck bsmCheck, BasicSafetyMessage *bsm) {
     switch (myReportType) {
     case reportTypes::BasicCheckReport: {
         BasicCheckReport bcr = BasicCheckReport(reportBase);
         bcr.setReportedCheck(bsmCheck);
-        bcr.writeStrToFile(savePath, serialNumber, version,
+        bcr.writeStrToFile(savePath, serialNumber, maversion,
                 bcr.getReportPrintableJson(), curDate);
     }
         break;
@@ -742,7 +799,7 @@ void JosephVeinsApp::writeReport(MDReport reportBase, std::string version,
         OneMessageReport omr = OneMessageReport(reportBase);
         omr.setReportedBsm(*bsm);
         omr.setReportedCheck(bsmCheck);
-        omr.writeStrToFile(savePath, serialNumber, version,
+        omr.writeStrToFile(savePath, serialNumber, maversion,
                 omr.getReportPrintableJson(), curDate);
     }
         break;
@@ -750,47 +807,36 @@ void JosephVeinsApp::writeReport(MDReport reportBase, std::string version,
         EvidenceReport evr = EvidenceReport(reportBase);
         if (myBsmNum > 0) {
             evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
-            evr.writeStrToFile(savePath, serialNumber, version,
-                    evr.getReportPrintableJson(), curDate);
-        }
-    }
-        break;
-    default:
-        break;
-    }
-}
-
-void JosephVeinsApp::writeListReport(MDReport reportBase, std::string version,
-        BsmCheck bsmCheck, BasicSafetyMessage *bsm) {
-    switch (myReportType) {
-    case reportTypes::BasicCheckReport: {
-        BasicCheckReport bcr = BasicCheckReport(reportBase);
-        bcr.setReportedCheck(bsmCheck);
-        bcr.writeStrToFileList(savePath, serialNumber, version,
-                bcr.getReportPrintableJson(), curDate);
-    }
-        break;
-
-    case reportTypes::OneMessageReport: {
-        OneMessageReport omr = OneMessageReport(reportBase);
-        omr.setReportedBsm(*bsm);
-        omr.setReportedCheck(bsmCheck);
-        omr.writeStrToFileList(savePath, serialNumber, version,
-                omr.getReportPrintableJson(), curDate);
-    }
-        break;
-    case reportTypes::EvidenceReport: {
-        EvidenceReport evr = EvidenceReport(reportBase);
-        if (myBsmNum > 0) {
-            evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
-            evr.writeStrToFileList(savePath, serialNumber, version,
+            evr.writeStrToFile(savePath, serialNumber, maversion,
                     evr.getReportPrintableJson(), curDate);
         } else {
             OneMessageReport omr = OneMessageReport(reportBase);
             omr.setReportedBsm(*bsm);
             omr.setReportedCheck(bsmCheck);
-            omr.writeStrToFileList(savePath, serialNumber, version,
+            omr.writeStrToFile(savePath, serialNumber, maversion,
                     omr.getReportPrintableJson(), curDate);
+        }
+    }
+        break;
+    case reportTypes::ProtocolReport: {
+        bool newNode = false;
+        switch (version) {
+        case 1: {
+            newNode = reportProtocolEnforcerV1.addMisbehavingPseudo(
+                    bsm->getSenderPseudonym(), simTime().dbl());
+        }
+            break;
+        case 2:
+            newNode = reportProtocolEnforcerV2.addMisbehavingPseudo(
+                    bsm->getSenderPseudonym(), simTime().dbl());
+            break;
+        }
+        if (newNode) {
+            ProtocolReport hir = ProtocolReport(reportBase);
+            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
+            InitialHiostory, version);
+            hir.writeStrToFile(savePath, serialNumber, maversion,
+                    hir.getReportPrintableJson(), curDate);
         }
     }
         break;
@@ -799,8 +845,69 @@ void JosephVeinsApp::writeListReport(MDReport reportBase, std::string version,
     }
 }
 
-void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
-        BsmCheck bsmCheck, BasicSafetyMessage *bsm) {
+void JosephVeinsApp::writeListReport(MDReport reportBase, int version,
+        std::string maversion, BsmCheck bsmCheck, BasicSafetyMessage *bsm) {
+    switch (myReportType) {
+    case reportTypes::BasicCheckReport: {
+        BasicCheckReport bcr = BasicCheckReport(reportBase);
+        bcr.setReportedCheck(bsmCheck);
+        bcr.writeStrToFileList(savePath, serialNumber, maversion,
+                bcr.getReportPrintableJson(), curDate);
+    }
+        break;
+
+    case reportTypes::OneMessageReport: {
+        OneMessageReport omr = OneMessageReport(reportBase);
+        omr.setReportedBsm(*bsm);
+        omr.setReportedCheck(bsmCheck);
+        omr.writeStrToFileList(savePath, serialNumber, maversion,
+                omr.getReportPrintableJson(), curDate);
+    }
+        break;
+    case reportTypes::EvidenceReport: {
+        EvidenceReport evr = EvidenceReport(reportBase);
+        if (myBsmNum > 0) {
+            evr.addEvidence(myBsm[0], bsmCheck, *bsm, &detectedNodes);
+            evr.writeStrToFileList(savePath, serialNumber, maversion,
+                    evr.getReportPrintableJson(), curDate);
+        } else {
+            OneMessageReport omr = OneMessageReport(reportBase);
+            omr.setReportedBsm(*bsm);
+            omr.setReportedCheck(bsmCheck);
+            omr.writeStrToFileList(savePath, serialNumber, maversion,
+                    omr.getReportPrintableJson(), curDate);
+        }
+    }
+        break;
+    case reportTypes::ProtocolReport: {
+        bool newNode = false;
+        switch (version) {
+        case 1: {
+            newNode = reportProtocolEnforcerV1.addMisbehavingPseudo(
+                    bsm->getSenderPseudonym(), simTime().dbl());
+        }
+            break;
+        case 2:
+            newNode = reportProtocolEnforcerV2.addMisbehavingPseudo(
+                    bsm->getSenderPseudonym(), simTime().dbl());
+            break;
+        }
+        if (newNode) {
+            ProtocolReport hir = ProtocolReport(reportBase);
+            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
+            InitialHiostory, version);
+            hir.writeStrToFileList(savePath, serialNumber, maversion,
+                    hir.getReportPrintableJson(), curDate);
+        }
+    }
+        break;
+    default:
+        break;
+    }
+}
+
+void JosephVeinsApp::sendReport(MDReport reportBase, int version,
+        std::string maversion, BsmCheck bsmCheck, BasicSafetyMessage *bsm) {
 
     std::string reportStr = "";
 
@@ -832,20 +939,44 @@ void JosephVeinsApp::sendReport(MDReport reportBase, std::string version,
         }
     }
         break;
+    case reportTypes::ProtocolReport: {
+        bool newNode = false;
+        switch (version) {
+        case 1: {
+            newNode = reportProtocolEnforcerV1.addMisbehavingPseudo(
+                    bsm->getSenderPseudonym(), simTime().dbl());
+        }
+            break;
+        case 2:
+            newNode = reportProtocolEnforcerV2.addMisbehavingPseudo(
+                    bsm->getSenderPseudonym(), simTime().dbl());
+            break;
+        }
+        if (newNode) {
+            ProtocolReport hir = ProtocolReport(reportBase);
+            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
+            InitialHiostory, version);
+            reportStr = hir.getReportPrintableJson();
+        } else {
+            //do not report now
+            return;
+        }
+    }
+        break;
     default:
         reportStr = "ERROR myReportType";
         break;
     }
 
-//    std::cout<<reportStr<<"\n";
-//    exit(0);
+    //std::cout << reportStr << "\n";
+    // exit(0);
 
-    if (!version.compare("V1")) {
+    if (!maversion.compare("V1")) {
         HTTPRequest httpr = HTTPRequest(maPortV1, maHostV1);
         std::string response = httpr.Request(reportStr);
     }
 
-    if (!version.compare("V2")) {
+    if (!maversion.compare("V2")) {
         HTTPRequest httpr = HTTPRequest(maPortV2, maHostV2);
         std::string response = httpr.Request(reportStr);
     }
@@ -916,12 +1047,110 @@ void JosephVeinsApp::handleSelfMsg(cMessage* msg) {
     if (writeListSelfMsg) {
         writeSelfListBsm(myBsm[0]);
     }
+    if (myReportType == reportTypes::ProtocolReport) {
+        handleReportProtocol();
+    }
 
 //this method is for self messages (mostly timers)
 //it is important to call the BaseWaveApplLayer function for BSM and WSM transmission
 
 }
 
+void JosephVeinsApp::handleReportProtocol() {
+
+    unsigned long pseudosList[MAX_REP_PSEUDOS];
+    if (EnableV1) {
+        int pseudoNum = reportProtocolEnforcerV1.getReportPseudoes(
+                simTime().dbl(), pseudosList);
+        for (int var = 0; var < pseudoNum; ++var) {
+            BasicSafetyMessage * reportedBsm = detectedNodes.getNodeHistoryAddr(
+                    pseudosList[var])->getLatestBSMAddr();
+            MDReport reportBase;
+            reportBase.setGenerationTime(simTime().dbl());
+            reportBase.setSenderPseudo(myPseudonym);
+            reportBase.setReportedPseudo(pseudosList[var]);
+
+            reportBase.setSenderRealId(myId);
+            reportBase.setReportedRealId(reportedBsm->getSenderRealId());
+
+            reportBase.setMbType(
+                    mbTypes::mbNames[reportedBsm->getSenderMbType()]);
+            reportBase.setAttackType(
+                    attackTypes::AttackNames[reportedBsm->getSenderAttackType()]);
+            std::pair<double, double> currLonLat = traci->getLonLat(
+                    curPosition);
+            reportBase.setSenderGps(Coord(currLonLat.first, currLonLat.second));
+            reportBase.setReportedGps(reportedBsm->getSenderGpsCoordinates());
+
+            ProtocolReport hir = ProtocolReport(reportBase);
+            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
+            CollectionPeriod, 1);
+
+            if (writeReportsV1) {
+                hir.writeStrToFile(savePath, serialNumber, "V1",
+                        hir.getReportPrintableJson(), curDate);
+            }
+
+            if (writeListReportsV1) {
+                hir.writeStrToFileList(savePath, serialNumber, "V1",
+                        hir.getReportPrintableJson(), curDate);
+            }
+
+            if (sendReportsV1) {
+                HTTPRequest httpr = HTTPRequest(maPortV1, maHostV1);
+                std::string response = httpr.Request(
+                        hir.getReportPrintableJson());
+            }
+        }
+    }
+
+    if (EnableV2) {
+        int pseudoNum = reportProtocolEnforcerV2.getReportPseudoes(
+                simTime().dbl(), pseudosList);
+        for (int var = 0; var < pseudoNum; ++var) {
+
+            BasicSafetyMessage * reportedBsm = detectedNodes.getNodeHistoryAddr(
+                    pseudosList[var])->getLatestBSMAddr();
+            MDReport reportBase;
+            reportBase.setGenerationTime(simTime().dbl());
+            reportBase.setSenderPseudo(myPseudonym);
+            reportBase.setReportedPseudo(pseudosList[var]);
+
+            reportBase.setSenderRealId(myId);
+            reportBase.setReportedRealId(reportedBsm->getSenderRealId());
+
+            reportBase.setMbType(
+                    mbTypes::mbNames[reportedBsm->getSenderMbType()]);
+            reportBase.setAttackType(
+                    attackTypes::AttackNames[reportedBsm->getSenderAttackType()]);
+            std::pair<double, double> currLonLat = traci->getLonLat(
+                    curPosition);
+            reportBase.setSenderGps(Coord(currLonLat.first, currLonLat.second));
+            reportBase.setReportedGps(reportedBsm->getSenderGpsCoordinates());
+
+            ProtocolReport hir = ProtocolReport(reportBase);
+            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
+            CollectionPeriod, 2);
+
+            if (writeReportsV2) {
+                hir.writeStrToFile(savePath, serialNumber, "V2",
+                        hir.getReportPrintableJson(), curDate);
+            }
+
+            if (writeListReportsV2) {
+                hir.writeStrToFileList(savePath, serialNumber, "V2",
+                        hir.getReportPrintableJson(), curDate);
+            }
+
+            if (sendReportsV2) {
+                HTTPRequest httpr = HTTPRequest(maPortV2, maHostV2);
+                std::string response = httpr.Request(
+                        hir.getReportPrintableJson());
+            }
+        }
+    }
+
+}
 void JosephVeinsApp::handlePositionUpdate(cObject* obj) {
     BaseWaveApplLayer::handlePositionUpdate(obj);
 

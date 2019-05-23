@@ -38,7 +38,9 @@ using namespace veins;
 
 #include <veins/modules/application/f2md/mdReport/OneMessageReport.h>
 #include <veins/modules/application/f2md/mdReport/EvidenceReport.h>
+#include <veins/modules/application/f2md/mdReport/ProtocolReport.h>
 #include <veins/modules/application/f2md/mdReport/BasicCheckReport.h>
+#include <veins/modules/application/f2md/mdReport/ProtocolEnforcer.h>
 
 #include <ctime>
 
@@ -110,13 +112,13 @@ protected:
     mbTypes::Mbs induceMisbehavior(double localAttacker, double globalAttacker);
     void LocalMisbehaviorDetection(BasicSafetyMessage* bsm, int version);
 
-    void writeReport(MDReport reportBase, std::string version,
+    void writeReport(MDReport reportBase,int version,std::string maversion,
             BsmCheck bsmCheck, BasicSafetyMessage *bsm);
 
-    void writeListReport(MDReport reportBase, std::string version,
+    void writeListReport(MDReport reportBase,int version, std::string maversion,
             BsmCheck bsmCheck, BasicSafetyMessage *bsm);
 
-    void sendReport(MDReport reportBase, std::string version, BsmCheck bsmCheck,
+    void sendReport(MDReport reportBase,int version, std::string maversion, BsmCheck bsmCheck,
             BasicSafetyMessage *bsm);
 
     void writeMdBsm(std::string version, BsmCheck bsmCheck,
@@ -154,9 +156,14 @@ protected:
     PyBridgeApp PybgV1 = PyBridgeApp(1, mlPortV1, mlHostV1);
     PyBridgeApp PybgV2 = PyBridgeApp(2, mlPortV2, mlHostV2);
 
+    ProtocolEnforcer reportProtocolEnforcerV1 = ProtocolEnforcer();
+    ProtocolEnforcer reportProtocolEnforcerV2 = ProtocolEnforcer();
+
     double MAX_PLAUSIBLE_ACCEL = 0;
     double MAX_PLAUSIBLE_DECEL = 0;
     double MAX_PLAUSIBLE_SPEED = 0;
+
+    void handleReportProtocol();
 
 public:
 
@@ -171,6 +178,7 @@ public:
     void removeAccusedNode(unsigned long id);
     void clearAccusedNodes();
     bool isAccusedNode(unsigned long id);
+
 };
 
 #endif

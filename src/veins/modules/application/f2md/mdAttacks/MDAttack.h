@@ -65,8 +65,6 @@ protected:
 
     double saveHeading = 0;
 
-
-
     unsigned long targetNode = 0;
 
     double ConstPosX;
@@ -80,6 +78,8 @@ protected:
 
     double ConstSpeedOffsetX;
     double ConstSpeedOffsetY;
+
+    int ReplaySeq = 0;
 
 public:
 

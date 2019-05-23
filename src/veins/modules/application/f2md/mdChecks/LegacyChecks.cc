@@ -332,9 +332,8 @@ double LegacyChecks::PositionHeadingConsistancyCheck(Coord * curHeading,
     }
 }
 
-
 void LegacyChecks::KalmanPositionSpeedConsistancyCheck(Coord * curPosition,
-        Coord * curPositionConfidence, Coord * curSpeed,Coord * curAccel,
+        Coord * curPositionConfidence, Coord * curSpeed, Coord * curAccel,
         Coord * curSpeedConfidence, double time, Kalman_SVI * kalmanSVI,
         double retVal[]) {
 
@@ -342,44 +341,64 @@ void LegacyChecks::KalmanPositionSpeedConsistancyCheck(Coord * curPosition,
         retVal[0] = 1;
         retVal[1] = 1;
     } else {
-        if(time < MAX_KALMAN_TIME){
+        if (time < MAX_KALMAN_TIME) {
             float Delta[4];
 
             double Ax = curAccel->x;
             double Ay = curAccel->y;
 
+            double curPosConfX = curPositionConfidence->x;
+            if (curPosConfX < KALMAN_MIN_POS_RANGE) {
+                curPosConfX = KALMAN_MIN_POS_RANGE;
+            }
+
+            double curPosConfY = curPositionConfidence->y;
+            if (curPosConfY < KALMAN_MIN_POS_RANGE) {
+                curPosConfY = KALMAN_MIN_POS_RANGE;
+            }
+
+            double curSpdConfX = curSpeedConfidence->x;
+            if (curSpdConfX < KALMAN_MIN_SPEED_RANGE) {
+                curSpdConfX = KALMAN_MIN_SPEED_RANGE;
+            }
+
+            double curSpdConfY = curSpeedConfidence->y;
+            if (curSpdConfY < KALMAN_MIN_SPEED_RANGE) {
+                curSpdConfY = KALMAN_MIN_SPEED_RANGE;
+            }
+
 //            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("X0a", kalmanSVI->kalmanFilterJ_SVI.X0, 4);
 //            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("Xa", kalmanSVI->kalmanFilterJ_SVI.X, 4);
 
             kalmanSVI->getDeltaPos(time, curPosition->x, curPosition->y,
-                    curSpeed->x, curSpeed->y,Ax,Ay, curPositionConfidence->x,
-                    curPositionConfidence->y, curSpeedConfidence->x,
-                    curSpeedConfidence->y, Delta);
+                    curSpeed->x, curSpeed->y, Ax, Ay, curPosConfX, curPosConfY,
+                    curSpdConfX, curSpdConfY, Delta);
 
-
-            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[2], 2.0)) / (KALMAN_POS_RANGE*curPositionConfidence->x*time);
-            if(isnan(ret_1)){
+            double ret_1 = 1
+                    - sqrt(pow(Delta[0], 2.0) + pow(Delta[2], 2.0))
+                            / (KALMAN_POS_RANGE * curPosConfX * time);
+            if (isnan(ret_1)) {
                 ret_1 = 0;
             }
 
-
-            if(ret_1<0.5){
+            if (ret_1 < 0.5) {
                 ret_1 = 0;
-            }else{
+            } else {
                 ret_1 = 1;
             }
 
-            double ret_2 = 1 - sqrt(pow(Delta[1], 2.0) + pow(Delta[3], 2.0)) / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time);
-            if(isnan(ret_2)){
+            double ret_2 = 1
+                    - sqrt(pow(Delta[1], 2.0) + pow(Delta[3], 2.0))
+                            / (KALMAN_SPEED_RANGE * curSpdConfX * time);
+            if (isnan(ret_2)) {
                 ret_2 = 0;
             }
 
-            if(ret_2<0.5){
+            if (ret_2 < 0.5) {
                 ret_2 = 0;
-            }else{
+            } else {
                 ret_2 = 1;
             }
-
 
 //            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("Xb", kalmanSVI->kalmanFilterJ_SVI.X, 4);
 //            kalmanSVI->kalmanFilterJ_SVI.matrixOp_SVI.printVec("Delta", Delta, 4);
@@ -387,53 +406,65 @@ void LegacyChecks::KalmanPositionSpeedConsistancyCheck(Coord * curPosition,
             retVal[0] = ret_1;
             retVal[1] = ret_2;
 
-        }else{
+        } else {
             retVal[0] = 1;
             retVal[1] = 1;
-            kalmanSVI->setInitial(curPosition->x, curPosition->y, curSpeed->x, curSpeed->y);
+            kalmanSVI->setInitial(curPosition->x, curPosition->y, curSpeed->x,
+                    curSpeed->y);
         }
     }
 }
 
-void LegacyChecks::KalmanPositionSpeedScalarConsistancyCheck(Coord * curPosition, Coord * oldPosition,
-        Coord * curPositionConfidence, Coord * curSpeed, Coord * curAccel,
-        Coord * curSpeedConfidence, double time, Kalman_SC * kalmanSC,
-        double retVal[]) {
+void LegacyChecks::KalmanPositionSpeedScalarConsistancyCheck(
+        Coord * curPosition, Coord * oldPosition, Coord * curPositionConfidence,
+        Coord * curSpeed, Coord * curAccel, Coord * curSpeedConfidence,
+        double time, Kalman_SC * kalmanSC, double retVal[]) {
 
     if (!kalmanSC->isInit()) {
         retVal[0] = 1;
         retVal[1] = 1;
     } else {
-        if(time < MAX_KALMAN_TIME){
-
+        if (time < MAX_KALMAN_TIME) {
 
             float Delta[2];
 
-            double distance = mdmLib.calculateDistancePtr(curPosition, oldPosition);
+            double distance = mdmLib.calculateDistancePtr(curPosition,
+                    oldPosition);
             double curspd = mdmLib.calculateSpeedPtr(curSpeed);
             double curacl = mdmLib.calculateSpeedPtr(curAccel);
 
-            kalmanSC->getDeltaPos(time, distance,
-                    curspd,curacl, curacl, curPositionConfidence->x, curSpeedConfidence->x, Delta);
+            double curPosConfX = curPositionConfidence->x;
+            if (curPosConfX < KALMAN_MIN_POS_RANGE) {
+                curPosConfX = KALMAN_MIN_POS_RANGE;
+            }
 
-            double ret_1 = 1 - (Delta[0] / (KALMAN_POS_RANGE*curPositionConfidence->x*time));
-            if(isnan(ret_1)){
+            double curSpdConfX = curSpeedConfidence->x;
+            if (curSpdConfX < KALMAN_MIN_SPEED_RANGE) {
+                curSpdConfX = KALMAN_MIN_SPEED_RANGE;
+            }
+
+            kalmanSC->getDeltaPos(time, distance, curspd, curacl, curacl,
+                    curPosConfX, curSpdConfX, Delta);
+
+            double ret_1 = 1
+                    - (Delta[0] / (KALMAN_POS_RANGE * curPosConfX * time));
+            if (isnan(ret_1)) {
                 ret_1 = 0;
             }
 
-
-            if(ret_1<0.5){
+            if (ret_1 < 0.5) {
                 ret_1 = 0;
-            }else{
+            } else {
                 ret_1 = 1;
             }
-            double ret_2 = 1 - (Delta[1] / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time));
-            if(isnan(ret_2)){
+            double ret_2 = 1
+                    - (Delta[1] / (KALMAN_SPEED_RANGE * curSpdConfX * time));
+            if (isnan(ret_2)) {
                 ret_2 = 0;
             }
-            if(ret_2<0.5){
+            if (ret_2 < 0.5) {
                 ret_2 = 0;
-            }else{
+            } else {
                 ret_2 = 1;
             }
 //            kalmanSC->kalmanFilterJ_SC.matrixOp_SC.printVec("Xb", kalmanSC->kalmanFilterJ_SC.X, 2);
@@ -442,7 +473,7 @@ void LegacyChecks::KalmanPositionSpeedScalarConsistancyCheck(Coord * curPosition
             retVal[0] = ret_1;
             retVal[1] = ret_2;
 
-        }else{
+        } else {
             retVal[0] = 1;
             retVal[1] = 1;
             double curspd = mdmLib.calculateSpeedPtr(curSpeed);
@@ -451,100 +482,135 @@ void LegacyChecks::KalmanPositionSpeedScalarConsistancyCheck(Coord * curPosition
     }
 }
 
-double LegacyChecks::KalmanPositionConsistancyCheck(Coord * curPosition, Coord * oldPosition, Coord * curPosConfidence,
-         double time, Kalman_SI * kalmanSI){
+double LegacyChecks::KalmanPositionConsistancyCheck(Coord * curPosition,
+        Coord * oldPosition, Coord * curPosConfidence, double time,
+        Kalman_SI * kalmanSI) {
     if (!kalmanSI->isInit()) {
         return 1;
     } else {
-        if(time < MAX_KALMAN_TIME){
+        if (time < MAX_KALMAN_TIME) {
             float Delta[2];
-            double Ax = (curPosition->x - oldPosition->x)/time;
-            double Ay = (curPosition->y - oldPosition->y)/time;
+            double Ax = (curPosition->x - oldPosition->x) / time;
+            double Ay = (curPosition->y - oldPosition->y) / time;
+
+            double curPosConfX = curPosConfidence->x;
+            if (curPosConfX < KALMAN_MIN_POS_RANGE) {
+                curPosConfX = KALMAN_MIN_POS_RANGE;
+            }
+
+            double curPosConfY = curPosConfidence->y;
+            if (curPosConfY < KALMAN_MIN_POS_RANGE) {
+                curPosConfY = KALMAN_MIN_POS_RANGE;
+            }
 
             kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y,
-                    curPosConfidence->x,
-                    curPosConfidence->y, Delta);
+                    curPosConfX, curPosConfY, Delta);
 
-            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (4*KALMAN_POS_RANGE* curPosConfidence->x*time);
-            if(isnan(ret_1)){
+            double ret_1 = 1
+                    - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0))
+                            / (4 * KALMAN_POS_RANGE * curPosConfX * time);
+
+            if (isnan(ret_1)) {
                 ret_1 = 0;
             }
-            if(ret_1<0.5){
+            if (ret_1 < 0.5) {
                 ret_1 = 0;
-            }else{
+            } else {
                 ret_1 = 1;
             }
 
             return ret_1;
-        }else{
+        } else {
             kalmanSI->setInitial(curPosition->x, curPosition->y);
             return 1;
         }
     }
 }
 
-
-double LegacyChecks::KalmanPositionAccConsistancyCheck(Coord * curPosition, Coord * curSpeed, Coord * curPosConfidence,
-         double time, Kalman_SI * kalmanSI){
+double LegacyChecks::KalmanPositionAccConsistancyCheck(Coord * curPosition,
+        Coord * curSpeed, Coord * curPosConfidence, double time,
+        Kalman_SI * kalmanSI) {
     if (!kalmanSI->isInit()) {
         return 1;
     } else {
-        if(time < MAX_KALMAN_TIME){
+        if (time < MAX_KALMAN_TIME) {
             float Delta[2];
             double Ax = curSpeed->x;
             double Ay = curSpeed->y;
 
-            kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y,Ax,Ay,
-                    curPosConfidence->x,
-                    curPosConfidence->y, Delta);
+            double curPosConfX = curPosConfidence->x;
+            if (curPosConfX < KALMAN_MIN_POS_RANGE) {
+                curPosConfX = KALMAN_MIN_POS_RANGE;
+            }
 
-            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (4*KALMAN_POS_RANGE*curPosConfidence->x*time);
-            if(isnan(ret_1)){
+            double curPosConfY = curPosConfidence->y;
+            if (curPosConfY < KALMAN_MIN_POS_RANGE) {
+                curPosConfY = KALMAN_MIN_POS_RANGE;
+            }
+
+            kalmanSI->getDeltaPos(time, curPosition->x, curPosition->y, Ax, Ay,
+                    curPosConfX, curPosConfY, Delta);
+
+            double ret_1 = 1
+                    - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0))
+                            / (4 * KALMAN_POS_RANGE * curPosConfX * time);
+            if (isnan(ret_1)) {
                 ret_1 = 0;
             }
 
-            if(ret_1<0.5){
+            if (ret_1 < 0.5) {
                 ret_1 = 0;
-            }else{
+            } else {
                 ret_1 = 1;
             }
 
             return ret_1;
-        }else{
+        } else {
             kalmanSI->setInitial(curPosition->x, curPosition->y);
             return 1;
         }
     }
 }
-double LegacyChecks::KalmanSpeedConsistancyCheck(Coord * curSpeed, Coord *curAccel, Coord * curSpeedConfidence,
-         double time, Kalman_SI * kalmanSI){
+double LegacyChecks::KalmanSpeedConsistancyCheck(Coord * curSpeed,
+        Coord *curAccel, Coord * curSpeedConfidence, double time,
+        Kalman_SI * kalmanSI) {
     if (!kalmanSI->isInit()) {
         return 1;
     } else {
-        if(time < MAX_KALMAN_TIME){
+        if (time < MAX_KALMAN_TIME) {
             float Delta[2];
-            kalmanSI->getDeltaPos(time, curSpeed->x, curSpeed->y,curAccel->x,curAccel->y,
-                    curSpeedConfidence->x,
-                    curSpeedConfidence->y, Delta);
+            double curSpdConfX = curSpeedConfidence->x;
+            if (curSpdConfX < KALMAN_MIN_SPEED_RANGE) {
+                curSpdConfX = KALMAN_MIN_SPEED_RANGE;
+            }
 
-            double ret_1 = 1 - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0)) / (KALMAN_SPEED_RANGE*curSpeedConfidence->x*time);
-            if(isnan(ret_1)){
+            double curSpdConfY = curSpeedConfidence->y;
+            if (curSpdConfY < KALMAN_MIN_SPEED_RANGE) {
+                curSpdConfY = KALMAN_MIN_SPEED_RANGE;
+            }
+
+            kalmanSI->getDeltaPos(time, curSpeed->x, curSpeed->y, curAccel->x,
+                    curAccel->y, curSpdConfX, curSpdConfY, Delta);
+
+            double ret_1 = 1
+                    - sqrt(pow(Delta[0], 2.0) + pow(Delta[1], 2.0))
+                            / (KALMAN_SPEED_RANGE * curSpdConfX * time);
+            if (isnan(ret_1)) {
                 ret_1 = 0;
             }
-            if(ret_1<0.5){
+            if (ret_1 < 0.5) {
                 ret_1 = 0;
-            }else{
+            } else {
                 ret_1 = 1;
             }
 
             return ret_1;
-        }else{
+        } else {
             kalmanSI->setInitial(curSpeed->x, curSpeed->y);
             return 1;
         }
     }
 }
-
 
 BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
         NodeTable *detectedNodes) {
@@ -627,64 +693,78 @@ BsmCheck LegacyChecks::CheckBSM(BasicSafetyMessage *bsm,
         double retValSC[2];
 
         Kalman_SVI * kalmanSVI;
-        if(version == 2){
+        if (version == 2) {
             kalmanSVI = senderMDM->getKalmanSviv2();
-        }else{
+        } else {
             kalmanSVI = senderMDM->getKalmanSviv1();
         }
 
         Kalman_SI * kalmanSI;
-        if(version == 2){
+        if (version == 2) {
             kalmanSI = senderMDM->getKalmanSiv2();
-        }else{
+        } else {
             kalmanSI = senderMDM->getKalmanSiv1();
         }
 
         Kalman_SC * kalmanSC;
-        if(version == 2){
+        if (version == 2) {
             kalmanSC = senderMDM->getKalmanSvsiv2();
-        }else{
+        } else {
             kalmanSC = senderMDM->getKalmanSvsiv1();
         }
 
-
         Kalman_SI * kalmanSAI;
-        if(version == 2){
+        if (version == 2) {
             kalmanSAI = senderMDM->getKalmanSaiv2();
-        }else{
+        } else {
             kalmanSAI = senderMDM->getKalmanSaiv1();
         }
 
         Kalman_SI * kalmanVI;
-        if(version == 2){
+        if (version == 2) {
             kalmanVI = senderMDM->getKalmanViv2();
-        }else{
+        } else {
             kalmanVI = senderMDM->getKalmanViv1();
         }
 
         KalmanPositionSpeedConsistancyCheck(&senderPos, &senderPosConfidence,
-                &bsm->getSenderSpeed(),&bsm->getSenderAccel(), &bsm->getSenderSpeedConfidence(),
+                &bsm->getSenderSpeed(), &bsm->getSenderAccel(),
+                &bsm->getSenderSpeedConfidence(),
                 mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()),
-                kalmanSVI , retVal);
+                kalmanSVI, retVal);
         bsmCheck.setKalmanPSCP(retVal[0]);
         bsmCheck.setKalmanPSCS(retVal[1]);
 
-        KalmanPositionSpeedScalarConsistancyCheck(&senderPos,&senderNode->getLatestBSMAddr()->getSenderPos(), &senderPosConfidence,
-                &bsm->getSenderSpeed(),&bsm->getSenderAccel(), &bsm->getSenderSpeedConfidence(),
+        KalmanPositionSpeedScalarConsistancyCheck(&senderPos,
+                &senderNode->getLatestBSMAddr()->getSenderPos(),
+                &senderPosConfidence, &bsm->getSenderSpeed(),
+                &bsm->getSenderAccel(), &bsm->getSenderSpeedConfidence(),
                 mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()),
-                kalmanSC , retValSC);
+                kalmanSC, retValSC);
 
         bsmCheck.setKalmanPSCSP(retValSC[0]);
         bsmCheck.setKalmanPSCSS(retValSC[1]);
 
-        bsmCheck.setKalmanPCC(KalmanPositionConsistancyCheck(&senderPos,&senderNode->getLatestBSMAddr()->getSenderPos(), &senderPosConfidence,
-                mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()), kalmanSI));
+        bsmCheck.setKalmanPCC(
+                KalmanPositionConsistancyCheck(&senderPos,
+                        &senderNode->getLatestBSMAddr()->getSenderPos(),
+                        &senderPosConfidence,
+                        mdmLib.calculateDeltaTime(bsm,
+                                senderNode->getLatestBSMAddr()), kalmanSI));
 
-        bsmCheck.setKalmanPACS( KalmanPositionAccConsistancyCheck(&senderPos,&senderNode->getLatestBSMAddr()->getSenderSpeed(), &senderPosConfidence,
-                mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()), kalmanSI));
+        bsmCheck.setKalmanPACS(
+                KalmanPositionAccConsistancyCheck(&senderPos,
+                        &senderNode->getLatestBSMAddr()->getSenderSpeed(),
+                        &senderPosConfidence,
+                        mdmLib.calculateDeltaTime(bsm,
+                                senderNode->getLatestBSMAddr()), kalmanSI));
 
-        bsmCheck.setKalmanSCC(KalmanSpeedConsistancyCheck(&bsm->getSenderSpeed(),&bsm->getSenderAccel(), &bsm->getSenderSpeedConfidence(),
-                mdmLib.calculateDeltaTime(bsm, senderNode->getLatestBSMAddr()), kalmanVI));
+        bsmCheck.setKalmanSCC(
+                KalmanSpeedConsistancyCheck(&bsm->getSenderSpeed(),
+                        &bsm->getSenderAccel(),
+                        &bsm->getSenderSpeedConfidence(),
+                        mdmLib.calculateDeltaTime(bsm,
+                                senderNode->getLatestBSMAddr()), kalmanVI));
 
     } else {
         bsmCheck.setSuddenAppearence(

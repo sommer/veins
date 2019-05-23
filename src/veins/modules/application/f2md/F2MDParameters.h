@@ -31,6 +31,8 @@
 #define MAX_KALMAN_TIME 3.1
 #define KALMAN_POS_RANGE 1.0
 #define KALMAN_SPEED_RANGE 4.0
+#define KALMAN_MIN_POS_RANGE 4.0
+#define KALMAN_MIN_SPEED_RANGE 1.0
 
 #define MIN_MAX_SPEED 40 // 40
 #define MIN_MAX_ACCEL 3 // 3
@@ -38,7 +40,6 @@
 #define MAX_MGT_RNG 4 // 3
 #define MAX_MGT_RNG_DOWN 6.2 // 6.1556
 #define MAX_MGT_RNG_UP 2.1 // 0.8378
-
 
 #define MAX_BEACON_FREQUENCY 0.99 //0.99998
 #define MAX_DISTANCE_FROM_ROUTE 2 //4.5
@@ -76,6 +77,7 @@
 #define StaleMessages_Buffer 9 //less than 20
 #define DosMultipleFreq 4 // times faster
 #define DosMultipleFreqSybil 1 // times faster
+#define ReplaySeqNum 5
 #define SybilVehNumber 5 // max 10
 #define SelfSybil true // default true
 #define SybilDistanceX 5 // 5 meters
@@ -90,5 +92,13 @@
 #define Random_Change_Chance 0.1 // 0.01 over 1 = 1% chance
 #define MAX_PSEUDO_LIST 200
 //pseudonym Parameters
+
+
+//report parameters
+#define InitialHiostory 5
+#define CollectionPeriod 10
+#define UntolerancePeriod 5
+#define MAX_REP_PSEUDOS 1000
+//report parameters
 
 #endif
