@@ -348,11 +348,13 @@ void BaseWaveApplLayer::handlePositionUpdate(cObject* obj) {
 //    GaussianRandom relativeOffset = GaussianRandom(&curPositionConfidence,
 //            &curSpeedConfidence, &curHeadingConfidence);
 
+
     curPosition = relativeOffset.OffsetPosition(
             mobility->getPositionAt(simTime()));
     curSpeed = relativeOffset.OffsetSpeed(mobility->getCurrentSpeed());
     curHeading = relativeOffset.OffsetHeading(mobility->getCurrentDirection());
     curAccel = relativeOffset.OffsetAccel(mobility->getCurrentAccel());
+
 
 }
 

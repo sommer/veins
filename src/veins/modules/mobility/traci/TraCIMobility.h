@@ -154,6 +154,16 @@ public:
         return BaseMobility::getCurrentSpeed();
     }
 
+    double getplaygroundSizeX() const
+    {
+        return BaseMobility::playgroundSizeX();
+    }
+
+    double getplaygroundSizeY() const
+    {
+        return BaseMobility::playgroundSizeY();
+    }
+
 protected:
     int accidentCount; /**< number of accidents */
 

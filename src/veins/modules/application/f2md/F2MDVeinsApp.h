@@ -163,6 +163,9 @@ protected:
     double MAX_PLAUSIBLE_DECEL = 0;
     double MAX_PLAUSIBLE_SPEED = 0;
 
+    double MaxRandomPosX = 3900.0;
+    double MaxRandomPosY = 1700.0;
+
     void handleReportProtocol();
 
 public:

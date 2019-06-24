@@ -414,6 +414,7 @@ double AggrigationApp::getMinFactor() {
 
 double AggrigationApp::AggregateFactorsListDouble(double curFactor, double *factorList,
         int factorListSize) {
+
     if (version == 1) {
         double averageFactor = curFactor;
         for (int var = 0; var < factorListSize; ++var) {

@@ -54,6 +54,11 @@ protected:
 
     BasicSafetyMessage saveAttackBsm = BasicSafetyMessage();
 
+    BasicSafetyMessage staleMessagesBsm[MAX_STALE_NUM];
+    int staleMessagesNum = 0;
+
+    double localStopProb = 0;
+
     BasicSafetyMessage StopBsm;
     bool StopInitiated;
 
@@ -67,6 +72,9 @@ protected:
 
     unsigned long targetNode = 0;
 
+    double MaxRandomPosX;
+    double MaxRandomPosY;
+
     double ConstPosX;
     double ConstPosY;
 
@@ -79,13 +87,24 @@ protected:
     double ConstSpeedOffsetX;
     double ConstSpeedOffsetY;
 
+
+    int localReplaySeqNum = 0;
     int ReplaySeq = 0;
+
+    int localDosMultipleFreq = 0;
+    int localDosMultipleFreqSybil = 0;
+
+    int localSybilVehNumber = 0;
+
+    double localSybilDistanceX = 0;
+    double localSybilDistanceY = 0;
+
 
 public:
 
     MDAttack();
 
-    void init(attackTypes::Attacks myAttackType);
+    void init(attackTypes::Attacks myAttackType, double MaxRandomPosX,double MaxRandomPosY);
 
     BasicSafetyMessage launchAttack(attackTypes::Attacks myAttackType, LinkControl* LinkC);
 

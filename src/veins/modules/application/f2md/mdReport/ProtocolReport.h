@@ -38,7 +38,7 @@ private:
 
 public:
     ProtocolReport(MDReport baseReport);
-    void addEvidence(BasicSafetyMessage myBsm,
+    void addEvidence(BasicSafetyMessage myBsm,bool initial, BsmCheck reportedCheck, BasicSafetyMessage receivedBsm,
             NodeTable * detectedNodes, double curTime, double deltaTime, int version);
     std::string getReportPrintableJson();
 };

@@ -51,8 +51,8 @@ bool ThresholdApp::CheckNodeForReport(unsigned long myPseudonym,
                 mbTypes::intMbs[bsm->getSenderMbType()]);
     }
 
-    if (bsmCheck->getRangePlausibility() < minFactor) {
-        minFactor = bsmCheck->getRangePlausibility();
+    if (bsmCheck->getPositionConsistancy() < minFactor) {
+        minFactor = bsmCheck->getPositionConsistancy();
     }
     if (bsmCheck->getPositionConsistancy() <= Threshold) {
         checkFailed = true;

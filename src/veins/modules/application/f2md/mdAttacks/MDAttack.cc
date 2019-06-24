@@ -14,39 +14,67 @@
 MDAttack::MDAttack() {
 }
 
-void MDAttack::init(attackTypes::Attacks myAttackType) {
+void MDAttack::init(attackTypes::Attacks myAttackType, double MaxRandomPosX,double MaxRandomPosY) {
     StopInitiated = false;
     DoSInitiated = false;
+
+    this->MaxRandomPosX = MaxRandomPosX;
+    this->MaxRandomPosY = MaxRandomPosY;
 
     SybilMyOldPseudo = (*myPseudonym);
     SybilVehSeq = 0;
 
-    ConstPosX = genLib.RandomDouble(0, RandomPosX);
-    ConstPosY = genLib.RandomDouble(0, RandomPosY);
+    ConstPosX = genLib.RandomDouble(0, MaxRandomPosX);
+    ConstPosY = genLib.RandomDouble(0, MaxRandomPosY);
 
-    ConstPosOffsetX = genLib.RandomDouble(0.8 * RandomPosOffsetX,
-            1.2 * RandomPosOffsetX);
-    ConstPosOffsetY = genLib.RandomDouble(0.8 * RandomPosOffsetY,
-            1.2 * RandomPosOffsetY);
+    ConstPosOffsetX = genLib.RandomDouble((1-parVar) * RandomPosOffsetX,
+            (1+parVar) * RandomPosOffsetX);
+    ConstPosOffsetY = genLib.RandomDouble((1-parVar) * RandomPosOffsetY,
+            (1+parVar) * RandomPosOffsetY);
 
     ConstSpeedX = genLib.RandomDouble(0, RandomSpeedX);
     ConstSpeedY = genLib.RandomDouble(0, RandomSpeedY);
 
-    ConstSpeedOffsetX = genLib.RandomDouble(0.8 * RandomSpeedOffsetX,
-            1.2 * RandomSpeedOffsetX);
-    ConstSpeedOffsetY = genLib.RandomDouble(0.8 * RandomSpeedOffsetY,
-            1.2 * RandomSpeedOffsetY);
+    ConstSpeedOffsetX = genLib.RandomDouble((1-parVar) * RandomSpeedOffsetX,
+            (1+parVar) * RandomSpeedOffsetX);
+    ConstSpeedOffsetY = genLib.RandomDouble((1-parVar) * RandomSpeedOffsetY,
+            (1+parVar) * RandomSpeedOffsetY);
 
-    if (myAttackType == attackTypes::GridSybil) {
-        for (int var = 0; var < SybilVehNumber; ++var) {
-            SybilPseudonyms[var] = pcPolicy->getNextPseudonym();
-        }
+    localStopProb = genLib.RandomDouble((1-parVar), (1+parVar)) * StopProb;
+
+    localReplaySeqNum = (int) genLib.RandomDouble((1-parVar), (1+parVar)) * ReplaySeqNum;
+    if(localReplaySeqNum <2){
+        localReplaySeqNum = 2;
+    }
+
+    localDosMultipleFreq = (int) genLib.RandomDouble((1-parVar), (1+parVar)) * DosMultipleFreq;
+    if(localDosMultipleFreq <2){
+        localDosMultipleFreq = 2;
+    }
+
+    localDosMultipleFreqSybil = (int) genLib.RandomDouble((1-parVar), (1+parVar)) * DosMultipleFreqSybil;
+    if(localDosMultipleFreqSybil <2){
+        localDosMultipleFreqSybil = 2;
     }
 
     ReplaySeq = 0;
 
+    localSybilVehNumber = (int) genLib.RandomDouble((1-parVar), (1+parVar)) * SybilVehNumber;
+    if(localSybilVehNumber < 1){
+        localSybilVehNumber = 1;
+    }
+
+    localSybilDistanceX = genLib.RandomDouble((1-parVar), (1+parVar)) * SybilDistanceX;
+    localSybilDistanceY = genLib.RandomDouble((1-parVar), (1+parVar)) * SybilDistanceY;
+
+    if (myAttackType == attackTypes::GridSybil) {
+        for (int var = 0; var < localSybilVehNumber; ++var) {
+            SybilPseudonyms[var] = pcPolicy->getNextPseudonym();
+        }
+    }
+
 //    if (myAttackType == attackTypes::DataReplaySybil) {
-//        for (int var = 0; var < SybilVehNumber; ++var) {
+//        for (int var = 0; var < localSybilVehNumber; ++var) {
 //            SybilPseudonyms[var] = pcPolicy->getNextPseudonym();
 //        }
 //    }
@@ -124,12 +152,20 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
 
     switch (myAttackType) {
     case attackTypes::StaleMessages: {
-        if (*myBsmNum >= StaleMessages_Buffer) {
-            attackBsm = myBsm[StaleMessages_Buffer];
+        if (staleMessagesNum < MAX_STALE_NUM) {
+            staleMessagesNum++;
+        }
+        for (int var = staleMessagesNum - 1; var > 0; --var) {
+            staleMessagesBsm[var] = staleMessagesBsm[var - 1];
+        }
+        staleMessagesBsm[0] = myBsm[0];
+
+        if (staleMessagesNum >= StaleMessages_Buffer) {
+            attackBsm = staleMessagesBsm[StaleMessages_Buffer];
             attackBsm.setSenderPseudonym(*myPseudonym);
         } else {
-            if (*myBsmNum > 0) {
-                attackBsm = myBsm[*myBsmNum - 1];
+            if (staleMessagesNum > 0) {
+                attackBsm = staleMessagesBsm[staleMessagesNum - 1];
                 attackBsm.setSenderPseudonym(*myPseudonym);
             } else {
                 attackBsm.setSenderPseudonym(0);
@@ -187,8 +223,8 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
         attackBsm = myBsm[0];
         attackBsm.setSenderPseudonym(*myPseudonym);
 
-        double randPosX = genLib.RandomDouble(0, RandomPosX);
-        double randPosY = genLib.RandomDouble(0, RandomPosY);
+        double randPosX = genLib.RandomDouble(0, MaxRandomPosX);
+        double randPosY = genLib.RandomDouble(0, MaxRandomPosY);
 
         attackBsm.setSenderPos(Coord(randPosX, randPosY, (*curPosition).z));
         attackBsm.setSenderPosConfidence(*curPositionConfidence);
@@ -311,10 +347,10 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
         double signX = genLib.RandomInt(0, 1);
         double signY = genLib.RandomInt(0, 1);
 
-        double sx = genLib.RandomDouble(0.8 * RandomSpeedOffsetX,
-                1.2 * RandomSpeedOffsetX);
-        double sy = genLib.RandomDouble(0.8 * RandomSpeedOffsetX,
-                1.2 * RandomSpeedOffsetX);
+        double sx = genLib.RandomDouble((1-parVar) * RandomSpeedOffsetX,
+                (1+parVar) * RandomSpeedOffsetX);
+        double sy = genLib.RandomDouble((1-parVar) * RandomSpeedOffsetX,
+                (1+parVar) * RandomSpeedOffsetX);
 
         sx = sx - 2 * signX * sx;
         sy = sy - 2 * signY * sy;
@@ -343,7 +379,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
             attackBsm.setSenderPseudonym(*myPseudonym);
         } else {
             double prob = genLib.RandomDouble(0, 1);
-            if (prob < StopProb) {
+            if (prob < localStopProb) {
                 StopBsm = myBsm[0];
                 StopBsm.setSenderPos(*curPosition);
                 StopBsm.setSenderPosConfidence(*curPositionConfidence);
@@ -361,6 +397,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
                 StopBsm.setSenderLength(*myLength);
                 StopInitiated = true;
             }
+
             attackBsm.setSenderPseudonym(0);
         }
     }
@@ -377,7 +414,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
 
     case attackTypes::DataReplay: {
         if (detectedNodes->getNodesNum() > 0) {
-            if(ReplaySeq< ReplaySeqNum){
+            if(ReplaySeq< localReplaySeqNum){
                 attackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
                         saveAttackBsm.getSenderPseudonym(),
                         saveAttackBsm.getArrivalTime().dbl());
@@ -396,7 +433,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
 
     case attackTypes::DoS: {
         if (!DoSInitiated) {
-            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreq);
+            beaconInterval->setRaw(beaconInterval->raw() / localDosMultipleFreq);
             DoSInitiated = true;
         }
 
@@ -422,15 +459,15 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
 
     case attackTypes::DoSRandom: {
         if (!DoSInitiated) {
-            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreq);
+            beaconInterval->setRaw(beaconInterval->raw() / localDosMultipleFreq);
             DoSInitiated = true;
         }
         attackBsm = myBsm[0];
 
         attackBsm.setSenderPseudonym(*myPseudonym);
 
-        double x = genLib.RandomDouble(0, RandomPosX);
-        double y = genLib.RandomDouble(0, RandomPosY);
+        double x = genLib.RandomDouble(0, MaxRandomPosX);
+        double y = genLib.RandomDouble(0, MaxRandomPosY);
 
         double sx = genLib.RandomDouble(0, RandomSpeedX);
         double sy = genLib.RandomDouble(0, RandomSpeedY);
@@ -461,7 +498,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
     case attackTypes::DoSDisruptive: {
 
         if (!DoSInitiated) {
-            beaconInterval->setRaw(beaconInterval->raw() / DosMultipleFreq);
+            beaconInterval->setRaw(beaconInterval->raw() / localDosMultipleFreq);
             DoSInitiated = true;
         }
 
@@ -477,13 +514,13 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
 
         if (!DoSInitiated) {
             beaconInterval->setRaw(
-                    beaconInterval->raw() / (SybilVehNumber + 1));
+                    beaconInterval->raw() / (localSybilVehNumber + 1));
             DoSInitiated = true;
         }
 
         if (SybilMyOldPseudo != *myPseudonym) {
             SybilMyOldPseudo = *myPseudonym;
-            for (int var = 0; var < SybilVehNumber; ++var) {
+            for (int var = 0; var < localSybilVehNumber; ++var) {
                 SybilPseudonyms[var] = pcPolicy->getNextPseudonym();
             }
         }
@@ -503,15 +540,15 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
                 SquareY = (SybilVehSeq + 1) % 2;
 
                 double sybDistXrand = genLib.RandomDouble(
-                        -(SybilDistanceX / 10.0), (SybilDistanceX / 10.0));
+                        -(localSybilDistanceX / 10.0), (localSybilDistanceX / 10.0));
                 double sybDistYrand = genLib.RandomDouble(
-                        -(SybilDistanceY / 10.0), (SybilDistanceY / 10.0));
+                        -(localSybilDistanceY / 10.0), (localSybilDistanceY / 10.0));
 
                 double XOffset = -SquareX
-                        * (attackBsm.getSenderLength() + SybilDistanceX)
+                        * (attackBsm.getSenderLength() + localSybilDistanceX)
                         + sybDistXrand;
                 double YOffset = -SquareY
-                        * (attackBsm.getSenderWidth() + SybilDistanceY)
+                        * (attackBsm.getSenderWidth() + localSybilDistanceY)
                         + sybDistYrand;
                 MDMLib mdmLib = MDMLib();
                 double curHeadingAngle = mdmLib.calculateHeadingAnglePtr(
@@ -645,14 +682,14 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
             }
         } else {
 
-            double sybDistXrand = genLib.RandomDouble(-(SybilDistanceX / 10.0),
-                    (SybilDistanceX / 10.0));
-            double sybDistYrand = genLib.RandomDouble(-(SybilDistanceY / 10.0),
-                    (SybilDistanceY / 10.0));
+            double sybDistXrand = genLib.RandomDouble(-(localSybilDistanceX / 10.0),
+                    (localSybilDistanceX / 10.0));
+            double sybDistYrand = genLib.RandomDouble(-(localSybilDistanceY / 10.0),
+                    (localSybilDistanceY / 10.0));
 
-            double XOffset = -SquareX * (*myLength + SybilDistanceX)
+            double XOffset = -SquareX * (*myLength + localSybilDistanceX)
                     + sybDistXrand;
-            double YOffset = -SquareY * (*myWidth + SybilDistanceY)
+            double YOffset = -SquareY * (*myWidth + localSybilDistanceY)
                     + sybDistYrand;
             MDMLib mdmLib = MDMLib();
             double curHeadingAngle = mdmLib.calculateHeadingAnglePtr(
@@ -770,18 +807,17 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
 //             std::cout<<"SquareY:"<<SquareY<<"\n";
 //             std::cout<<"XOffset:"<<XOffset<<"\n";
 //             std::cout<<"YOffset:"<<YOffset<<"\n";
-
         }
 
         if (attackBsm.getSenderPseudonym() > 1) {
             if (SybilVehSeq > 0) {
                 attackBsm.setSenderPseudonym(SybilPseudonyms[SybilVehSeq - 1]);
             } else {
-                attackBsm.setSenderPseudonym(*myPseudonym);
+               attackBsm.setSenderPseudonym(0);
             }
         }
 
-        if (SybilVehSeq < SybilVehNumber) {
+        if (SybilVehSeq < localSybilVehNumber) {
             SybilVehSeq++;
         } else {
             SybilVehSeq = 0;
@@ -792,15 +828,15 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
     case attackTypes::DoSRandomSybil: {
         if (!DoSInitiated) {
             beaconInterval->setRaw(
-                    beaconInterval->raw() / DosMultipleFreqSybil);
+                    beaconInterval->raw() / localDosMultipleFreqSybil);
             DoSInitiated = true;
         }
         attackBsm = myBsm[0];
 
         attackBsm.setSenderPseudonym(pcPolicy->getNextPseudonym());
 
-        double x = genLib.RandomDouble(0, RandomPosX);
-        double y = genLib.RandomDouble(0, RandomPosY);
+        double x = genLib.RandomDouble(0, MaxRandomPosX);
+        double y = genLib.RandomDouble(0, MaxRandomPosY);
 
         double sx = genLib.RandomDouble(0, RandomSpeedX);
         double sy = genLib.RandomDouble(0, RandomSpeedY);
@@ -831,7 +867,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
     case attackTypes::DoSDisruptiveSybil: {
         if (!DoSInitiated) {
             beaconInterval->setRaw(
-                    beaconInterval->raw() / DosMultipleFreqSybil);
+                    beaconInterval->raw() / localDosMultipleFreqSybil);
             DoSInitiated = true;
         }
 
@@ -845,7 +881,7 @@ BasicSafetyMessage MDAttack::launchAttack(attackTypes::Attacks myAttackType,
 
     case attackTypes::DataReplaySybil: {
         if (detectedNodes->getNodesNum() > 0) {
-            if(ReplaySeq< ReplaySeqNum){
+            if(ReplaySeq< localReplaySeqNum){
                 attackBsm = *detectedNodes->getNextAttackedBsm(*curPosition,
                         saveAttackBsm.getSenderPseudonym(),
                         saveAttackBsm.getArrivalTime().dbl());

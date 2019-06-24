@@ -63,26 +63,27 @@
 //Storage Parameters
 
 //Attacks Parameters
-#define RandomPosX 3900.0
-#define RandomPosY 1700.0
+#define parVar 0.55 // 55%
+
 #define RandomPosOffsetX 70.0
 #define RandomPosOffsetY 70.0
 #define RandomSpeedX 40.0
 #define RandomSpeedY 40.0
-#define RandomAccelX 2.0
-#define RandomAccelY 2.0
 #define RandomSpeedOffsetX 7.0
 #define RandomSpeedOffsetY 7.0
-#define StopProb 0.01
-#define StaleMessages_Buffer 9 //less than 20
+#define RandomAccelX 2.0
+#define RandomAccelY 2.0
+#define StopProb 0.05
+#define StaleMessages_Buffer 60 //less than (120 - parVar*120)
 #define DosMultipleFreq 4 // times faster
-#define DosMultipleFreqSybil 1 // times faster
-#define ReplaySeqNum 5
+#define DosMultipleFreqSybil 2 // times faster
+#define ReplaySeqNum 6
 #define SybilVehNumber 5 // max 10
-#define SelfSybil true // default true
+#define SelfSybil false // default true
 #define SybilDistanceX 5 // 5 meters
 #define SybilDistanceY 2 // 2 meters
 #define MAX_SYBIL_NUM 20
+#define MAX_STALE_NUM 120  //2 minutes
 //Attacks Parameters
 
 //pseudonym Parameters
@@ -90,12 +91,11 @@
 #define Tolerance_Buffer 10 // nbr of messages
 #define Period_Change_Distance 80 //meters
 #define Random_Change_Chance 0.1 // 0.01 over 1 = 1% chance
-#define MAX_PSEUDO_LIST 200
+#define MAX_PSEUDO_LIST 100
 //pseudonym Parameters
 
-
 //report parameters
-#define InitialHiostory 5
+#define InitialHistory 5
 #define CollectionPeriod 10
 #define UntolerancePeriod 5
 #define MAX_REP_PSEUDOS 1000

@@ -98,6 +98,7 @@ void MDMHistory::initKalman(BasicSafetyMessage * bsm, int version) {
 }
 
 void MDMHistory::addBsmCheck(BsmCheck bsmCheck, int version) {
+
     switch (version) {
     case 1: {
         if (BSMNumV1 < MAX_MDM_LENGTH) {

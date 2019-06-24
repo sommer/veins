@@ -26,15 +26,25 @@ void ProtocolReport::addBsmToList(BasicSafetyMessage bsm, BsmCheck check) {
     bsmListNum++;
 }
 
-void ProtocolReport::addEvidence(BasicSafetyMessage myBsm,
+void ProtocolReport::addEvidence(BasicSafetyMessage myBsm, bool initial,
+        BsmCheck reportedCheck, BasicSafetyMessage receivedBsm,
         NodeTable * detectedNodes, double curTime, double deltaTime,
         int version) {
 
     bool myBsmAdded = false;
-    setReportedCheck(reportedCheck);
 
     int histAdd = 0;
     double addedBsmTime = curTime;
+    if (initial) {
+        setReportedCheck(reportedCheck);
+        addBsmToList(receivedBsm, reportedCheck);
+        addedBsmTime = receivedBsm.getArrivalTime().dbl();
+        histAdd = 1;
+    } else {
+        setReportedCheck(
+                detectedNodes->getMDMHistoryAddr(reportedPseudo)->getBsmCheck(
+                        histAdd, version));
+    }
 
     do {
         addBsmToList(
@@ -46,7 +56,9 @@ void ProtocolReport::addEvidence(BasicSafetyMessage myBsm,
                 detectedNodes->getNodeHistoryAddr(reportedPseudo)->getBSMAddr(
                         histAdd)->getArrivalTime().dbl();
         histAdd++;
-    } while (((curTime - addedBsmTime) < deltaTime) && histAdd < detectedNodes->getNodeHistoryAddr(reportedPseudo)->getBSMNum());
+    } while (((curTime - addedBsmTime) < deltaTime)
+            && histAdd
+                    < detectedNodes->getNodeHistoryAddr(reportedPseudo)->getBSMNum());
 
     if (reportedCheck.getRangePlausibility() < 1) {
         addBsmToList(myBsm, BsmCheck());
@@ -106,7 +118,8 @@ std::string ProtocolReport::getReportPrintableJson() {
     jw.openJsonElementList("BsmChecks");
     for (int var = 0; var < bsmListNum; ++var) {
         if (var < bsmListNum - 1) {
-            jw.addTagToElement("BsmChecks", rp.getCheckJsonList(checksList[var]));
+            jw.addTagToElement("BsmChecks",
+                    rp.getCheckJsonList(checksList[var]));
         } else {
             jw.addFinalTagToElement("BsmChecks",
                     rp.getCheckJsonList(checksList[var]));

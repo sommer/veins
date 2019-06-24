@@ -34,14 +34,12 @@ MDApplication::MDApplication(int version) {
         this->prntApp->setName(AppV1Name);
         this->prntAppInst->setName(AppV1Name);
     }else{
-
         this->prntApp = &prntAppV2;
         this->prntAppInst = &prntAppInstV2;
 
         this->prntApp->setName(AppV2Name);
         this->prntAppInst->setName(AppV2Name);
     }
-
 }
 
 void MDApplication::saveLine(std::string path, std::string serial, double density,

@@ -10,8 +10,8 @@
  *******************************************************************************/
 
 #include <veins/modules/application/f2md/mdSupport/RelativeOffset.h>
-#define EPSILON_G 0.05
-#define STEP_G 0.12
+#define STEP_G 0.1/3
+#define STEP_PI 0.01
 
 RelativeOffset::RelativeOffset(Coord *curPosConfidence,
         Coord *curSpeedConfidence, Coord* curHeadingConfidence,Coord* curAccelConfidence,
@@ -42,15 +42,14 @@ double RelativeOffset::getGaussianRand(double mean, double stddev) {
 Coord RelativeOffset::OffsetPosition(Coord curPosition) {
     MDMLib mdmLib = MDMLib();
     GeneralLib genLib = GeneralLib();
-    double stepr = fabs(getGaussianRand(0, STEP_G * curPosConfidence->x / 3));
+    double stepr = fabs(getGaussianRand(0, STEP_G * curPosConfidence->x));
 
     double gsim = 0.5;
     if (*deltaRPosition > curPosConfidence->x / 2) {
         gsim = mdmLib.gaussianSum(*deltaRPosition, curPosConfidence->x);
     }
-
-    // std::cout<<"gsim:"<<gsim<<"\n";
     double upDownProb = genLib.RandomDouble(0, 1);
+
     if (upDownProb < gsim) {
         if (*deltaRPosition > stepr) {
             *deltaRPosition = *deltaRPosition - stepr;
@@ -64,8 +63,8 @@ Coord RelativeOffset::OffsetPosition(Coord curPosition) {
         }
     }
 
-    double stepTheta = genLib.RandomDouble(-(STEP_G / 2) * PI,
-            (STEP_G / 2) * PI);
+    double stepTheta = genLib.RandomDouble(-(STEP_PI / 2.0) * PI,
+            (STEP_PI / 2.0) * PI);
     *deltaThetaPosition = *deltaThetaPosition + stepTheta;
 
     double stepX = *deltaRPosition * cos(*deltaThetaPosition);
@@ -80,7 +79,7 @@ Coord RelativeOffset::OffsetPosition(Coord curPosition) {
 Coord RelativeOffset::OffsetSpeed(Coord curSpeed) {
     MDMLib mdmLib = MDMLib();
     GeneralLib genLib = GeneralLib();
-    double stepS = fabs(getGaussianRand(0, STEP_G * curSpeedConfidence->x / 3));
+    double stepS = fabs(getGaussianRand(0, STEP_G * curSpeedConfidence->x));
     double gsim = 0.5;
     if (*deltaSpeed > curSpeedConfidence->x / 2) {
         gsim = mdmLib.gaussianSum(*deltaSpeed, curSpeedConfidence->x);
@@ -105,7 +104,7 @@ Coord RelativeOffset::OffsetSpeed(Coord curSpeed) {
 Coord RelativeOffset::OffsetAccel(Coord curAccel) {
     MDMLib mdmLib = MDMLib();
     GeneralLib genLib = GeneralLib();
-    double stepS = fabs(getGaussianRand(0, STEP_G * curAccelConfidence->x / 3));
+    double stepS = fabs(getGaussianRand(0, STEP_G * curAccelConfidence->x));
     double gsim = 0.5;
     if (*deltaAccel > curAccelConfidence->x / 2) {
         gsim = mdmLib.gaussianSum(*deltaAccel, curAccelConfidence->x);
@@ -134,7 +133,7 @@ Coord RelativeOffset::OffsetHeading(Coord curHeading) {
     double headingAngle = mdmLib.calculateHeadingAngle(curHeading);
 
     double stepH = fabs(
-            getGaussianRand(0, STEP_G * curHeadingConfidence->x / 3));
+            getGaussianRand(0, STEP_G * curHeadingConfidence->x));
 
     double gsim = 0.5;
     if (*deltaHeading > curHeadingConfidence->x / 2) {

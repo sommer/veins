@@ -22,8 +22,9 @@ Define_Module(JosephVeinsApp);
 #define confSpd 1.0
 #define confHea 0.0
 #define confAcc 0.0
+#define minConf 0.20 //20%
 
-#define SAVE_PERIOD 1 //60 seconds
+#define SAVE_PERIOD 10 //60 seconds
 #define PRINT_PERIOD 60 //60 seconds
 
 #define START_SAVE 0 //60 seconds
@@ -37,13 +38,6 @@ static int LastLocalAttackIndex = -1;
 #define LOCAL_ATTACKER_PROB 0.05
 
 #define LOCAL_ATTACK_TYPE attackTypes::StaleMessages
-
-//static attackTypes::Attacks MixLocalAttacksList[] = {
-//        attackTypes::ConstPosOffset,
-//        attackTypes::DoSRandomSybil, attackTypes::ConstSpeed,
-//        attackTypes::DataReplaySybil, attackTypes::RandomPosOffset,
-//        attackTypes::DoSDisruptiveSybil, attackTypes::ConstSpeedOffset,
-//        attackTypes::GridSybil, attackTypes::RandomSpeedOffset };
 
 static attackTypes::Attacks MixLocalAttacksList[] =
         { attackTypes::ConstPos, attackTypes::Disruptive,
@@ -78,7 +72,7 @@ static bool SaveStatsV1 = true;
 static bool SaveStatsV2 = true;
 
 static mdChecksVersionTypes::ChecksVersion checksVersionV1 =
-        mdChecksVersionTypes::CatchChecks;
+        mdChecksVersionTypes::LegacyChecks;
 static mdChecksVersionTypes::ChecksVersion checksVersionV2 =
         mdChecksVersionTypes::CatchChecks;
 
@@ -93,6 +87,7 @@ static bool writeBsmsV1 = false;
 static bool writeBsmsV2 = false;
 static bool writeListBsmsV1 = false;
 static bool writeListBsmsV2 = false;
+
 //writeReport
 static bool writeReportsV1 = false;
 static bool writeReportsV2 = false;
@@ -103,8 +98,6 @@ static bool sendReportsV1 = false;
 static bool sendReportsV2 = false;
 static std::string maHostV1 = "localhost";
 static std::string maHostV2 = "localhost";
-//static std::string maHostV2 = "10.3.218.34";
-//static std::string maHostV2 = "192.168.249.3";
 
 static int maPortV1 = 9980;
 static int maPortV2 = 9981;
@@ -126,6 +119,10 @@ void JosephVeinsApp::initialize(int stage) {
 
     } else if (stage == 1) {
         EV << "Initializing " << par("appName").stringValue() << std::endl;
+
+        MaxRandomPosX = mobility->getplaygroundSizeX();
+        MaxRandomPosY = mobility->getplaygroundSizeY();
+
         setMDApp(appTypeV1, appTypeV2);
 
         MAX_PLAUSIBLE_ACCEL = traciVehicle->getAccel() + 0.01;
@@ -155,20 +152,24 @@ void JosephVeinsApp::initialize(int stage) {
         //pseudonym-------------------------------
 
         if (randomConf) {
-            double randConfPos = genLib.RandomDouble(confPos / 5.0, confPos);
-            double randConfSpeed = genLib.RandomDouble(confSpd / 5.0, confSpd);
-            double randConfHeading = genLib.RandomDouble(confHea / 5.0,
+            double randConfPos = genLib.RandomDouble(confPos * minConf,
+                    confPos);
+            double randConfSpeed = genLib.RandomDouble(confSpd * minConf,
+                    confSpd);
+            double randConfHeading = genLib.RandomDouble(confHea * minConf,
             confHea);
-            double randConfAccel = genLib.RandomDouble(confAcc / 5.0, confAcc);
+            double randConfAccel = genLib.RandomDouble(confAcc * minConf,
+                    confAcc);
 
             if (variableConf) {
-                ConfPosMax = Coord(randConfPos / 5.0, randConfPos / 5.0, 0);
-                ConfSpeedMax = Coord(randConfSpeed / 5.0, randConfSpeed / 5.0,
+                ConfPosMax = Coord(randConfPos * minConf, randConfPos * minConf,
                         0);
-                ConfHeadMax = Coord(randConfHeading / 5.0,
-                        randConfHeading / 5.0, 0);
-                ConfAccelMax = Coord(randConfAccel / 5.0, randConfAccel / 5.0,
-                        0);
+                ConfSpeedMax = Coord(randConfSpeed * minConf,
+                        randConfSpeed * minConf, 0);
+                ConfHeadMax = Coord(randConfHeading * minConf,
+                        randConfHeading * minConf, 0);
+                ConfAccelMax = Coord(randConfAccel * minConf,
+                        randConfAccel * minConf, 0);
             } else {
                 ConfPosMax = Coord(0.0, 0.0, 0.0);
                 ConfSpeedMax = Coord(0.0, 0.0, 0.0);
@@ -194,10 +195,10 @@ void JosephVeinsApp::initialize(int stage) {
 
         } else {
             if (variableConf) {
-                ConfPosMax = Coord(confPos / 5.0, confPos / 5.0, 0);
-                ConfSpeedMax = Coord(confSpd / 5.0, confSpd / 5.0, 0);
-                ConfHeadMax = Coord(confHea / 5.0, confHea / 5.0, 0);
-                ConfAccelMax = Coord(confAcc / 5.0, confAcc / 5.0, 0);
+                ConfPosMax = Coord(confPos * minConf, confPos * minConf, 0);
+                ConfSpeedMax = Coord(confSpd * minConf, confSpd * minConf, 0);
+                ConfHeadMax = Coord(confHea * minConf, confHea * minConf, 0);
+                ConfAccelMax = Coord(confAcc * minConf, confAcc * minConf, 0);
             } else {
                 ConfPosMax = Coord(0.0, 0.0, 0.0);
                 ConfSpeedMax = Coord(0.0, 0.0, 0.0);
@@ -298,7 +299,7 @@ void JosephVeinsApp::initialize(int stage) {
             mdAttack.setMyWidth(&myWidth);
             mdAttack.setPcPolicy(&pcPolicy);
 
-            mdAttack.init(myAttackType);
+            mdAttack.init(myAttackType,MaxRandomPosX,MaxRandomPosY);
 
             //attack-------------------------------
             traciVehicle->setColor(TraCIColor(255, 0, 0, 255));
@@ -444,11 +445,7 @@ void JosephVeinsApp::onBSM(BasicSafetyMessage* bsm) {
         if (EnableV2) {
             existingMDM->addBsmCheck(bsmCheckV2, 2);
         }
-        //detectedNodes.put(senderPseudonym, existingNode, existingMDM);
-    }
-
-    if (EnablePC) {
-        pcPolicy.checkPseudonymChange(myPcType);
+        //detectedNodes.put(senderPseudonym, *existingNode, *existingMDM);
     }
 
 //Your application has received a beacon message from another car or RSU
@@ -638,8 +635,6 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
     case 2: {
         std::string mdv = "V2";
 
-        BsmCheck bsmCheckV2;
-
         switch (checksVersionV2) {
         case mdChecksVersionTypes::LegacyChecks: {
             LegacyChecks mdm(version, myPseudonym, curPosition, curSpeed,
@@ -781,7 +776,6 @@ void JosephVeinsApp::LocalMisbehaviorDetection(BasicSafetyMessage* bsm,
     default:
         break;
     }
-
 }
 
 void JosephVeinsApp::writeReport(MDReport reportBase, int version,
@@ -833,8 +827,8 @@ void JosephVeinsApp::writeReport(MDReport reportBase, int version,
         }
         if (newNode) {
             ProtocolReport hir = ProtocolReport(reportBase);
-            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
-            InitialHiostory, version);
+            hir.addEvidence(myBsm[0],true,bsmCheck, *bsm, &detectedNodes, simTime().dbl(),
+            InitialHistory, version);
             hir.writeStrToFile(savePath, serialNumber, maversion,
                     hir.getReportPrintableJson(), curDate);
         }
@@ -894,8 +888,8 @@ void JosephVeinsApp::writeListReport(MDReport reportBase, int version,
         }
         if (newNode) {
             ProtocolReport hir = ProtocolReport(reportBase);
-            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
-            InitialHiostory, version);
+            hir.addEvidence(myBsm[0],true, bsmCheck, *bsm, &detectedNodes, simTime().dbl(),
+            InitialHistory, version);
             hir.writeStrToFileList(savePath, serialNumber, maversion,
                     hir.getReportPrintableJson(), curDate);
         }
@@ -954,8 +948,8 @@ void JosephVeinsApp::sendReport(MDReport reportBase, int version,
         }
         if (newNode) {
             ProtocolReport hir = ProtocolReport(reportBase);
-            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
-            InitialHiostory, version);
+            hir.addEvidence(myBsm[0],true,bsmCheck, *bsm, &detectedNodes, simTime().dbl(),
+            InitialHistory, version);
             reportStr = hir.getReportPrintableJson();
         } else {
             //do not report now
@@ -1051,6 +1045,10 @@ void JosephVeinsApp::handleSelfMsg(cMessage* msg) {
         handleReportProtocol();
     }
 
+    if (EnablePC) {
+        pcPolicy.checkPseudonymChange(myPcType);
+    }
+
 //this method is for self messages (mostly timers)
 //it is important to call the BaseWaveApplLayer function for BSM and WSM transmission
 
@@ -1083,7 +1081,7 @@ void JosephVeinsApp::handleReportProtocol() {
             reportBase.setReportedGps(reportedBsm->getSenderGpsCoordinates());
 
             ProtocolReport hir = ProtocolReport(reportBase);
-            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
+            hir.addEvidence(myBsm[0],false,BsmCheck(),BasicSafetyMessage(), &detectedNodes, simTime().dbl(),
             CollectionPeriod, 1);
 
             if (writeReportsV1) {
@@ -1129,7 +1127,7 @@ void JosephVeinsApp::handleReportProtocol() {
             reportBase.setReportedGps(reportedBsm->getSenderGpsCoordinates());
 
             ProtocolReport hir = ProtocolReport(reportBase);
-            hir.addEvidence(myBsm[0], &detectedNodes, simTime().dbl(),
+            hir.addEvidence(myBsm[0],false,BsmCheck(),BasicSafetyMessage(), &detectedNodes, simTime().dbl(),
             CollectionPeriod, 2);
 
             if (writeReportsV2) {
