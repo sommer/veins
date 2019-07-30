@@ -42,11 +42,11 @@ using veins::TraCITrafficLightInterface;
 
 Define_Module(veins::TraCIScenarioManager);
 
-const simsignal_t TraCIScenarioManager::traciInitializedSignal = registerSignal("org.car2x.veins.modules.mobility.traciInitialized");
-const simsignal_t TraCIScenarioManager::traciModuleAddedSignal = registerSignal("org.car2x.veins.modules.mobility.traciModuleAdded");
-const simsignal_t TraCIScenarioManager::traciModuleRemovedSignal = registerSignal("org.car2x.veins.modules.mobility.traciModuleRemoved");
-const simsignal_t TraCIScenarioManager::traciTimestepBeginSignal = registerSignal("org.car2x.veins.modules.mobility.traciTimestepBegin");
-const simsignal_t TraCIScenarioManager::traciTimestepEndSignal = registerSignal("org.car2x.veins.modules.mobility.traciTimestepEnd");
+const simsignal_t TraCIScenarioManager::traciInitializedSignal = registerSignal("org_car2x_veins_modules_mobility_traciInitialized");
+const simsignal_t TraCIScenarioManager::traciModuleAddedSignal = registerSignal("org_car2x_veins_modules_mobility_traciModuleAdded");
+const simsignal_t TraCIScenarioManager::traciModuleRemovedSignal = registerSignal("org_car2x_veins_modules_mobility_traciModuleRemoved");
+const simsignal_t TraCIScenarioManager::traciTimestepBeginSignal = registerSignal("org_car2x_veins_modules_mobility_traciTimestepBegin");
+const simsignal_t TraCIScenarioManager::traciTimestepEndSignal = registerSignal("org_car2x_veins_modules_mobility_traciTimestepEnd");
 
 TraCIScenarioManager::TraCIScenarioManager()
     : connection(nullptr)

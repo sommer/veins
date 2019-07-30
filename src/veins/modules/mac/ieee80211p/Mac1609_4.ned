@@ -67,8 +67,8 @@ simple Mac1609_4 extends BaseMacLayer
         double ackErrorRate = default(0.20);
 
         // signal informing interested application about channel busy state
-        @signal[org.car2x.veins.modules.mac.sigChannelBusy](type=bool);
+        @signal[org_car2x_veins_modules_mac_sigChannelBusy](type=bool);
         // signal informing interested application about a collision
-        @signal[org.car2x.veins.modules.mac.sigCollision](type=bool);
+        @signal[org_car2x_veins_modules_mac_sigCollision](type=bool);
 
 }

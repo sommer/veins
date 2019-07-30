@@ -36,11 +36,11 @@ simple TraCIScenarioManager
 {
     parameters:
         @display("i=block/network2");
-        @signal[org.car2x.veins.modules.mobility.traciInitialized](type=bool);
-        @signal[org.car2x.veins.modules.mobility.traciModuleAdded](type=cModule);
-        @signal[org.car2x.veins.modules.mobility.traciModuleRemoved](type=cModule);
-        @signal[org.car2x.veins.modules.mobility.traciTimestepBegin](type=simtime_t);
-        @signal[org.car2x.veins.modules.mobility.traciTimestepEnd](type=simtime_t);
+        @signal[org_car2x_veins_modules_mobility_traciInitialized](type=bool);
+        @signal[org_car2x_veins_modules_mobility_traciModuleAdded](type=cModule);
+        @signal[org_car2x_veins_modules_mobility_traciModuleRemoved](type=cModule);
+        @signal[org_car2x_veins_modules_mobility_traciTimestepBegin](type=simtime_t);
+        @signal[org_car2x_veins_modules_mobility_traciTimestepEnd](type=simtime_t);
         @class(veins::TraCIScenarioManager);
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
         double firstStepAt @unit("s") = default(-1s);  // when to start synchronizing with the TraCI server (-1: immediately after connecting)

@@ -33,8 +33,8 @@ using std::unique_ptr;
 
 Define_Module(veins::Mac1609_4);
 
-const simsignal_t Mac1609_4::sigChannelBusy = registerSignal("org.car2x.veins.modules.mac.sigChannelBusy");
-const simsignal_t Mac1609_4::sigCollision = registerSignal("org.car2x.veins.modules.mac.sigCollision");
+const simsignal_t Mac1609_4::sigChannelBusy = registerSignal("org_car2x_veins_modules_mac_sigChannelBusy");
+const simsignal_t Mac1609_4::sigCollision = registerSignal("org_car2x_veins_modules_mac_sigCollision");
 
 void Mac1609_4::initialize(int stage)
 {

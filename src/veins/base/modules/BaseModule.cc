@@ -25,7 +25,7 @@
 using namespace veins;
 
 // Could not initialize simsignal_t it here!? I got the POST_MODEL_CHANGE id!?
-const simsignal_t BaseModule::catHostStateSignal = registerSignal("org.car2x.veins.base.utils.hoststate");
+const simsignal_t BaseModule::catHostStateSignal = registerSignal("org_car2x_veins_base_utils_hoststate");
 
 BaseModule::BaseModule()
     : cSimpleModule()

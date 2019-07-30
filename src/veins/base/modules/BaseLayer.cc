@@ -27,9 +27,9 @@
 
 using namespace veins;
 
-const simsignal_t BaseLayer::catPassedMsgSignal = registerSignal("org.car2x.veins.base.utils.passedmsg");
-const simsignal_t BaseLayer::catPacketSignal = registerSignal("org.car2x.veins.modules.utility.packet");
-const simsignal_t BaseLayer::catDroppedPacketSignal = registerSignal("org.car2x.veins.modules.utility.droppedpacket");
+const simsignal_t BaseLayer::catPassedMsgSignal = registerSignal("org_car2x_veins_base_utils_passedmsg");
+const simsignal_t BaseLayer::catPacketSignal = registerSignal("org_car2x_veins_modules_utility_packet");
+const simsignal_t BaseLayer::catDroppedPacketSignal = registerSignal("org_car2x_veins_modules_utility_droppedpacket");
 
 /**
  * First we have to initialize the module from which we derived ours,
