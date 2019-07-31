@@ -543,6 +543,7 @@ unique_ptr<AirFrame> BasePhyLayer::encapsMsg(cPacket* macPkt)
     frame->setProtocolId(myProtocolId());
     frame->setId(world->getUniqueAirFrameId());
     frame->setChannel(radio->getCurrentChannel());
+    frame->setBitLength(0); // as the PHY might mix multiple different encoding rates (and things that might not be bits at all)
 
     frame->encapsulate(macPkt);
 
