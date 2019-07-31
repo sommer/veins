@@ -49,11 +49,17 @@ const uint32_t N_DBPS_80211P[] = {24, 36, 48, 72, 96, 144, 192, 216};
  */
 const double T_SYM_80211P = 8e-6;
 
-/** @brief Length of PHY HEADER
+/** @brief Length (in bits) of SERVICE field in PHY HEADER
  *
  * as defined in 17.3.2 PLCP frame format in the IEEE 802.11-2007 standard
- * 40bit header + 6 bit tail */
-const int PHY_HDR_TOTAL_LENGTH = 46;
+ */
+const int PHY_HDR_SERVICE_LENGTH = 16;
+
+/** @brief Length (in bits) of Tail field in PHY PPDU
+ *
+ * as defined in 17.3.2 PLCP frame format in the IEEE 802.11-2007 standard
+ */
+const int PHY_TAIL_LENGTH = 6;
 
 /** @brief Duration of the PLCP Preamble
  *
@@ -72,11 +78,6 @@ const double PHY_HDR_PLCPSIGNAL_DURATION = 8e-6;
  * as defined in Figure 17.1 PPDU frame format in the IEEE 802.11-2007 standard
  */
 const int PHY_HDR_PLCPSIGNAL_LENGTH = 24;
-
-/** @brief Lenght of the PhyHeader sent with normal bitrate
- *
- */
-const int PHY_HDR_PSDU_HEADER_LENGTH = PHY_HDR_TOTAL_LENGTH - PHY_HDR_PLCPSIGNAL_LENGTH;
 
 /** @brief Bitrate of the PLCP Signal
  *
