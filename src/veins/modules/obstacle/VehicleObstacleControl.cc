@@ -140,6 +140,7 @@ Signal VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
     for (size_t i = 0;;) {
         double max_slope = -std::numeric_limits<double>::infinity();
         size_t max_slope_index;
+        bool have_max_slope_index = false;
 
         for (size_t j = i + 1; j < dz_vec.size(); ++j) {
             double slope = (dz_vec[j].second - dz_vec[i].second) / (dz_vec[j].first - dz_vec[i].first);
@@ -147,8 +148,12 @@ Signal VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
             if (slope > max_slope) {
                 max_slope = slope;
                 max_slope_index = j;
+                have_max_slope_index = true;
             }
         }
+
+        // Sanity check
+        ASSERT(have_max_slope_index);
 
         if (max_slope_index >= dz_vec.size() - 1) break;
 
@@ -208,6 +213,7 @@ Signal VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
 
             double min_delta_h = std::numeric_limits<float>::infinity();
             size_t min_delta_h_index;
+            bool have_min_delta_h_index = false;
             for (size_t j = mo[i] + 1; j < mo[i + 1]; ++j) {
                 double h = (y2 - y1) / (x2 - x1) * (dz_vec[j].first - x1) + y1;
                 double delta_h = h - dz_vec[j].second;
@@ -215,8 +221,12 @@ Signal VehicleObstacleControl::getVehicleAttenuationDZ(const std::vector<std::pa
                 if (delta_h < min_delta_h) {
                     min_delta_h = delta_h;
                     min_delta_h_index = j;
+                    have_min_delta_h_index = true;
                 }
             }
+
+            // Sanity check
+            ASSERT(have_min_delta_h_index);
 
             size_t tx = mo[i];
             size_t ob = min_delta_h_index;
