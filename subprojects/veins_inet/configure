@@ -53,7 +53,7 @@ if options.veins:
 # Add flags for INET
 if options.inet:
     fname = os.path.join(options.inet, '_scripts/get_version')
-    expect_version = ['4.1.0']
+    expect_version = ['4.1.0', '4.1.1']
     try:
         print 'Running "%s" to determine INET version.' % fname
         version = subprocess.check_output(['env', fname]).strip()
