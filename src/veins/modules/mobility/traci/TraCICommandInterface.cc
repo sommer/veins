@@ -623,7 +623,16 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
                 phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
                 phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
                 phase.maxDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // maximum duration of phase
-                phase.next = buf.readTypeChecked<int32_t>(TYPE_INTEGER);
+                if (apiVersion <= 19) {
+                    phase.next = {buf.readTypeChecked<int32_t>(TYPE_INTEGER)};
+                }
+                else {
+                    int32_t nextCount = buf.readTypeChecked<int32_t>(TYPE_COMPOUND);
+                    phase.next = {};
+                    for (int32_t k = 0; k < nextCount; ++k) {
+                        phase.next.push_back(buf.readTypeChecked<int32_t>(TYPE_INTEGER));
+                    }
+                }
                 if (apiVersion == 20) {
                     phase.name = buf.readTypeChecked<std::string>(TYPE_STRING);
                 }
@@ -726,8 +735,26 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
             inbuf << phase.minDuration;
             inbuf << static_cast<uint8_t>(traci->getTimeType());
             inbuf << phase.maxDuration;
-            inbuf << static_cast<uint8_t>(TYPE_INTEGER);
-            inbuf << phase.next;
+            if (apiVersion <= 19) {
+                inbuf << static_cast<uint8_t>(TYPE_INTEGER);
+                if (phase.next.size() == 0) {
+                    inbuf << static_cast<int32_t>(0);
+                }
+                else if (phase.next.size() == 1) {
+                    inbuf << static_cast<int32_t>(phase.next[0]);
+                }
+                else {
+                    throw cRuntimeError("Setting multiple phase.next requires a newer version of SUMO");
+                }
+            }
+            else {
+                inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
+                inbuf << static_cast<int32_t>(phase.next.size());
+                for (int32_t next : phase.next) {
+                    inbuf << static_cast<uint8_t>(TYPE_INTEGER);
+                    inbuf << next;
+                }
+            }
             if (apiVersion == 20) {
                 inbuf << static_cast<uint8_t>(TYPE_STRING);
                 inbuf << phase.name;

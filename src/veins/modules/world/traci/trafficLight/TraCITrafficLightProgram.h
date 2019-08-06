@@ -36,7 +36,7 @@ public:
         std::string state;
         simtime_t minDuration;
         simtime_t maxDuration;
-        int32_t next;
+        std::vector<int32_t> next;
         std::string name;
 
         bool isGreenPhase() const;
