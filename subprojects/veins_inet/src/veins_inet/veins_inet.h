@@ -22,6 +22,17 @@
 
 #include "veins/veins.h"
 
+// Version number of last release ("major.minor.patch") or an alpha version, if nonzero
+#define VEINS_INET_VERSION_MAJOR 4
+#define VEINS_INET_VERSION_MINOR 0
+#define VEINS_INET_VERSION_PATCH 0
+#define VEINS_INET_VERSION_ALPHA 0
+
+// Explicitly check Veins version number
+#if !(VEINS_VERSION_MAJOR == 5 && VEINS_VERSION_MINOR >= 0)
+#error Veins version 5.0 or compatible required
+#endif
+
 // VEINS_INET_API macro. Allows us to use the same .h files for both building a .dll and linking against it
 #if defined(VEINS_INET_EXPORT)
 #define VEINS_INET_API OPP_DLLEXPORT

@@ -31,6 +31,12 @@
 
 #include <omnetpp.h>
 
+// Version number of last release ("major.minor.patch") or an alpha version, if nonzero
+#define VEINS_VERSION_MAJOR 5
+#define VEINS_VERSION_MINOR 0
+#define VEINS_VERSION_PATCH 0
+#define VEINS_VERSION_ALPHA 1
+
 // Explicitly check OMNeT++ version number
 #if OMNETPP_VERSION < 0x500
 #error At least OMNeT++/OMNEST version 5.0.0 required

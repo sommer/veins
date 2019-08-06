@@ -32,10 +32,21 @@ run_imgs = [os.path.join('images')]
 
 # Add flags for Veins
 if options.veins:
-    check_fname = os.path.join(options.veins, 'src/veins/package.ned')
-    expect_version = '5'
-    if not os.path.isfile(check_fname):
-        error('Could not find Veins (by looking for %s). Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (check_fname, expect_version))
+    fname = os.path.join(options.veins, 'print-veins-version')
+    expect_version = ['5.0-alpha1']
+    try:
+        print 'Running "%s" to determine Veins version.' % fname
+        version = subprocess.check_output(['env', fname]).strip()
+        if not version in expect_version:
+            print ''
+            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+            warning('Unsupported Veins Version. Expecting %s, found "%s"' % (' or '.join(expect_version), version))
+            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+            print ''
+        else:
+            print 'Found Veins version "%s". Okay.' % version
+    except OSError as e:
+        error('Could not determine Veins Version (by running %s): %s. Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (fname, e, ' or '.join(expect_version)))
         sys.exit(1)
 
     veins_header_dirs = [os.path.join(os.path.relpath(options.veins, 'src'), 'src')]
