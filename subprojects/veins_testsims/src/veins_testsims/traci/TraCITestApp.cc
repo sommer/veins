@@ -482,7 +482,12 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
-            assertClose("(TraCICommandInterface::Vehicle::getAccumulatedWaitingTime)", 0.0, traciVehicle->getAccumulatedWaitingTime());
+            if (traci->getApiVersion() <= 15) {
+                skip("(TraCICommandInterface::Vehicle::getAccumulatedWaitingTime) skipped (requires SUMO 0.31.0 or newer)");
+            }
+            else {
+                assertClose("(TraCICommandInterface::Vehicle::getAccumulatedWaitingTime)", 0.0, traciVehicle->getAccumulatedWaitingTime());
+            }
         }
     }
 

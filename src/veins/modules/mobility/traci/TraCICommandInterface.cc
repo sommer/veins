@@ -381,6 +381,10 @@ double TraCICommandInterface::Vehicle::getWaitingTime() const
 
 double TraCICommandInterface::Vehicle::getAccumulatedWaitingTime() const
 {
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion <= 15) {
+        throw cRuntimeError("TraCICommandInterface::Vehicle::getAccumulatedWaitingTime requires SUMO 0.31.0 or newer");
+    }
     return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_WAITING_TIME_ACCUMULATED, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
