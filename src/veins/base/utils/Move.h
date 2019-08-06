@@ -43,8 +43,6 @@ protected:
     Coord lastPos;
     /** @brief start time at which host started at startPos **/
     simtime_t startTime;
-    /** @brief orientation the host is pointing to **/
-    Coord orientation;
     /** @brief direction the host is moving to, must be normalized **/
     Coord direction;
     /** @brief speed of the host in meters per second **/
@@ -55,7 +53,6 @@ public:
         : startPos()
         , lastPos(0.0, 0.0, DBL_MAX)
         , startTime()
-        , orientation()
         , direction()
         , speed(0.0)
     {
@@ -64,7 +61,6 @@ public:
         : startPos(mSrc.startPos)
         , lastPos(mSrc.lastPos)
         , startTime(mSrc.startTime)
-        , orientation(mSrc.orientation)
         , direction(mSrc.direction)
         , speed(mSrc.speed)
     {
@@ -130,28 +126,6 @@ public:
     }
 
     /**
-     * @brief Returns the orientation vector, i.e. the direction the host is pointing in.
-     * The difference to direction is that the x and y components are never both 0, which
-     * is important for the calculation of the antenna gain. At simulation start, it is
-     * initialized with a (user defined) value. If the host stops during simulation,
-     * the last direction is stored in the orientation field.
-     */
-    const Coord& getOrientation() const
-    {
-        return orientation;
-    }
-
-    /**
-     * @brief Sets the orientation to the passed vector. At least one of the x or y
-     * component has to be nonzero.
-     */
-    void setOrientationByVector(const Coord& orientation)
-    {
-        ASSERT(orientation.x != 0 || orientation.y != 0);
-        this->orientation = orientation;
-    }
-
-    /**
      * @brief Sets the direction to the passed vector,
      * which must be already normalized or the 0-vector.
      */
@@ -159,12 +133,6 @@ public:
     {
         ASSERT(math::almost_equal(direction.squareLength(), 1.0) || math::almost_equal(direction.squareLength(), 0.0));
         this->direction = direction;
-
-        // only if one of the x or y components is nonzero, also set orientation to
-        // the given value
-        if (direction.x != 0 || direction.y != 0) {
-            setOrientationByVector(direction);
-        }
     }
 
     /**
@@ -181,11 +149,6 @@ public:
         ASSERT(!math::almost_equal(direction.length(), 0.0));
         direction /= direction.length();
 
-        // only if one of the x or y components is nonzero, also set orientation to
-        // the new direction
-        if (direction.x != 0 || direction.y != 0) {
-            setOrientationByVector(direction);
-        }
     }
 
     /**
@@ -220,7 +183,7 @@ public:
     {
         std::ostringstream ost;
         ost << " HostMove "
-            << " startPos: " << startPos.info() << " direction: " << direction.info() << " orientation: " << orientation.info() << " startTime: " << startTime << " speed: " << speed;
+            << " startPos: " << startPos.info() << " direction: " << direction.info() << " startTime: " << startTime << " speed: " << speed;
         return ost.str();
     }
 };
