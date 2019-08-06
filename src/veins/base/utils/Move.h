@@ -159,12 +159,6 @@ public:
     {
         ASSERT(math::almost_equal(direction.squareLength(), 1.0) || math::almost_equal(direction.squareLength(), 0.0));
         this->direction = direction;
-
-        // only if one of the x or y components is nonzero, also set orientation to
-        // the given value
-        if (direction.x != 0 || direction.y != 0) {
-            setOrientationByVector(direction);
-        }
     }
 
     /**
@@ -180,12 +174,6 @@ public:
 
         ASSERT(!math::almost_equal(direction.length(), 0.0));
         direction /= direction.length();
-
-        // only if one of the x or y components is nonzero, also set orientation to
-        // the new direction
-        if (direction.x != 0 || direction.y != 0) {
-            setOrientationByVector(direction);
-        }
     }
 
     /**

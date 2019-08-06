@@ -94,6 +94,7 @@ void TraCIMobility::initialize(int stage)
 
         move.setStart(nextPos);
         move.setDirectionByVector(heading.toCoord());
+        move.setOrientationByVector(heading.toCoord());
         if (this->setHostSpeed) {
             move.setSpeed(speed);
         }
@@ -169,6 +170,7 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
 
     move.setStart(nextPos);
     move.setDirectionByVector(heading.toCoord());
+    move.setOrientationByVector(heading.toCoord());
     if (this->setHostSpeed) {
         move.setSpeed(speed);
     }
@@ -187,6 +189,7 @@ void TraCIMobility::nextPosition(const Coord& position, std::string road_id, dou
     this->signals = signals;
 
     changePosition();
+    ASSERT(getCurrentDirection() == heading.toCoord() and getCurrentDirection() == getCurrentOrientation());
 }
 
 void TraCIMobility::changePosition()
@@ -239,6 +242,7 @@ void TraCIMobility::changePosition()
 
     move.setStart(Coord(nextPos.x, nextPos.y, move.getStartPosition().z)); // keep z position
     move.setDirectionByVector(heading.toCoord());
+    move.setOrientationByVector(heading.toCoord());
     if (this->setHostSpeed) {
         move.setSpeed(speed);
     }

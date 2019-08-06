@@ -41,6 +41,10 @@ namespace veins {
  * This module relies on the TraCIScenarioManager for state updates
  * and can not be used on its own.
  *
+ * TraCI server implementations do not differentiate between the orientation and direction of a vehicle.
+ * Thus, TraCIMobility::updatePosition sets the BaseMobility's orientation and direction to the same value.
+ * Said value is equivalent to the heading of the vehicle.
+ *
  * See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
  *
  * @author Christoph Sommer, David Eckhoff, Luca Bedogni, Bastian Halmos, Stefan Joerer
