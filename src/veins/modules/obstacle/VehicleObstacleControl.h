@@ -29,7 +29,7 @@
 #include "veins/modules/obstacle/Obstacle.h"
 #include "veins/modules/world/annotations/AnnotationManager.h"
 #include "veins/base/utils/Move.h"
-#include "veins/modules/obstacle/VehicleObstacle.h"
+#include "veins/modules/obstacle/MobileHostObstacle.h"
 
 namespace veins {
 
@@ -54,8 +54,8 @@ public:
     void handleMessage(cMessage* msg) override;
     void handleSelfMsg(cMessage* msg);
 
-    const VehicleObstacle* add(VehicleObstacle obstacle);
-    void erase(const VehicleObstacle* obstacle);
+    const MobileHostObstacle* add(MobileHostObstacle obstacle);
+    void erase(const MobileHostObstacle* obstacle);
 
     /**
      * get distance and height of potential obstacles
@@ -89,7 +89,7 @@ public:
 protected:
     AnnotationManager* annotations;
 
-    using VehicleObstacles = std::list<VehicleObstacle*>;
+    using VehicleObstacles = std::list<MobileHostObstacle*>;
     VehicleObstacles vehicleObstacles;
     AnnotationManager::Group* vehicleAnnotationGroup;
     void drawVehicleObstacles(const simtime_t& t) const;

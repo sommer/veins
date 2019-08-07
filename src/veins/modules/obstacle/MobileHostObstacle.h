@@ -31,13 +31,15 @@ namespace veins {
 class BaseMobility;
 
 /**
- * stores information about a VehicleObstacle for VehicleObstacleControl
+ * Obstacle for radio waves derived from a mobile host's body.
+ *
+ * Primarily used for VehicleObstacleShadowing.
  */
-class VEINS_API VehicleObstacle {
+class VEINS_API MobileHostObstacle {
 public:
     using Coords = std::vector<Coord>;
 
-    VehicleObstacle(std::vector<AntennaPosition> initialAntennaPositions, BaseMobility* mobility, double length, double hostPositionOffset, double width, double height)
+    MobileHostObstacle(std::vector<AntennaPosition> initialAntennaPositions, BaseMobility* mobility, double length, double hostPositionOffset, double width, double height)
         : initialAntennaPositions(std::move(initialAntennaPositions))
         , mobility(mobility)
         , length(length)

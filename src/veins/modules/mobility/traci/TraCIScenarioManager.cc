@@ -523,7 +523,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
         ASSERT(mobilityModules.size() == 1);
         auto mm = mobilityModules[0];
         double offset = mm->getHostPositionOffset();
-        const VehicleObstacle* vo = vehicleObstacleControl->add(VehicleObstacle(initialAntennaPositions, mm, length, offset, width, height));
+        const MobileHostObstacle* vo = vehicleObstacleControl->add(MobileHostObstacle(initialAntennaPositions, mm, length, offset, width, height));
         vehicleObstacles[mm] = vo;
     }
 
