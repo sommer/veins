@@ -43,6 +43,7 @@
 namespace veins {
 
 class TraCICommandInterface;
+class MobileHostObstacle;
 
 /**
  * @brief
@@ -156,7 +157,7 @@ protected:
     cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
     BaseWorldUtility* world;
-    std::map<const BaseMobility*, const VehicleObstacle*> vehicleObstacles;
+    std::map<const BaseMobility*, const MobileHostObstacle*> vehicleObstacles;
     VehicleObstacleControl* vehicleObstacleControl;
 
     void executeOneTimestep(); /**< read and execute all commands for the next timestep */

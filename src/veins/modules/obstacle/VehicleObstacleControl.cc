@@ -30,8 +30,8 @@
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/toolbox/Signal.h"
 
+using veins::MobileHostObstacle;
 using veins::Signal;
-using veins::VehicleObstacle;
 using veins::VehicleObstacleControl;
 
 Define_Module(veins::VehicleObstacleControl);
@@ -66,19 +66,19 @@ void VehicleObstacleControl::handleSelfMsg(cMessage* msg)
     error("VehicleObstacleControl doesn't handle self-messages");
 }
 
-const VehicleObstacle* VehicleObstacleControl::add(VehicleObstacle obstacle)
+const MobileHostObstacle* VehicleObstacleControl::add(MobileHostObstacle obstacle)
 {
-    auto* o = new VehicleObstacle(obstacle);
+    auto* o = new MobileHostObstacle(obstacle);
     vehicleObstacles.push_back(o);
 
     return o;
 }
 
-void VehicleObstacleControl::erase(const VehicleObstacle* obstacle)
+void VehicleObstacleControl::erase(const MobileHostObstacle* obstacle)
 {
     bool erasedOne = false;
     for (auto k = vehicleObstacles.begin(); k != vehicleObstacles.end();) {
-        VehicleObstacle* o = *k;
+        MobileHostObstacle* o = *k;
         if (o == obstacle) {
             erasedOne = true;
             k = vehicleObstacles.erase(k);
