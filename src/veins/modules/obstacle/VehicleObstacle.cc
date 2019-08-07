@@ -21,7 +21,8 @@
 #include <set>
 #include <limits>
 #include "veins/modules/obstacle/VehicleObstacle.h"
-#include "veins/modules/mobility/traci/TraCIMobility.h"
+#include "veins/base/modules/BaseMobility.h"
+#include "veins/base/utils/Heading.h"
 
 using veins::Coord;
 using veins::VehicleObstacle;
@@ -69,9 +70,9 @@ VehicleObstacle::Coords VehicleObstacle::getShape(simtime_t t) const
     double l = getLength();
     double o = getHostPositionOffset(); // this is the shift we have to undo in order to (given the OMNeT++ host position) get the car's front bumper position
     double w = getWidth() / 2;
-    const TraCIMobility* m = getTraCIMobility();
+    const BaseMobility* m = getMobility();
     Coord p = m->getPositionAt(t);
-    double a = m->getHeading().getRad();
+    double a = Heading::fromCoord(m->getCurrentOrientation()).getRad();
 
     Coords shape;
     shape.push_back(p + Coord(-(l - o), -w).rotatedYaw(-a));
@@ -87,7 +88,7 @@ bool VehicleObstacle::maybeInBounds(double x1, double y1, double x2, double y2, 
     double l = getLength();
     double o = getHostPositionOffset(); // this is the shift we have to undo in order to (given the OMNeT++ host position) get the car's front bumper position
     double w = getWidth() / 2;
-    const TraCIMobility* m = getTraCIMobility();
+    const BaseMobility* m = getMobility();
     Coord p = m->getPositionAt(t);
 
     double lw = std::max(l, w);

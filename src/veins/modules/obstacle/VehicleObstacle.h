@@ -28,7 +28,7 @@ namespace veins {
 
 class ChannelAccess;
 
-class TraCIMobility;
+class BaseMobility;
 
 /**
  * stores information about a VehicleObstacle for VehicleObstacleControl
@@ -37,9 +37,9 @@ class VEINS_API VehicleObstacle {
 public:
     using Coords = std::vector<Coord>;
 
-    VehicleObstacle(std::vector<ChannelAccess*> channelAccessModules, TraCIMobility* traciMobility, double length, double hostPositionOffset, double width, double height)
+    VehicleObstacle(std::vector<ChannelAccess*> channelAccessModules, BaseMobility* mobility, double length, double hostPositionOffset, double width, double height)
         : channelAccessModules(channelAccessModules)
-        , traciMobility(traciMobility)
+        , mobility(mobility)
         , length(length)
         , hostPositionOffset(hostPositionOffset)
         , width(width)
@@ -51,9 +51,9 @@ public:
     {
         this->channelAccessModules = channelAccessModules;
     }
-    void setTraCIMobility(TraCIMobility* traciMobility)
+    void setMobility(BaseMobility* mobility)
     {
-        this->traciMobility = traciMobility;
+        this->mobility = mobility;
     }
     void setLength(double d)
     {
@@ -76,9 +76,9 @@ public:
     {
         return channelAccessModules;
     }
-    const TraCIMobility* getTraCIMobility() const
+    const BaseMobility* getMobility() const
     {
-        return traciMobility;
+        return mobility;
     }
     double getLength() const
     {
@@ -108,7 +108,7 @@ public:
 
 protected:
     std::vector<ChannelAccess*> channelAccessModules;
-    TraCIMobility* traciMobility;
+    BaseMobility* mobility;
     double length;
     double hostPositionOffset;
     double width;
