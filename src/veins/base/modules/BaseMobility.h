@@ -169,6 +169,11 @@ public:
         return move.getPositionAt(stWhen);
     }
 
+    virtual Coord getCurrentOrientation() const
+    {
+        return move.getOrientation();
+    }
+
     /** @brief Returns the current speed at the current simulation time. */
     virtual Coord getCurrentSpeed() const
     {
