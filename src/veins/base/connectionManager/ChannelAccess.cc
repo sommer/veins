@@ -43,7 +43,7 @@ BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
         return dynamic_cast<BaseConnectionManager*>(ccModule);
     }
     else {
-        return FindModule<BaseConnectionManager*>::findGlobalModule();
+        throw cRuntimeError("Variable connectionManagerName must be specified");
     }
 }
 

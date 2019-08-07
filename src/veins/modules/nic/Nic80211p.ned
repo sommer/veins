@@ -34,6 +34,8 @@ import org.car2x.veins.modules.mac.ieee80211p.Mac1609_4;
 //
 module Nic80211p like INic80211p
 {
+    parameters:
+        string connectionManagerName = default("connectionManager");
     gates:
         input upperLayerIn; // to upper layers
         output upperLayerOut; // from upper layers
