@@ -23,10 +23,9 @@
 #include <vector>
 
 #include "veins/base/utils/Coord.h"
+#include "veins/base/utils/AntennaPosition.h"
 
 namespace veins {
-
-class ChannelAccess;
 
 class BaseMobility;
 
@@ -37,8 +36,8 @@ class VEINS_API VehicleObstacle {
 public:
     using Coords = std::vector<Coord>;
 
-    VehicleObstacle(std::vector<ChannelAccess*> channelAccessModules, BaseMobility* mobility, double length, double hostPositionOffset, double width, double height)
-        : channelAccessModules(channelAccessModules)
+    VehicleObstacle(std::vector<AntennaPosition> initialAntennaPositions, BaseMobility* mobility, double length, double hostPositionOffset, double width, double height)
+        : initialAntennaPositions(std::move(initialAntennaPositions))
         , mobility(mobility)
         , length(length)
         , hostPositionOffset(hostPositionOffset)
@@ -47,10 +46,6 @@ public:
     {
     }
 
-    void setChannelAccess(std::vector<ChannelAccess*> channelAccessModules)
-    {
-        this->channelAccessModules = channelAccessModules;
-    }
     void setMobility(BaseMobility* mobility)
     {
         this->mobility = mobility;
@@ -72,9 +67,9 @@ public:
         this->height = d;
     }
 
-    const std::vector<ChannelAccess*> getChannelAccessModules() const
+    const std::vector<AntennaPosition>& getInitialAntennaPositions() const
     {
-        return channelAccessModules;
+        return initialAntennaPositions;
     }
     const BaseMobility* getMobility() const
     {
@@ -107,7 +102,13 @@ public:
     double getIntersectionPoint(const Coord& senderPos, const Coord& receiverPos, simtime_t t) const;
 
 protected:
-    std::vector<ChannelAccess*> channelAccessModules;
+    /**
+     * Positions with identiers for all antennas connected to the host of this obstacle.
+     *
+     * Used to identify which host this obstacle belongs to.
+     * Even works after the host has been destroyed (as AntennaPosition only stores the comonnent id).
+     */
+    std::vector<AntennaPosition> initialAntennaPositions;
     BaseMobility* mobility;
     double length;
     double hostPositionOffset;

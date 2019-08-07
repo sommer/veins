@@ -516,11 +516,14 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     }
 
     if (vehicleObstacleControl) {
-        auto caModules = getSubmodulesOfType<ChannelAccess>(mod, true);
+        std::vector<AntennaPosition> initialAntennaPositions;
+        for (auto& caModule : getSubmodulesOfType<ChannelAccess>(mod, true)) {
+            initialAntennaPositions.push_back(caModule->getAntennaPosition());
+        }
         ASSERT(mobilityModules.size() == 1);
         auto mm = mobilityModules[0];
         double offset = mm->getHostPositionOffset();
-        const VehicleObstacle* vo = vehicleObstacleControl->add(VehicleObstacle(caModules, mm, length, offset, width, height));
+        const VehicleObstacle* vo = vehicleObstacleControl->add(VehicleObstacle(initialAntennaPositions, mm, length, offset, width, height));
         vehicleObstacles[mm] = vo;
     }
 

@@ -302,7 +302,7 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
     double y2 = std::max(senderPos.y, receiverPos.y);
 
     for (auto o : vehicleObstacles) {
-        auto caModules = o->getChannelAccessModules();
+        auto obstacleAntennaPositions = o->getInitialAntennaPositions();
         double l = o->getLength();
         double w = o->getWidth();
         double h = o->getHeight();
@@ -318,14 +318,12 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
 
         // check if this is either the sender or the receiver
         bool ignoreMe = false;
-        for (auto ca : caModules) {
-            auto pos = ca->getAntennaPosition();
-            EV_TRACE << "...it has an antenna at " << pos.getPositionAt() << std::endl;
-            if (pos.isSameAntenna(senderPos_)) {
+        for (auto obstacleAntenna : obstacleAntennaPositions) {
+            if (obstacleAntenna.isSameAntenna(senderPos_)) {
                 EV_TRACE << "...this is the sender: ignore" << std::endl;
                 ignoreMe = true;
             }
-            if (pos.isSameAntenna(receiverPos_)) {
+            if (obstacleAntenna.isSameAntenna(receiverPos_)) {
                 EV_TRACE << "...this is the receiver: ignore" << std::endl;
                 ignoreMe = true;
             }
