@@ -156,7 +156,7 @@ protected:
     cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
 
     BaseWorldUtility* world;
-    std::map<const TraCIMobility*, const VehicleObstacle*> vehicleObstacles;
+    std::map<const BaseMobility*, const VehicleObstacle*> vehicleObstacles;
     VehicleObstacleControl* vehicleObstacleControl;
 
     void executeOneTimestep(); /**< read and execute all commands for the next timestep */

@@ -26,7 +26,7 @@
 #include <cmath>
 
 #include "veins/modules/obstacle/VehicleObstacleControl.h"
-#include "veins/modules/mobility/traci/TraCIMobility.h"
+#include "veins/base/modules/BaseMobility.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
 #include "veins/base/toolbox/Signal.h"
 
@@ -307,7 +307,7 @@ std::vector<std::pair<double, double>> VehicleObstacleControl::getPotentialObsta
         double w = o->getWidth();
         double h = o->getHeight();
 
-        auto hp_approx = o->getTraCIMobility()->getPositionAt(simTime());
+        auto hp_approx = o->getMobility()->getPositionAt(simTime());
 
         EV << "checking vehicle in proximity of " << hp_approx.info() << " with height: " << h << " width: " << w << " length: " << l << endl;
 
