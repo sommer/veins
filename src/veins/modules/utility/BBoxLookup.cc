@@ -93,8 +93,8 @@ BBoxLookup::BBoxLookup(const std::vector<Obstacle*>& obstacles, std::function<BB
     , obstacleLookup()
     , bboxCells()
     , cellSize(cellSize)
-    , numCols(std::ceil(scenarioX / cellSize))
-    , numRows(std::ceil(scenarioY / cellSize))
+    , numCols(std::floor(scenarioX / cellSize) + 1)
+    , numRows(std::floor(scenarioY / cellSize) + 1)
 {
     // phase 1: build unordered collection of cells
     // initialize proto-cells (cells in non-contiguos memory)
