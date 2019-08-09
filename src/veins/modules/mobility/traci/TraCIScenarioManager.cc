@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <iterator>
+#include <cstdlib>
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/base/connectionManager/ChannelAccess.h"
@@ -249,6 +250,15 @@ void TraCIScenarioManager::initialize(int stage)
     ignoreGuiCommands = par("ignoreGuiCommands");
     host = par("host").stdstringValue();
     port = par("port");
+    if (port == -1) {
+        // cascaded search for externally configured traci port
+        const char* env_port = std::getenv("VEINS_TRACI_PORT");
+        if (env_port == nullptr) {
+            error("TraCI Port autoconfiguration failed, set `port` != -1 in omnetpp.ini or provide VEINS_TRACI_PORT environment variable.");
+        }
+        port = std::atoi(env_port);
+    }
+    ASSERT(port > 0 && port < 65536);
     autoShutdown = par("autoShutdown");
 
     annotations = AnnotationManagerAccess().getIfExists();
