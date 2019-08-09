@@ -258,7 +258,6 @@ void TraCIScenarioManager::initialize(int stage)
         }
         port = std::atoi(env_port);
     }
-    ASSERT(port > 0 && port < 65536);
     autoShutdown = par("autoShutdown");
 
     annotations = AnnotationManagerAccess().getIfExists();
