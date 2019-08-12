@@ -193,7 +193,7 @@ protected:
      */
     TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
 
-    virtual int autodetectTraCIPort() const;
+    virtual int getPortNumber() const;
 };
 
 class VEINS_API TraCIScenarioManagerAccess {

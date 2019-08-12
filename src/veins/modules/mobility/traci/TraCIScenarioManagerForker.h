@@ -59,7 +59,7 @@ protected:
 
     virtual void startServer();
     virtual void killServer();
-    int autodetectTraCIPort() const override;
+    int getPortNumber() const override;
 };
 
 class VEINS_API TraCIScenarioManagerForkerAccess {

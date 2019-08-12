@@ -113,21 +113,15 @@ void TraCIScenarioManagerForker::killServer()
     }
 }
 
-int TraCIScenarioManagerForker::autodetectTraCIPort() const
+int TraCIScenarioManagerForker::getPortNumber() const
 {
-    int port = par("port");
+    int port = TraCIScenarioManager::getPortNumber();
     if (port != -1) {
         return port;
     }
 
-    // cascaded search for externally configured traci port
-    const char* env_port = std::getenv("VEINS_TRACI_PORT");
-    if (env_port != nullptr) {
-        port = std::atoi(env_port);
-        return port;
-    }
+    // find a free port for the forker if port is still -1
 
-    // cascade into finding a free port for the forker
     if (initsocketlibonce() != 0) throw cRuntimeError("Could not init socketlib");
 
     SOCKET sock = ::socket(AF_INET, SOCK_STREAM, 0);

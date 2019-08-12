@@ -249,7 +249,10 @@ void TraCIScenarioManager::initialize(int stage)
     penetrationRate = par("penetrationRate").doubleValue();
     ignoreGuiCommands = par("ignoreGuiCommands");
     host = par("host").stdstringValue();
-    port = autodetectTraCIPort();
+    port = getPortNumber();
+    if (port == -1) {
+        throw cRuntimeError("TraCI Port autoconfiguration failed, set `port` != -1 in omnetpp.ini or provide VEINS_TRACI_PORT environment variable.");
+    }
     autoShutdown = par("autoShutdown");
 
     annotations = AnnotationManagerAccess().getIfExists();
@@ -1090,19 +1093,18 @@ void TraCIScenarioManager::processSubcriptionResult(TraCIBuffer& buf)
     }
 }
 
-int TraCIScenarioManager::autodetectTraCIPort() const
+int TraCIScenarioManager::getPortNumber() const
 {
     int port = par("port");
     if (port != -1) {
         return port;
     }
 
-    // cascaded search for externally configured traci port
+    // search for externally configured traci port
     const char* env_port = std::getenv("VEINS_TRACI_PORT");
-    if (env_port == nullptr) {
-        throw cRuntimeError("TraCI Port autoconfiguration failed, set `port` != -1 in omnetpp.ini or provide VEINS_TRACI_PORT environment variable.");
+    if (env_port != nullptr) {
+        port = std::atoi(env_port);
     }
-    port = std::atoi(env_port);
 
     return port;
 }
