@@ -192,6 +192,8 @@ protected:
      * transforms a list of mappings of an omnetpp.ini parameter in a list
      */
     TypeMapping parseMappings(std::string parameter, std::string parameterName, bool allowEmpty = false);
+
+    virtual int autodetectTraCIPort() const;
 };
 
 class VEINS_API TraCIScenarioManagerAccess {
