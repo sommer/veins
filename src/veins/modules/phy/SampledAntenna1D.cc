@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 Alexander Brummer
+// Copyright (C) 2016 Alexander Brummer <alexander.brummer@fau.de>
 // Copyright (C) 2018 Fabian Bronner <fabian.bronner@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
