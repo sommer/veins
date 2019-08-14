@@ -1,15 +1,27 @@
-/* -*- mode:c++ -*- ********************************************************
- * Energy Framework for Omnet++, version 0.9
- *
- * Author:  Laura Marie Feeney
- *
- * Copyright 2009 Swedish Institute of Computer Science.
- *
- * This software is provided `as is' and without any express or implied
- * warranties, including, but not limited to, the implied warranties of
- * merchantability and fitness for a particular purpose.
- *
- ***************************************************************************/
+//
+// Copyright (C) 2007 Technische Universitaet Berlin (TUB), Germany, Telecommunication Networks Group
+// Copyright (C) 2007 Technische Universiteit Delft (TUD), Netherlands
+// Copyright (C) 2007 Universitaet Paderborn (UPB), Germany
+// Copyright (C) 2009 Swedish Institute of Computer Science
+//
+// Documentation for these modules is at http://veins.car2x.org/
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+
+// Original author: Laura Marie Feeney
 
 #pragma once
 
