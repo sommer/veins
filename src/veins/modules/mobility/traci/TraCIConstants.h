@@ -6,6 +6,8 @@
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
+// SPDX-License-Identifier: BSD-3-Clause
+//
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
