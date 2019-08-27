@@ -68,7 +68,7 @@ if options.veins:
             print ''
         else:
             print 'Found Veins version "%s". Okay.' % version
-    except OSError as e:
+    except subprocess.CalledProcessError as e:
         error('Could not determine Veins Version (by running %s): %s. Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (fname, e, ' or '.join(expect_version)))
         sys.exit(1)
 
@@ -98,7 +98,7 @@ if options.inet:
             print ''
         else:
             print 'Found INET version "%s". Okay.' % version
-    except OSError as e:
+    except subprocess.CalledProcessError as e:
         error('Could not determine INET Version (by running %s): %s. Check the path to INET (--with-inet=... option) and the INET version (should be version %s)' % (fname, e, ' or '.join(expect_version)))
         sys.exit(1)
 
