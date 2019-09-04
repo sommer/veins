@@ -619,7 +619,6 @@ void BaseMobility::goToBorder(BorderPolicy policy, BorderHandling wo, Coord& bor
         break;
 
     default:
-        factor = 0;
         throw cRuntimeError("invalid state in goToBorder switch!");
         break;
     }
