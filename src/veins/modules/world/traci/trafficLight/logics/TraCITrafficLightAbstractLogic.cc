@@ -63,7 +63,7 @@ void TraCITrafficLightAbstractLogic::handleMessage(cMessage* msg)
         handleApplMsg(msg);
     }
     else {
-        error("Unknown message arrived on %s", msg->getArrivalGate()->getName());
+        throw cRuntimeError("Unknown message arrived on %s", msg->getArrivalGate()->getName());
     }
 }
 

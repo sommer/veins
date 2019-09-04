@@ -241,7 +241,7 @@ protected:
      */
     virtual void makeMove()
     {
-        error("BaseMobility does not move the host");
+        throw cRuntimeError("BaseMobility does not move the host");
     };
 
     /** @brief Update the position information for this node
@@ -331,7 +331,7 @@ protected:
      */
     virtual void fixIfHostGetsOutside()
     {
-        error("fixIfHostGetsOutside has to be redefined by the user");
+        throw cRuntimeError("fixIfHostGetsOutside has to be redefined by the user");
     };
 
     /**

@@ -73,7 +73,7 @@ void ChannelAccess::initialize(int stage)
 
         cModule* nic = getParentModule();
         cc = getConnectionManager(nic);
-        if (cc == nullptr) error("Could not find connectionmanager module");
+        if (cc == nullptr) throw cRuntimeError("Could not find connectionmanager module");
         isRegistered = false;
     }
 

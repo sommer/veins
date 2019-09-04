@@ -271,7 +271,7 @@ DemoBaseApplLayer::~DemoBaseApplLayer()
 void DemoBaseApplLayer::startService(Channel channel, int serviceId, std::string serviceDescription)
 {
     if (sendWSAEvt->isScheduled()) {
-        error("Starting service although another service was already started");
+        throw cRuntimeError("Starting service although another service was already started");
     }
 
     mac->changeServiceChannel(channel);

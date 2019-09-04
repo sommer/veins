@@ -337,7 +337,7 @@ void TraCIScenarioManager::init_traci()
         // initialize traffic lights
         cModule* parentmod = getParentModule();
         if (!parentmod) {
-            error("Parent Module not found (for traffic light creation)");
+            throw cRuntimeError("Parent Module not found (for traffic light creation)");
         }
         cModuleType* tlModuleType = cModuleType::get(trafficLightModuleType.c_str());
 
@@ -443,7 +443,7 @@ void TraCIScenarioManager::handleMessage(cMessage* msg)
         handleSelfMsg(msg);
         return;
     }
-    error("TraCIScenarioManager doesn't handle messages from other modules");
+    throw cRuntimeError("TraCIScenarioManager doesn't handle messages from other modules");
 }
 
 void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
@@ -458,7 +458,7 @@ void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
         executeOneTimestep();
         return;
     }
-    error("TraCIScenarioManager received unknown self-message");
+    throw cRuntimeError("TraCIScenarioManager received unknown self-message");
 }
 
 void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals)
@@ -483,7 +483,7 @@ void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, co
 void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, Heading heading, VehicleSignalSet signals, double length, double height, double width)
 {
 
-    if (hosts.find(nodeId) != hosts.end()) error("tried adding duplicate module");
+    if (hosts.find(nodeId) != hosts.end()) throw cRuntimeError("tried adding duplicate module");
 
     double option1 = hosts.size() / (hosts.size() + unEquippedHosts.size() + 1.0);
     double option2 = (hosts.size() + 1) / (hosts.size() + unEquippedHosts.size() + 1.0);
@@ -496,10 +496,10 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     int32_t nodeVectorIndex = nextNodeVectorIndex++;
 
     cModule* parentmod = getParentModule();
-    if (!parentmod) error("Parent Module not found");
+    if (!parentmod) throw cRuntimeError("Parent Module not found");
 
     cModuleType* nodeType = cModuleType::get(type.c_str());
-    if (!nodeType) error("Module Type \"%s\" not found", type.c_str());
+    if (!nodeType) throw cRuntimeError("Module Type \"%s\" not found", type.c_str());
 
     // TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
     cModule* mod = nodeType->create(name.c_str(), parentmod, nodeVectorIndex, nodeVectorIndex);
@@ -551,7 +551,7 @@ bool TraCIScenarioManager::isModuleUnequipped(std::string nodeId)
 void TraCIScenarioManager::deleteManagedModule(std::string nodeId)
 {
     cModule* mod = getManagedModule(nodeId);
-    if (!mod) error("no vehicle with Id \"%s\" found", nodeId.c_str());
+    if (!mod) throw cRuntimeError("no vehicle with Id \"%s\" found", nodeId.c_str());
 
     emit(traciModuleRemovedSignal, mod);
 
@@ -670,7 +670,7 @@ void TraCIScenarioManager::processTrafficLightSubscription(std::string objectId,
     cModule* tlIfSubmodule = trafficLights[objectId]->getSubmodule("tlInterface");
     TraCITrafficLightInterface* tlIfModule = dynamic_cast<TraCITrafficLightInterface*>(tlIfSubmodule);
     if (!tlIfModule) {
-        error("Could not find traffic light module %s", objectId.c_str());
+        throw cRuntimeError("Could not find traffic light module %s", objectId.c_str());
     }
 
     uint8_t variableNumber_resp;
@@ -683,10 +683,10 @@ void TraCIScenarioManager::processTrafficLightSubscription(std::string objectId,
         if (isokay != RTYPE_OK) {
             std::string description = buf.readTypeChecked<std::string>(TYPE_STRING);
             if (isokay == RTYPE_NOTIMPLEMENTED) {
-                error("TraCI server reported subscribing to 0x%2x not implemented (\"%s\"). Might need newer version.", response_type, description.c_str());
+                throw cRuntimeError("TraCI server reported subscribing to 0x%2x not implemented (\"%s\"). Might need newer version.", response_type, description.c_str());
             }
             else {
-                error("TraCI server reported error subscribing to variable 0x%2x (\"%s\").", response_type, description.c_str());
+                throw cRuntimeError("TraCI server reported error subscribing to variable 0x%2x (\"%s\").", response_type, description.c_str());
             }
         }
         switch (response_type) {
@@ -707,7 +707,7 @@ void TraCIScenarioManager::processTrafficLightSubscription(std::string objectId,
             break;
 
         default:
-            error("Received unhandled traffic light subscription result; type: 0x%02x", response_type);
+            throw cRuntimeError("Received unhandled traffic light subscription result; type: 0x%02x", response_type);
             break;
         }
     }
@@ -728,8 +728,8 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
             ASSERT(varType == TYPE_STRING);
             std::string description;
             buf >> description;
-            if (isokay == RTYPE_NOTIMPLEMENTED) error("TraCI server reported subscribing to variable 0x%2x not implemented (\"%s\"). Might need newer version.", variable1_resp, description.c_str());
-            error("TraCI server reported error subscribing to variable 0x%2x (\"%s\").", variable1_resp, description.c_str());
+            if (isokay == RTYPE_NOTIMPLEMENTED) throw cRuntimeError("TraCI server reported subscribing to variable 0x%2x not implemented (\"%s\"). Might need newer version.", variable1_resp, description.c_str());
+            throw cRuntimeError("TraCI server reported error subscribing to variable 0x%2x (\"%s\").", variable1_resp, description.c_str());
         }
 
         if (variable1_resp == VAR_DEPARTED_VEHICLES_IDS) {
@@ -868,7 +868,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
             ASSERT(omnetTimestep == serverTimestep);
         }
         else {
-            error("Received unhandled sim subscription result");
+            throw cRuntimeError("Received unhandled sim subscription result");
         }
     }
 }
@@ -901,8 +901,8 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
             std::string errormsg;
             buf >> errormsg;
             if (isSubscribed) {
-                if (isokay == RTYPE_NOTIMPLEMENTED) error("TraCI server reported subscribing to vehicle variable 0x%2x not implemented (\"%s\"). Might need newer version.", variable1_resp, errormsg.c_str());
-                error("TraCI server reported error subscribing to vehicle variable 0x%2x (\"%s\").", variable1_resp, errormsg.c_str());
+                if (isokay == RTYPE_NOTIMPLEMENTED) throw cRuntimeError("TraCI server reported subscribing to vehicle variable 0x%2x not implemented (\"%s\"). Might need newer version.", variable1_resp, errormsg.c_str());
+                throw cRuntimeError("TraCI server reported error subscribing to vehicle variable 0x%2x (\"%s\").", variable1_resp, errormsg.c_str());
             }
         }
         else if (variable1_resp == ID_LIST) {
@@ -994,7 +994,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
             numRead++;
         }
         else {
-            error("Received unhandled vehicle subscription result");
+            throw cRuntimeError("Received unhandled vehicle subscription result");
         }
     }
 
@@ -1005,7 +1005,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
     if (numRead != 8) return;
 
     Coord p = connection->traci2omnet(TraCICoord(px, py));
-    if ((p.x < 0) || (p.y < 0)) error("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
+    if ((p.x < 0) || (p.y < 0)) throw cRuntimeError("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
 
     Heading heading = connection->traci2omnetHeading(angle_traci);
 
@@ -1091,7 +1091,7 @@ void TraCIScenarioManager::processSubcriptionResult(TraCIBuffer& buf)
     else if (commandId_resp == RESPONSE_SUBSCRIBE_TL_VARIABLE)
         processTrafficLightSubscription(objectId_resp, buf);
     else {
-        error("Received unhandled subscription result");
+        throw cRuntimeError("Received unhandled subscription result");
     }
 }
 

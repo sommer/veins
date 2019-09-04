@@ -60,12 +60,12 @@ void VehicleObstacleControl::handleMessage(cMessage* msg)
         handleSelfMsg(msg);
         return;
     }
-    error("VehicleObstacleControl doesn't handle messages from other modules");
+    throw cRuntimeError("VehicleObstacleControl doesn't handle messages from other modules");
 }
 
 void VehicleObstacleControl::handleSelfMsg(cMessage* msg)
 {
-    error("VehicleObstacleControl doesn't handle self-messages");
+    throw cRuntimeError("VehicleObstacleControl doesn't handle self-messages");
 }
 
 const MobileHostObstacle* VehicleObstacleControl::add(MobileHostObstacle obstacle)

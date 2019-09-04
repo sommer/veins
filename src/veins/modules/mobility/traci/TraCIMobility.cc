@@ -269,7 +269,7 @@ void TraCIMobility::fixIfHostGetsOutside()
     bool outsideY = (pos.y < 0) || (pos.y >= playgroundSizeY());
     bool outsideZ = (!world->use2D()) && ((pos.z < 0) || (pos.z >= playgroundSizeZ()));
     if (outsideX || outsideY || outsideZ) {
-        error("Tried moving host to (%f, %f) which is outside the playground", pos.x, pos.y);
+        throw cRuntimeError("Tried moving host to (%f, %f) which is outside the playground", pos.x, pos.y);
     }
 
     handleIfOutside(RAISEERROR, pos, dummy, dummy, dum);

@@ -58,7 +58,7 @@ void TraCIScreenRecorder::handleMessage(cMessage* msg)
         char* s = realpath(dirname, nullptr);
         if (!s) {
             perror("cannot open output directory");
-            error("cannot open output directory '%s'", dirname);
+            throw cRuntimeError("cannot open output directory '%s'", dirname);
         }
         dirname_abs = s;
         free(s);
@@ -91,7 +91,7 @@ void TraCIScreenRecorder::handleMessage(cMessage* msg)
     ASSERT(manager);
     TraCICommandInterface* traci = manager->getCommandInterface();
     if (!traci) {
-        error("Cannot create screenshot: TraCI is not connected yet");
+        throw cRuntimeError("Cannot create screenshot: TraCI is not connected yet");
     }
     TraCICommandInterface::GuiView view = traci->guiView(par("viewName"));
     view.takeScreenshot(filename);

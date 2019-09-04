@@ -405,7 +405,7 @@ bool BaseConnectionManager::unregisterNic(cModule* nicModule)
 void BaseConnectionManager::updateNicPos(int nicID, Coord newPos, Heading heading)
 {
     NicEntries::iterator ItNic = nics.find(nicID);
-    if (ItNic == nics.end()) error("No nic with this ID (%d) is registered with this ConnectionManager.", nicID);
+    if (ItNic == nics.end()) throw cRuntimeError("No nic with this ID (%d) is registered with this ConnectionManager.", nicID);
 
     Coord oldPos = ItNic->second->pos;
     ItNic->second->pos = newPos;
@@ -417,7 +417,7 @@ void BaseConnectionManager::updateNicPos(int nicID, Coord newPos, Heading headin
 const NicEntry::GateList& BaseConnectionManager::getGateList(int nicID) const
 {
     NicEntries::const_iterator ItNic = nics.find(nicID);
-    if (ItNic == nics.end()) error("No nic with this ID (%d) is registered with this ConnectionManager.", nicID);
+    if (ItNic == nics.end()) throw cRuntimeError("No nic with this ID (%d) is registered with this ConnectionManager.", nicID);
 
     return ItNic->second->getGateList();
 }
@@ -425,7 +425,7 @@ const NicEntry::GateList& BaseConnectionManager::getGateList(int nicID) const
 const cGate* BaseConnectionManager::getOutGateTo(const NicEntry* nic, const NicEntry* targetNic) const
 {
     NicEntries::const_iterator ItNic = nics.find(nic->nicId);
-    if (ItNic == nics.end()) error("No nic with this ID (%d) is registered with this ConnectionManager.", nic->nicId);
+    if (ItNic == nics.end()) throw cRuntimeError("No nic with this ID (%d) is registered with this ConnectionManager.", nic->nicId);
 
     return ItNic->second->getOutGateTo(targetNic);
 }

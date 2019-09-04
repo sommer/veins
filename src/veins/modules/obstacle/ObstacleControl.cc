@@ -80,12 +80,12 @@ void ObstacleControl::handleMessage(cMessage* msg)
         handleSelfMsg(msg);
         return;
     }
-    error("ObstacleControl doesn't handle messages from other modules");
+    throw cRuntimeError("ObstacleControl doesn't handle messages from other modules");
 }
 
 void ObstacleControl::handleSelfMsg(cMessage* msg)
 {
-    error("ObstacleControl doesn't handle self-messages");
+    throw cRuntimeError("ObstacleControl doesn't handle self-messages");
 }
 
 void ObstacleControl::addFromXml(cXMLElement* xml)
@@ -278,7 +278,7 @@ double ObstacleControl::getAttenuationPerCut(std::string type)
     if (perCut.find(type) != perCut.end())
         return perCut[type];
     else {
-        error("Obstacle type %s unknown", type.c_str());
+        throw cRuntimeError("Obstacle type %s unknown", type.c_str());
         return -1;
     }
 }
@@ -288,7 +288,7 @@ double ObstacleControl::getAttenuationPerMeter(std::string type)
     if (perMeter.find(type) != perMeter.end())
         return perMeter[type];
     else {
-        error("Obstacle type %s unknown", type.c_str());
+        throw cRuntimeError("Obstacle type %s unknown", type.c_str());
         return -1;
     }
 }

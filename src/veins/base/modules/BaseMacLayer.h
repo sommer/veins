@@ -136,13 +136,13 @@ protected:
 
     void handleSelfMsg(cMessage* msg) override
     {
-        error("BaseMacLayer does not handle self messages");
+        throw cRuntimeError("BaseMacLayer does not handle self messages");
     };
     void handleLowerControl(cMessage* msg) override;
 
     void handleUpperControl(cMessage* msg) override
     {
-        error("BaseMacLayer does not handle control messages from upper layers");
+        throw cRuntimeError("BaseMacLayer does not handle control messages from upper layers");
     };
 
     /** @brief decapsulate the network message from the MacPkt */

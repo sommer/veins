@@ -130,7 +130,7 @@ void TraCITrafficLightInterface::setCurrentLogicById(const std::string& logicId,
     if (setSumo) {
         ASSERT(logicId != "online");
         if (!programDefinition.hasLogic(logicId)) {
-            error("Logic '%s' not found in program of TraCITrafficLightInterface %s", logicId.c_str(), external_id.c_str());
+            throw cRuntimeError("Logic '%s' not found in program of TraCITrafficLightInterface %s", logicId.c_str(), external_id.c_str());
         }
         tlCommandInterface->setProgram(logicId);
         const std::string newValueInSumo = tlCommandInterface->getCurrentProgramID();
@@ -149,7 +149,7 @@ void TraCITrafficLightInterface::setCurrentPhaseByNr(const unsigned int phaseNr,
 {
     if (setSumo) {
         if (phaseNr >= getCurrentLogic().phases.size()) {
-            error("Cannot set current phase to %d: current logic has only %d Phases (TraCITrafficLightInterface %s)", phaseNr, getCurrentLogic().phases.size(), external_id.c_str());
+            throw cRuntimeError("Cannot set current phase to %d: current logic has only %d Phases (TraCITrafficLightInterface %s)", phaseNr, getCurrentLogic().phases.size(), external_id.c_str());
         }
         tlCommandInterface->setPhaseIndex(phaseNr);
         const unsigned int newValueInSumo = tlCommandInterface->getCurrentPhaseIndex();

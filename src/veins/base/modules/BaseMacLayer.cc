@@ -53,7 +53,7 @@ void BaseMacLayer::initialize(int stage)
     if (stage == 0) {
         // get handle to phy layer
         if ((phy = FindModule<MacToPhyInterface*>::findSubModule(getParentModule())) == nullptr) {
-            error("Could not find a PHY module.");
+            throw cRuntimeError("Could not find a PHY module.");
         }
 
         headerLength = par("headerLength");

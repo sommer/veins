@@ -96,7 +96,7 @@ void TraCIScenarioManagerLaunchd::init_traci()
             EV_DEBUG << "TraCI server \"" << serverVersion << "\" reports API version " << apiVersion << endl;
         }
         else {
-            error("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using the version of sumo-launchd that ships with Veins.", serverVersion.c_str(), apiVersion);
+            throw cRuntimeError("TraCI server \"%s\" reports API version %d, which is unsupported. We recommend using the version of sumo-launchd that ships with Veins.", serverVersion.c_str(), apiVersion);
         }
     }
 
@@ -115,7 +115,7 @@ void TraCIScenarioManagerLaunchd::init_traci()
     obuf >> cmdLength;
     uint8_t commandResp;
     obuf >> commandResp;
-    if (commandResp != CMD_FILE_SEND) error("Expected response to command %d, but got one for command %d", CMD_FILE_SEND, commandResp);
+    if (commandResp != CMD_FILE_SEND) throw cRuntimeError("Expected response to command %d, but got one for command %d", CMD_FILE_SEND, commandResp);
     uint8_t result;
     obuf >> result;
     std::string description;
