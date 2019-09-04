@@ -52,10 +52,6 @@ void TraCIMobility::Statistics::initialize()
 
 void TraCIMobility::Statistics::watch(cSimpleModule&)
 {
-    WATCH(totalTime);
-    WATCH(minSpeed);
-    WATCH(maxSpeed);
-    WATCH(totalDistance);
 }
 
 void TraCIMobility::Statistics::recordScalars(cSimpleModule& module)
@@ -100,10 +96,6 @@ void TraCIMobility::initialize(int stage)
         if (this->setHostSpeed) {
             move.setSpeed(speed);
         }
-
-        WATCH(road_id);
-        WATCH(speed);
-        WATCH(heading);
 
         isParking = false;
 

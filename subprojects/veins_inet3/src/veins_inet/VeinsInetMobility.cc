@@ -125,11 +125,6 @@ void VeinsInetMobility::initialize(int stage)
         if (visualizeMobility) {
             visualRepresentation = inet::getModuleFromPar<cModule>(par("visualRepresentation"), this);
         }
-        WATCH(constraintAreaMin);
-        WATCH(constraintAreaMax);
-        WATCH(lastPosition);
-        WATCH(lastSpeed);
-        WATCH(lastOrientation);
     }
     else if (stage == inet::INITSTAGE_PHYSICAL_ENVIRONMENT_2) {
         if (visualRepresentation != nullptr) {
