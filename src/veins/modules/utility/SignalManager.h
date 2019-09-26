@@ -50,7 +50,9 @@ public:
 
     ~SignalCallbackListener()
     {
-        receptor->unsubscribe(signal, this);
+        if (getSubscribeCount() > 0) {
+            receptor->unsubscribe(signal, this);
+        }
     }
 
     void receiveSignal(cComponent* source, simsignal_t signalID, Payload p, cObject* details) override
