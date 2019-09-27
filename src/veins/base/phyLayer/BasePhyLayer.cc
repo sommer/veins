@@ -527,11 +527,7 @@ void BasePhyLayer::handleUpperMessage(cMessage* msg)
     // Prepare a POA object and attach it to the created Airframe
     AntennaPosition pos = antennaPosition;
     Coord orient = antennaHeading.toCoord();
-    POA* poa = new POA(pos, orient, antenna);
-    frame->setPoa(*poa);
-    // the frame is now owner of the POA object
-    delete poa;
-    poa = nullptr;
+    frame->setPoa({pos, orient, antenna});
 
     // make sure there is no self message of kind TX_OVER scheduled
     // and schedule the actual one
