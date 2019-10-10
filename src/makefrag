@@ -31,3 +31,10 @@ ifeq ($(PLATFORM),win32.x86_64)
   ENABLE_AUTO_IMPORT=-Wl,--enable-auto-import
   LDFLAGS := $(filter-out $(ENABLE_AUTO_IMPORT), $(LDFLAGS))
 endif
+
+# The following flags are for profiling.
+# Enabling them will slow down your simulation!
+# Generate source-level debug information with dwarf version 5
+#CFLAGS += -gdwarf-5
+# Enable mcount instrumentation
+#CFlAGS += -pg
