@@ -72,6 +72,10 @@ public:
     static const simsignal_t sigChannelBusy;
     // tell to anybody which is interested when a collision occurred
     static const simsignal_t sigCollision;
+    // tell to anybody which is interested when a packet was sent
+    static const simsignal_t sigSentPacket;
+    // tell to anybody which is interested when a acknowledgement was sent
+    static const simsignal_t sigSentAck;
 
     // Access categories in increasing order of priority (see IEEE Std 802.11-2012, Table 9-1)
     enum t_access_category {

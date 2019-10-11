@@ -37,6 +37,8 @@ Define_Module(veins::Mac1609_4);
 
 const simsignal_t Mac1609_4::sigChannelBusy = registerSignal("org_car2x_veins_modules_mac_sigChannelBusy");
 const simsignal_t Mac1609_4::sigCollision = registerSignal("org_car2x_veins_modules_mac_sigCollision");
+const simsignal_t Mac1609_4::sigSentPacket = registerSignal("org_car2x_veins_modules_mac_sigSentPacket");
+const simsignal_t Mac1609_4::sigSentAck = registerSignal("org_car2x_veins_modules_mac_sigSentAck");
 
 void Mac1609_4::initialize(int stage)
 {
@@ -472,9 +474,11 @@ void Mac1609_4::sendFrame(Mac80211Pkt* frame, simtime_t delay, Channel channelNr
 
     if (dynamic_cast<Mac80211Ack*>(frame)) {
         statsSentAcks += 1;
+        emit(sigSentAck, true);
     }
     else {
         statsSentPackets += 1;
+        emit(sigSentPacket, true);
     }
 }
 
