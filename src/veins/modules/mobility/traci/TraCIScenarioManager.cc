@@ -65,8 +65,14 @@ TraCIScenarioManager::~TraCIScenarioManager()
     if (connection) {
         TraCIBuffer buf = connection->query(CMD_CLOSE, TraCIBuffer());
     }
-    cancelAndDelete(connectAndStartTrigger);
-    cancelAndDelete(executeOneTimestepTrigger);
+    if (connectAndStartTrigger) {
+        cancelAndDelete(connectAndStartTrigger);
+        connectAndStartTrigger = nullptr;
+    }
+    if (executeOneTimestepTrigger) {
+        cancelAndDelete(executeOneTimestepTrigger);
+        executeOneTimestepTrigger = nullptr;
+    }
 }
 
 namespace {
