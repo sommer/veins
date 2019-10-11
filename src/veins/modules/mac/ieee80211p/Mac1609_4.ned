@@ -70,7 +70,9 @@ simple Mac1609_4 extends BaseMacLayer
 
         // signal informing interested application about channel busy state
         @signal[org_car2x_veins_modules_mac_sigChannelBusy](type=bool);
+        @statistic[channelBusy](source=org_car2x_veins_modules_mac_sigChannelBusy; record=timeavg, vector?);
         // signal informing interested application about a collision
         @signal[org_car2x_veins_modules_mac_sigCollision](type=bool);
+        @statistic[collisions](source=org_car2x_veins_modules_mac_sigCollision; record=count, vector?);
 
 }
