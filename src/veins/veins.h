@@ -37,7 +37,7 @@
 #define VEINS_VERSION_MAJOR 5
 #define VEINS_VERSION_MINOR 0
 #define VEINS_VERSION_PATCH 0
-#define VEINS_VERSION_ALPHA 2
+#define VEINS_VERSION_ALPHA 0
 
 // Explicitly check OMNeT++ version number
 #if OMNETPP_VERSION < 0x500

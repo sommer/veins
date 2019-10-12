@@ -53,7 +53,7 @@ run_lib_paths = []
 # Add flags for Veins
 if options.veins:
     fname = os.path.join(options.veins, 'print-veins-version')
-    expect_version = ['5.0-alpha2']
+    expect_version = ['5.0']
     try:
         print 'Running "%s" to determine Veins version.' % fname
         version = subprocess.check_output(['env', fname]).strip()
