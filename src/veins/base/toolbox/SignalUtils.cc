@@ -47,7 +47,7 @@ Signal getMaxInterference(simtime_t start, simtime_t end, AirFrame* const refere
     std::priority_queue<Signal, std::vector<Signal>, greaterByReceptionEnd<Signal>> signalEndings;
     simtime_t currentTime = 0;
 
-    interfererFrames.sort([](const AirFrame* x, const AirFrame* y) { return x->getSignal().getReceptionStart() <  y->getSignal().getReceptionStart(); });
+    interfererFrames.sort([](const AirFrame* x, const AirFrame* y) { return x->getSignal().getReceptionStart() < y->getSignal().getReceptionStart(); });
 
     for (auto& interfererFrame : interfererFrames) {
         if (interfererFrame->getTreeId() == referenceFrame->getTreeId()) continue; // skip the signal we want to compare to
