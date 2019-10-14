@@ -42,6 +42,7 @@ simple TraCIMobility extends BaseMobility
     parameters:
         @class(veins::TraCIMobility);
         @signal[org_car2x_veins_modules_mobility_parkingStateChanged](type=veins::TraCIMobility);
+        @signal[org_car2x_veins_modules_mobility_currentCO2Emission](type=double);
         @display("i=block/cogwheel");
         double hostPositionOffset @unit("m") = default(0.0m);  // shift OMNeT++ module this far from front of the car
         bool setHostSpeed = default(false);  // whether to update the speed of the host (along with its position)

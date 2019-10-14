@@ -75,6 +75,7 @@ public:
     };
 
     const static simsignal_t parkingStateChangedSignal;
+    const static simsignal_t currentCO2EmissionSignal;
 
     TraCIMobility()
         : BaseMobility()

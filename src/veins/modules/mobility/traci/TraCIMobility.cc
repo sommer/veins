@@ -33,6 +33,7 @@ using veins::TraCIMobility;
 Define_Module(veins::TraCIMobility);
 
 const simsignal_t TraCIMobility::parkingStateChangedSignal = registerSignal("org_car2x_veins_modules_mobility_parkingStateChanged");
+const simsignal_t TraCIMobility::currentCO2EmissionSignal = registerSignal("org_car2x_veins_modules_mobility_currentCO2Emission");
 
 namespace {
 const double MY_INFINITY = (std::numeric_limits<double>::has_infinity ? std::numeric_limits<double>::infinity() : std::numeric_limits<double>::max());
@@ -214,6 +215,7 @@ void TraCIMobility::changePosition()
                 double co2emission = calculateCO2emission(speed, acceleration);
                 currentAccelerationVec.record(acceleration);
                 currentCO2EmissionVec.record(co2emission);
+                emit(currentCO2EmissionSignal, co2emission * updateInterval.dbl());
                 statistics.totalCO2Emission += co2emission * updateInterval.dbl();
             }
             last_speed = speed;
