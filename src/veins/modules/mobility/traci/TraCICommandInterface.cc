@@ -235,6 +235,11 @@ std::list<std::string> TraCICommandInterface::getVehicleTypeIds()
     return genericGetStringList(CMD_GET_VEHICLETYPE_VARIABLE, "", ID_LIST, RESPONSE_GET_VEHICLETYPE_VARIABLE);
 }
 
+void TraCICommandInterface::setVehicleTypeMaxSpeed(std::string typeId, double maxSpeed)
+{
+    genericSetDouble(CMD_SET_VEHICLETYPE_VARIABLE, typeId, VAR_MAXSPEED, maxSpeed);
+}
+
 std::list<std::string> TraCICommandInterface::getRouteIds()
 {
     return genericGetStringList(CMD_GET_ROUTE_VARIABLE, "", ID_LIST, RESPONSE_GET_ROUTE_VARIABLE);
