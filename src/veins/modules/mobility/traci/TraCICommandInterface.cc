@@ -1330,6 +1330,13 @@ double TraCICommandInterface::genericGetDouble(uint8_t commandId, std::string ob
     return res;
 }
 
+void TraCICommandInterface::genericSetDouble(uint8_t commandId, std::string objectId, uint8_t variableId, double value)
+{
+    uint8_t variableType = TYPE_DOUBLE;
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId << variableType << value);
+    ASSERT(buf.eof());
+}
+
 simtime_t TraCICommandInterface::genericGetTime(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
 {
     uint8_t resultTypeId = getTimeType();
