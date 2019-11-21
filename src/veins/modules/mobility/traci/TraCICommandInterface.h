@@ -465,6 +465,7 @@ public:
 
     // Vehicletype methods
     std::list<std::string> getVehicleTypeIds();
+    double getVehicleTypeMaxSpeed(std::string typeId);
     void setVehicleTypeMaxSpeed(std::string typeId, double maxSpeed);
 
     // GuiView methods
