@@ -207,6 +207,16 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
+            assertEqual("(TraCICommandInterface::getVehicleTypeMaxSpeed speed is correct)", traci->getVehicleTypeMaxSpeed("vtype0"), 70);
+            traci->setVehicleTypeMaxSpeed("vtype0", 60);
+            assertEqual("(TraCICommandInterface::getVehicleTypeMaxSpeed) changed speed is correct", traci->getVehicleTypeMaxSpeed("vtype0"), 60);
+            // change back to original value
+            traci->setVehicleTypeMaxSpeed("vtype0", 70);
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
             std::list<std::string> o = traci->getTrafficlightIds();
             assertEqual("(TraCICommandInterface::getTrafficlightIds) number is 1", size_t(1), o.size());
             assertEqual("(TraCICommandInterface::getTrafficlightIds) id is correct", "10", *o.begin());
