@@ -213,6 +213,7 @@ void TraCIMobility::changePosition()
             if (last_speed != -1) {
                 double acceleration = (speed - last_speed) / updateInterval;
                 double co2emission = calculateCO2emission(speed, acceleration);
+                double fuelConsumption = calculateFuelConsumption(speed, acceleration);
                 currentAccelerationVec.record(acceleration);
                 currentCO2EmissionVec.record(co2emission);
                 emit(currentCO2EmissionSignal, co2emission * updateInterval.dbl());
