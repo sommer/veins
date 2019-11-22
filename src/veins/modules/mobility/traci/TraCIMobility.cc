@@ -269,9 +269,10 @@ void TraCIMobility::fixIfHostGetsOutside()
     handleIfOutside(RAISEERROR, pos, dummy, dummy, dum);
 }
 
-double TraCIMobility::calculateCO2emission(double v, double a) const
+namespace {
+
+double calculatePTract(double v, double a)
 {
-    // Calculate CO2 emission parameters according to:
     // Cappiello, A. and Chabini, I. and Nam, E.K. and Lue, A. and Abou Zeid, M., "A statistical model of vehicle emissions and fuel consumption," IEEE 5th International Conference on Intelligent Transportation Systems (IEEE ITSC), pp. 801-809, 2002
 
     constexpr double A = 1000 * 0.1326; // W/m/s
@@ -280,7 +281,20 @@ double TraCIMobility::calculateCO2emission(double v, double a) const
     constexpr double M = 1325.0; // kg
 
     // power in W
-    double P_tract = A * v + B * v * v + C * v * v * v + M * a * v; // for sloped roads: +M*g*sin_theta*v
+    return A * v + B * std::pow(v, 2) + C * std::pow(v, 3) + M * a * v; // for sloped roads: +M*g*sin_theta*v
+}
+
+double ms_to_kmph(double v)
+{
+    return v * 3.6;
+}
+
+} // namespace
+
+double TraCIMobility::calculateCO2emission(double v, double a) const
+{
+    // Calculate CO2 emission parameters according to:
+    // Cappiello, A. and Chabini, I. and Nam, E.K. and Lue, A. and Abou Zeid, M., "A statistical model of vehicle emissions and fuel consumption," IEEE 5th International Conference on Intelligent Transportation Systems (IEEE ITSC), pp. 801-809, 2002
 
     /*
        // "Category 7 vehicle" (e.g. a '92 Suzuki Swift)
@@ -298,8 +312,9 @@ double TraCIMobility::calculateCO2emission(double v, double a) const
     constexpr double zeta = 0.241;
     constexpr double alpha1 = 0.973;
 
-    if (P_tract <= 0) return alpha1;
-    return alpha + beta * v * 3.6 + delta * v * v * v * (3.6 * 3.6 * 3.6) + zeta * a * v;
+    // Eq 9 - please note: gamma was dropped in comparison to Eq 6
+    if (::calculatePTract(a, v) <= 0) return alpha1;
+    return alpha + beta * ::ms_to_kmph(v) + delta * std::pow(::ms_to_kmph(v), 3) + zeta * a * v;
 }
 
 Coord TraCIMobility::calculateHostPosition(const Coord& vehiclePos) const
