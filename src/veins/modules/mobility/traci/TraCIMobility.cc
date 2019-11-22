@@ -50,6 +50,7 @@ void TraCIMobility::Statistics::initialize()
     maxSpeed = -MY_INFINITY;
     totalDistance = 0;
     totalCO2Emission = 0;
+    totalFuelConsumption = 0;
 }
 
 void TraCIMobility::Statistics::watch(cSimpleModule&)
@@ -66,6 +67,7 @@ void TraCIMobility::Statistics::recordScalars(cSimpleModule& module)
     if (maxSpeed != -MY_INFINITY) module.recordScalar("maxSpeed", maxSpeed);
     module.recordScalar("totalDistance", totalDistance);
     module.recordScalar("totalCO2Emission", totalCO2Emission);
+    module.recordScalar("totalFuelConsumption", totalFuelConsumption);
 }
 
 void TraCIMobility::initialize(int stage)
@@ -220,6 +222,7 @@ void TraCIMobility::changePosition()
                 emit(currentCO2EmissionSignal, co2emission * updateInterval.dbl());
                 emit(currentFuelConsumptionSignal, fuelConsumption * updateInterval.dbl());
                 statistics.totalCO2Emission += co2emission * updateInterval.dbl();
+                statistics.totalFuelConsumption += fuelConsumption * updateInterval.dbl();
             }
             last_speed = speed;
         }

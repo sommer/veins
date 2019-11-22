@@ -68,6 +68,7 @@ public:
         double maxSpeed; /**< for statistics: maximum value of currentSpeed */
         double totalDistance; /**< for statistics: total distance travelled */
         double totalCO2Emission; /**< for statistics: total CO2 emission */
+        double totalFuelConsumption; /**< for statistics: total fuel consumption */
 
         void initialize();
         void watch(cSimpleModule& module);
