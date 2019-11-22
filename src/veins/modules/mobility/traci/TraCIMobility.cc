@@ -274,29 +274,29 @@ double TraCIMobility::calculateCO2emission(double v, double a) const
     // Calculate CO2 emission parameters according to:
     // Cappiello, A. and Chabini, I. and Nam, E.K. and Lue, A. and Abou Zeid, M., "A statistical model of vehicle emissions and fuel consumption," IEEE 5th International Conference on Intelligent Transportation Systems (IEEE ITSC), pp. 801-809, 2002
 
-    double A = 1000 * 0.1326; // W/m/s
-    double B = 1000 * 2.7384e-03; // W/(m/s)^2
-    double C = 1000 * 1.0843e-03; // W/(m/s)^3
-    double M = 1325.0; // kg
+    constexpr double A = 1000 * 0.1326; // W/m/s
+    constexpr double B = 1000 * 2.7384e-03; // W/(m/s)^2
+    constexpr double C = 1000 * 1.0843e-03; // W/(m/s)^3
+    constexpr double M = 1325.0; // kg
 
     // power in W
     double P_tract = A * v + B * v * v + C * v * v * v + M * a * v; // for sloped roads: +M*g*sin_theta*v
 
     /*
        // "Category 7 vehicle" (e.g. a '92 Suzuki Swift)
-       double alpha = 1.01;
-       double beta = 0.0162;
-       double delta = 1.90e-06;
-       double zeta = 0.252;
-       double alpha1 = 0.985;
+       constexpr double alpha = 1.01;
+       constexpr double beta = 0.0162;
+       constexpr double delta = 1.90e-06;
+       constexpr double zeta = 0.252;
+       constexpr double alpha1 = 0.985;
      */
 
     // "Category 9 vehicle" (e.g. a '94 Dodge Spirit)
-    double alpha = 1.11;
-    double beta = 0.0134;
-    double delta = 1.98e-06;
-    double zeta = 0.241;
-    double alpha1 = 0.973;
+    constexpr double alpha = 1.11;
+    constexpr double beta = 0.0134;
+    constexpr double delta = 1.98e-06;
+    constexpr double zeta = 0.241;
+    constexpr double alpha1 = 0.973;
 
     if (P_tract <= 0) return alpha1;
     return alpha + beta * v * 3.6 + delta * v * v * v * (3.6 * 3.6 * 3.6) + zeta * a * v;
