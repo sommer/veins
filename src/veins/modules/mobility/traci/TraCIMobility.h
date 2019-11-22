@@ -205,6 +205,14 @@ protected:
     double calculateCO2emission(double v, double a) const;
 
     /**
+     * Returns the amount of consumed fuel in ml/second, calculated for an average Car
+     * @param v speed in m/s
+     * @param a acceleration in m/s^2
+     * @returns consumption in g/s
+     */
+    double calculateFuelConsumption(double v, double a) const;
+
+    /**
      * Calculates where the OMNeT++ module position of this car should be, given its front bumper position
      */
     Coord calculateHostPosition(const Coord& vehiclePos) const;

@@ -317,6 +317,23 @@ double TraCIMobility::calculateCO2emission(double v, double a) const
     return alpha + beta * ::ms_to_kmph(v) + delta * std::pow(::ms_to_kmph(v), 3) + zeta * a * v;
 }
 
+double TraCIMobility::calculateFuelConsumption(double v, double a) const
+{
+    // Calculate fuel consumption parameters according to:
+    // Cappiello, A. and Chabini, I. and Nam, E.K. and Lue, A. and Abou Zeid, M., "A statistical model of vehicle emissions and fuel consumption," IEEE 5th International Conference on Intelligent Transportation Systems (IEEE ITSC), pp. 801-809, 2002
+
+    // Table 1: calibrated parameters for the engine-out emissions module
+    constexpr double alpha = 0.365;
+    constexpr double beta = 0.00114;
+    constexpr double delta = 9.65e-07;
+    constexpr double zeta = 0.0943;
+    constexpr double alpha1 = 0.299;
+
+    // Eq 6 - please note: gamma was dropped
+    if (::calculatePTract(a, v) <= 0) return alpha1;
+    return alpha + beta * ::ms_to_kmph(v) + delta * std::pow(::ms_to_kmph(v), 3) + zeta * a * v;
+}
+
 Coord TraCIMobility::calculateHostPosition(const Coord& vehiclePos) const
 {
     Coord corPos;
