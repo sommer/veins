@@ -84,6 +84,7 @@ void TraCIMobility::initialize(int stage)
         currentSpeedVec.setName("speed");
         currentAccelerationVec.setName("acceleration");
         currentCO2EmissionVec.setName("co2emission");
+        currentFuelConsumptionVec.setName("fuelconsumption");
 
         statistics.initialize();
         statistics.watch(*this);
@@ -219,6 +220,7 @@ void TraCIMobility::changePosition()
                 double fuelConsumption = calculateFuelConsumption(speed, acceleration);
                 currentAccelerationVec.record(acceleration);
                 currentCO2EmissionVec.record(co2emission);
+                currentFuelConsumptionVec.record(fuelConsumption);
                 emit(currentCO2EmissionSignal, co2emission * updateInterval.dbl());
                 emit(currentFuelConsumptionSignal, fuelConsumption * updateInterval.dbl());
                 statistics.totalCO2Emission += co2emission * updateInterval.dbl();

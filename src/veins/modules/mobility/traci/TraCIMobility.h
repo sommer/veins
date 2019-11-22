@@ -171,6 +171,7 @@ protected:
     cOutVector currentSpeedVec; /**< vector plotting speed */
     cOutVector currentAccelerationVec; /**< vector plotting acceleration */
     cOutVector currentCO2EmissionVec; /**< vector plotting current CO2 emission */
+    cOutVector currentFuelConsumptionVec; /**< vector plotting current fuel consumption */
 
     Statistics statistics; /**< everything statistics-related */
 
