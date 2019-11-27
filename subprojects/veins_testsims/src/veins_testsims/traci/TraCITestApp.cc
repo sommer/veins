@@ -217,6 +217,7 @@ void TraCITestApp::handlePositionUpdate()
             assertEqual("(TraCICommandInterface::setVehicleTypeMaxSpeed) changed speed is correct", traci->getVehicleTypeMaxSpeed("vtype0"), 60);
             // change back to original value
             traci->setVehicleTypeMaxSpeed("vtype0", 70);
+            assertEqual("(TraCICommandInterface::setVehicleTypeMaxSpeed) changed speed is correct", traci->getVehicleTypeMaxSpeed("vtype0"), 70);
         }
     }
 
