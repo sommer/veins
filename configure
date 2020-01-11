@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #
 # Copyright (C) 2013-2019 Christoph Sommer <sommer@ccs-labs.org>
@@ -32,9 +32,9 @@ import subprocess
 from logging import info, warning, error
 from optparse import OptionParser
 
-
-if sys.version_info[0] == 3:
-    warning("Warning: running configure with python3 might result in subtle errors.")
+# check python version
+if sys.version_info[0] < 3:
+    warning("Warning: running configure with Python 2 might result in subtle errors.")
 
 # Option handling
 parser = OptionParser()

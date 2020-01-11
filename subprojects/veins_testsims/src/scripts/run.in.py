@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 #
 # Copyright (C) 2013-2019 Christoph Sommer <sommer@ccs-labs.org>
@@ -26,6 +26,7 @@
 Runs Veins simulation in current directory
 """
 
+from __future__ import print_function
 import os
 import argparse
 import subprocess
@@ -69,7 +70,7 @@ if args.tool == 'memcheck':
 cmdline = prefix + [opp_run] + lib_flags + ned_flags + img_flags + omnet_args
 
 if args.verbose:
-    print "Running with command line arguments: %s" % ' '.join(['"%s"' % arg for arg in cmdline])
+    print("Running with command line arguments: %s" % ' '.join(['"%s"' % arg for arg in cmdline]))
 
 if os.name == 'nt':
     subprocess.call(['env'] + cmdline)
