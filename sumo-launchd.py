@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 # sumo-launchd.py -- SUMO launcher daemon for use with TraCI clients
@@ -51,21 +51,26 @@ import struct
 import subprocess
 import time
 import signal
-import exceptions
-import thread
 import xml.dom.minidom
 import select
 import logging
 import atexit
 from optparse import OptionParser
 
+if sys.version_info[0] < 3:
+    from thread import allocate_lock
+    from thread import start_new_thread
+else:
+    from _thread import allocate_lock
+    from _thread import start_new_thread
+
 _API_VERSION = 1
-_LAUNCHD_VERSION = 'sumo-launchd.py 1.00'
+_LAUNCHD_VERSION = b'sumo-launchd.py 1.00'
 _CMD_GET_VERSION = 0x00
 _CMD_FILE_SEND = 0x75
 
 class UnusedPortLock:
-    lock = thread.allocate_lock()
+    lock = allocate_lock()
 
     def __init__(self):
         self.acquired = False
@@ -121,7 +126,7 @@ def forward_connection(client_socket, server_socket, process):
         if client_socket in r:
             try:
                 data = client_socket.recv(65535)
-                if data == "":
+                if not data:
                     do_exit = True
             except:
                 do_exit = True
@@ -130,7 +135,7 @@ def forward_connection(client_socket, server_socket, process):
         if server_socket in r:
             try:
                 data = server_socket.recv(65535)
-                if data == "":
+                if not data:
                     do_exit = True
             except:
                 do_exit = True
@@ -194,7 +199,7 @@ def run_sumo(runpath, sumo_command, shlex, config_file_name, remote_port, seed, 
         cmd = []
         if shlex:
             import shlex
-            cmd = shlex.split(sumo_command.replace('{}', '-c ' + unicode(config_file_name).encode()))
+            cmd = shlex.split(sumo_command.replace('{}', '-c ' + config_file_name))
         else:
             cmd = [sumo_command, "-c", config_file_name] 
         logging.info("Starting SUMO (%s) on port %d, seed %d" % (" ".join(cmd), remote_port, seed))
@@ -210,7 +215,7 @@ def run_sumo(runpath, sumo_command, shlex, config_file_name, remote_port, seed, 
                 sumo_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sumo_socket.connect(('127.0.0.1', remote_port))
                 break
-            except socket.error, e:
+            except socket.error as e:
                 logging.debug("Error (%s)" % e)
                 if tries >= 10:
                     raise
@@ -225,7 +230,7 @@ def run_sumo(runpath, sumo_command, shlex, config_file_name, remote_port, seed, 
 
         logging.debug("Done with proxy mode, killing SUMO")
 
-        thread.start_new_thread(subprocess.Popen.wait, (sumo, ))
+        start_new_thread(subprocess.Popen.wait, (sumo, ))
         time.sleep(0.5)
         if sumo.returncode == None:
             logging.debug("SIGTERM")
@@ -249,16 +254,16 @@ def run_sumo(runpath, sumo_command, shlex, config_file_name, remote_port, seed, 
             sumo_returncode = -1
             sumo_status = "Undef"
 
-    except OSError, e:
+    except OSError as e:
         sumo_status = "Could not start SUMO (%s): %s" % (" ".join(cmd), e)
 
-    except exceptions.SystemExit:
+    except SystemExit:
         sumo_status = "Premature launch script exit"
 
-    except exceptions.KeyboardInterrupt:
+    except KeyboardInterrupt:
         sumo_status = "Keyboard interrupt."
 
-    except socket.error, e:
+    except socket.error as e:
         sumo_status = "Could not connect to SUMO (%s). Might be protected by a personal firewall or crashed before a connection could be established." % e
 
     except:
@@ -351,9 +356,9 @@ def copy_and_modify_files(basedir, copy_nodes, runpath, remote_port, seed):
         elif file_src_name:
             file_dst_name = file_src_name
         else:
-            raise RuntimeError('<copy> node with no destination name: %s' % copy_node.toxml())
+            raise RuntimeError('<copy> node with no destination name: %s' % copy_node.toxml('utf-8'))
         if file_contents == None:
-            raise RuntimeError('<copy> node with no contents: %s' % copy_node.toxml())
+            raise RuntimeError('<copy> node with no contents: %s' % copy_node.toxml('utf-8'))
 
         # Is this our config file?
         if copy_node.getAttribute("type") == "config":
@@ -366,7 +371,7 @@ def copy_and_modify_files(basedir, copy_nodes, runpath, remote_port, seed):
             set_sumoconfig_option(config_parser, config_xml, "random_number", "seed", seed)
             set_sumoconfig_option(config_parser, config_xml, "random_number", "random", "false")
 
-            file_contents = config_xml.toxml()
+            file_contents = config_xml.toxml('utf-8')
 
         # Write file into rundir
         file_dst_path = os.path.join(runpath, file_dst_name)
@@ -445,7 +450,7 @@ def read_launch_config(conn):
     """
 
     # Get TraCI message length
-    msg_len_buf = ""
+    msg_len_buf = b""
     while len(msg_len_buf) < 4:
         msg_len_buf += conn.recv(4 - len(msg_len_buf))
     msg_len = struct.unpack("!i", msg_len_buf)[0] - 4
@@ -453,11 +458,11 @@ def read_launch_config(conn):
     logging.debug("Got TraCI message of length %d" % msg_len)
 
     # Get TraCI command length
-    cmd_len_buf = ""
+    cmd_len_buf = b""
     cmd_len_buf += conn.recv(1)
     cmd_len = struct.unpack("!B", cmd_len_buf)[0] - 1
     if cmd_len == -1:
-        cmd_len_buf = ""
+        cmd_len_buf = b""
         while len(cmd_len_buf) < 4:
             cmd_len_buf += conn.recv(4 - len(cmd_len_buf))
         cmd_len = struct.unpack("!i", cmd_len_buf)[0] - 5
@@ -465,7 +470,7 @@ def read_launch_config(conn):
     logging.debug("Got TraCI command of length %d" % cmd_len)
 
     # Get TraCI command ID
-    cmd_id_buf = ""
+    cmd_id_buf = b""
     cmd_id_buf += conn.recv(1)
     cmd_id = struct.unpack("!B", cmd_id_buf)[0]
 
@@ -480,18 +485,18 @@ def read_launch_config(conn):
         raise RuntimeError("Expected CMD_FILE_SEND (0x%x), but got 0x%x" % (_CMD_FILE_SEND, cmd_id))
 
     # Get File name
-    fname_len_buf = ""
+    fname_len_buf = b""
     while len(fname_len_buf) < 4:
         fname_len_buf += conn.recv(4 - len(fname_len_buf))
     fname_len = struct.unpack("!i", fname_len_buf)[0]
     fname = conn.recv(fname_len)
-    if fname != "sumo-launchd.launch.xml":
+    if fname != b"sumo-launchd.launch.xml":
         raise RuntimeError('Launch configuration must be named "sumo-launchd.launch.xml", got "%s" instead.' % fname)
 
     logging.debug('Got CMD_FILE_SEND for "%s"' % fname)
 
     # Get File contents
-    data_len_buf = ""
+    data_len_buf = b""
     while len(data_len_buf) < 4:
         data_len_buf += conn.recv(4 - len(data_len_buf))
     data_len = struct.unpack("!i", data_len_buf)[0]
@@ -517,7 +522,7 @@ def handle_connection(sumo_command, shlex, conn, addr, keep_temp):
         data = read_launch_config(conn)
         handle_launch_configuration(sumo_command, shlex, data, conn, keep_temp)
 
-    except Exception, e:
+    except Exception as e:
         logging.error("Aborting on error: %s" % e)
     
     finally:
@@ -547,12 +552,12 @@ def wait_for_connections(sumo_command, shlex, sumo_port, bind_address, do_daemon
         while True:
             conn, addr = listener.accept()
             logging.debug("Connection from %s on port %d" % addr)
-            thread.start_new_thread(handle_connection, (sumo_command, shlex, conn, addr, keep_temp))
+            start_new_thread(handle_connection, (sumo_command, shlex, conn, addr, keep_temp))
     
-    except exceptions.SystemExit:
+    except SystemExit:
         logging.warning("Killed.")
     
-    except exceptions.KeyboardInterrupt:
+    except KeyboardInterrupt:
         logging.warning("Keyboard interrupt.")
     
     except:
@@ -574,11 +579,11 @@ def check_kill_daemon(pidfile):
             try:
                 os.kill(old_pid, signal.SIGTERM)
                 time.sleep(1)
-            except OSError, e:
+            except OSError as e:
                 pass
 
         pidfileh.close()
-    except IOError, e:
+    except IOError as e:
         pass
 
 
@@ -599,7 +604,7 @@ def daemonize(pidfile):
         else:
             logging.error("Aborting. Failed to fork: %s" % e.strerror)
             sys.exit(1);
-    except OSError, e:
+    except OSError as e:
         logging.error("Aborting. Failed to fork: %s" % e.strerror)
         sys.exit(1)
 
@@ -624,7 +629,7 @@ def daemonize(pidfile):
             logging.error("Aborting. Failed to fork: %s" % e.strerror)
             sys.exit(1);
 
-    except OSError, e:
+    except OSError as e:
         logging.error("Aborting. Failed to fork: %s" % e.strerror)
         sys.exit(1)
 
