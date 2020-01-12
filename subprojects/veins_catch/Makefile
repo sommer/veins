@@ -42,9 +42,7 @@ endif
 # command line scripts
 run: % : scripts/%.in.py out/config.py
 	@echo "Creating script \"./$@\""
-	@head -n1 "$<" > "$@"
-	@cat out/config.py >> "$@"
-	@tail -n+2 "$<" >> "$@"
+	@sed '/# v-- contents of out\/config.py go here/r out/config.py' "$<" > "$@"
 	@chmod a+x "$@"
 
 # legacy

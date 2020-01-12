@@ -1,7 +1,5 @@
 #!/usr/bin/env python2
 
-# ^-- contents of out/config.py go here
-
 #
 # Copyright (C) 2013-2019 Christoph Sommer <sommer@ccs-labs.org>
 #
@@ -31,6 +29,9 @@ Wrapper around veins_catch binary
 import os
 import argparse
 import subprocess
+
+# v-- contents of out/config.py go here
+# ^-- contents of out/config.py go here
 
 parser = argparse.ArgumentParser('Run a Veins simulation')
 parser.add_argument('-d', '--debug', action='store_true', help='Run using opp_run_dbg (instead of opp_run)')

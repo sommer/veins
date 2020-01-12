@@ -1,7 +1,5 @@
 #!/usr/bin/env python2
 
-# ^-- contents of out/config.py go here
-
 #
 # Copyright (C) 2013-2019 Christoph Sommer <sommer@ccs-labs.org>
 #
@@ -31,6 +29,9 @@ Runs Veins simulation in current directory
 import os
 import argparse
 import subprocess
+
+# v-- contents of out/config.py go here
+# ^-- contents of out/config.py go here
 
 def relpath(s):
     veins_root = os.path.dirname(os.path.realpath(__file__))
