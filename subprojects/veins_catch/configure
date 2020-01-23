@@ -36,6 +36,16 @@ from optparse import OptionParser
 if sys.version_info[0] < 3:
     warning("Warning: running configure with Python 2 might result in subtle errors.")
 
+# pretty-print version
+def version_to_hr(v):
+    s = '"%s"' % v.decode(errors='replace')
+    return(s)
+
+# pretty-print list of versions
+def versions_to_hr(vv):
+    s = ' or '.join([version_to_hr(v) for v in vv])
+    return(s)
+
 # Option handling
 parser = OptionParser()
 parser.add_option("--with-veins", dest="veins", help="link with a version of Veins installed in PATH [default: ../..]", metavar="PATH", default="../..")
@@ -60,13 +70,13 @@ if options.veins:
         if not version in expect_version:
             warning('')
             warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            warning('Unsupported Veins Version. Expecting %s, found "%s"' % (' or '.join([v.decode(errors='replace') for v in expect_version]), version.decode(errors='replace')))
+            warning('Unsupported Veins Version. Expecting %s, found %s' % (versions_to_hr(expect_version), version_to_hr(version)))
             warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             warning('')
         else:
             info('Found Veins version "%s". Okay.' % version)
     except subprocess.CalledProcessError as e:
-        error('Could not determine Veins Version (by running %s): %s. Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (fname, e, ' or '.join(expect_version)))
+        error('Could not determine Veins Version (by running %s): %s. Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (fname, e, versions_to_hr(expect_version)))
         sys.exit(1)
 
     veins_header_dirs = [os.path.join(os.path.relpath(options.veins, 'src'), 'src')]
