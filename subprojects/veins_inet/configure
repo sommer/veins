@@ -29,6 +29,7 @@ Creates Makefile(s) for building this project.
 import os
 import sys
 import subprocess
+import logging
 from logging import info, warning, error
 from optparse import OptionParser
 
@@ -48,9 +49,15 @@ def versions_to_hr(vv):
 
 # Option handling
 parser = OptionParser()
+parser.add_option("-v", "--verbose", dest="count_verbose", default=0, action="count", help="increase verbosity [default: don't log infos, debug]")
+parser.add_option("-q", "--quiet", dest="count_quiet", default=0, action="count", help="decrease verbosity [default: log warnings, errors]")
 parser.add_option("--with-veins", dest="veins", help="link with a version of Veins installed in PATH [default: ../..]", metavar="PATH", default="../..")
 parser.add_option("--with-inet", dest="inet", help="link with a version of the INET Framework installed in PATH [default: ../../../inet]", metavar="PATH", default="../../../inet")
 (options, args) = parser.parse_args()
+
+_LOGLEVELS = (logging.ERROR, logging.WARN, logging.INFO, logging.DEBUG)
+loglevel = _LOGLEVELS[max(0, min(1 + options.count_verbose - options.count_quiet, len(_LOGLEVELS)-1))]
+logging.basicConfig(level=loglevel)
 
 if args:
     warning("Superfluous command line arguments: \"%s\"" % " ".join(args))
@@ -77,7 +84,7 @@ if options.veins:
             warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             warning('')
         else:
-            info('Found Veins version "%s". Okay.' % version)
+            info('Found Veins version %s. Okay.' % version_to_hr(version))
     except subprocess.CalledProcessError as e:
         error('Could not determine Veins Version (by running %s): %s. Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (fname, e, versions_to_hr(expect_version)))
         sys.exit(1)
@@ -107,7 +114,7 @@ if options.inet:
             warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             warning('')
         else:
-            info('Found INET version "%s". Okay.' % version)
+            info('Found INET version %s. Okay.' % version_to_hr(version))
     except subprocess.CalledProcessError as e:
         error('Could not determine INET Version (by running %s): %s. Check the path to INET (--with-inet=... option) and the INET version (should be version %s)' % (fname, e, versions_to_hr(expect_version)))
         sys.exit(1)
