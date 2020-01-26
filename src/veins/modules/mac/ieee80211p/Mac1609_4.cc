@@ -52,7 +52,8 @@ void Mac1609_4::initialize(int stage)
         ASSERT(simTime().getScaleExp() == -12);
 
         txPower = par("txPower").doubleValue();
-        setParametersForBitrate(par("bitrate"));
+        int bitrate = par("bitrate");
+        setParametersForBitrate(bitrate);
 
         // unicast parameters
         dot11RTSThreshold = par("dot11RTSThreshold");
