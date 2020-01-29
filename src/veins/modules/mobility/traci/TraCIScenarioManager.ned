@@ -39,6 +39,7 @@ simple TraCIScenarioManager
     parameters:
         @display("i=block/network2");
         @signal[org_car2x_veins_modules_mobility_traciInitialized](type=bool);
+        @signal[org_car2x_veins_modules_mobility_traciModulePreInit](type=cModule);
         @signal[org_car2x_veins_modules_mobility_traciModuleAdded](type=cModule);
         @signal[org_car2x_veins_modules_mobility_traciModuleRemoved](type=cModule);
         @signal[org_car2x_veins_modules_mobility_traciTimestepBegin](type=simtime_t);

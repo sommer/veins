@@ -46,6 +46,7 @@ using veins::TraCITrafficLightInterface;
 Define_Module(veins::TraCIScenarioManager);
 
 const simsignal_t TraCIScenarioManager::traciInitializedSignal = registerSignal("org_car2x_veins_modules_mobility_traciInitialized");
+const simsignal_t TraCIScenarioManager::traciModulePreInitSignal = registerSignal("org_car2x_veins_modules_mobility_traciModulePreInit");
 const simsignal_t TraCIScenarioManager::traciModuleAddedSignal = registerSignal("org_car2x_veins_modules_mobility_traciModuleAdded");
 const simsignal_t TraCIScenarioManager::traciModuleRemovedSignal = registerSignal("org_car2x_veins_modules_mobility_traciModuleRemoved");
 const simsignal_t TraCIScenarioManager::traciTimestepBeginSignal = registerSignal("org_car2x_veins_modules_mobility_traciTimestepBegin");
@@ -517,6 +518,8 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     mod->scheduleStart(simTime() + updateInterval);
 
     preInitializeModule(mod, nodeId, position, road_id, speed, heading, signals);
+
+    emit(traciModulePreInitSignal, mod);
 
     mod->callInitialize();
     hosts[nodeId] = mod;
