@@ -67,6 +67,7 @@ class MobileHostObstacle;
 class VEINS_API TraCIScenarioManager : public cSimpleModule {
 public:
     static const simsignal_t traciInitializedSignal;
+    static const simsignal_t traciModulePreInitSignal;
     static const simsignal_t traciModuleAddedSignal;
     static const simsignal_t traciModuleRemovedSignal;
     static const simsignal_t traciTimestepBeginSignal;
