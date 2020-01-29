@@ -25,12 +25,24 @@
 #include "veins/base/utils/Coord.h"
 #include "veins_inet/VeinsInetMobility.h"
 
+#include "inet/common/scenario/ScenarioManager.h"
+
+
 using veins::VeinsInetManager;
 
 Define_Module(veins::VeinsInetManager);
 
 VeinsInetManager::~VeinsInetManager()
 {
+}
+
+void VeinsInetManager::initialize(int stage) {
+    TraCIScenarioManagerLaunchd::initialize(stage);
+
+    if (stage != 1)
+        return;
+
+    this->subscribe(TraCIScenarioManager::traciModulePreInitSignal, this);
 }
 
 void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals)
@@ -48,5 +60,31 @@ void VeinsInetManager::updateModulePosition(cModule* mod, const Coord& p, const 
     auto mobilityModules = getSubmodulesOfType<VeinsInetMobility>(mod);
     for (auto inetmm : mobilityModules) {
         inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, heading.getRad());
+    }
+}
+
+
+void VeinsInetManager::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
+{
+    cModule* module = dynamic_cast<cModule*>(obj);
+    ASSERT(module);
+
+    // The INET visualizer listens to model change notifications on the
+    // network object by default. We assume this is our parent.
+    cModule *root = getParentModule();
+
+    if (signalID == TraCIScenarioManager::traciModulePreInitSignal) {
+        auto* notification = new inet::cPreModuleInitNotification();
+        notification->module = module;
+
+        root->emit(POST_MODEL_CHANGE, notification, NULL);
+    } else if (signalID == TraCIScenarioManager::traciModuleRemovedSignal) {
+        // Note that the TraCIScenarioManager sends the "removed"
+        // signal _before_ the actual removal takes place.
+
+        auto* notification = new inet::cPreModuleDeleteNotification();
+        notification->module = module;
+
+        root->emit(PRE_MODEL_CHANGE, notification, NULL);
     }
 }
