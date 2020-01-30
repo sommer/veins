@@ -25,6 +25,7 @@
 #include "veins_inet/veins_inet.h"
 
 #include "veins/modules/mobility/traci/TraCIScenarioManagerLaunchd.h"
+#include "veins/modules/utility/SignalManager.h"
 
 namespace veins {
 
@@ -47,7 +48,7 @@ public:
     virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals) override;
 
 protected:
-    virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject *details) override;
+    SignalManager signalManager;
 };
 
 class VEINS_INET_API VeinsInetManagerAccess {
