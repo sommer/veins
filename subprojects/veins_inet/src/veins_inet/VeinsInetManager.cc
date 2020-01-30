@@ -78,13 +78,5 @@ void VeinsInetManager::receiveSignal(cComponent* source, simsignal_t signalID, c
         notification->module = module;
 
         root->emit(POST_MODEL_CHANGE, notification, NULL);
-    } else if (signalID == TraCIScenarioManager::traciModuleRemovedSignal) {
-        // Note that the TraCIScenarioManager sends the "removed"
-        // signal _before_ the actual removal takes place.
-
-        auto* notification = new inet::cPreModuleDeleteNotification();
-        notification->module = module;
-
-        root->emit(PRE_MODEL_CHANGE, notification, NULL);
     }
 }
