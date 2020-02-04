@@ -38,7 +38,7 @@ namespace veins {
  * @author Christoph Sommer
  *
  */
-class VEINS_INET_API VeinsInetManager : public TraCIScenarioManagerLaunchd, public cListener {
+class VEINS_INET_API VeinsInetManager : public TraCIScenarioManagerLaunchd {
 public:
     virtual ~VeinsInetManager();
 
