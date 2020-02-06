@@ -21,7 +21,8 @@
 --
 
 -- TraCI Dissector for Wireshark
--- Include from (or copy to) ~/.wireshark/init.lua
+-- To use this, run:
+-- wireshark -X lua_script:/path/to/this/init.lua
 
 function traci_proto_commandIdToString(id)
 	if id == 0x00 then return "CMD_GETVERSION" end
@@ -201,6 +202,7 @@ function traci_proto.dissector(buffer, pinfo, tree)
 end
 
 tcp = DissectorTable.get("tcp.port")
-tcp:add(9999,traci_proto)
+tcp:add(8813,traci_proto) --- traci default port
+tcp:add(9999,traci_proto) --- sumo launchd.py default port
 
 -- end
