@@ -34,7 +34,7 @@ import subprocess
 
 parser = argparse.ArgumentParser('Run a Veins simulation')
 parser.add_argument('-d', '--debug', action='store_true', help='Run using opp_run_dbg (instead of opp_run)')
-parser.add_argument('-t', '--tool', metavar='TOOL', dest='tool', choices=['lldb', 'gdb', 'memcheck'], help='Wrap opp_run execution in TOOL (lldb, gdb or memcheck)')
+parser.add_argument('-t', '--tool', metavar='TOOL', dest='tool', choices=['lldb', 'gdb', 'memcheck', 'callgrind'], help='Wrap opp_run execution in TOOL (lldb, gdb, memcheck, or callgrind)')
 parser.add_argument('-v', '--verbose', action='store_true', help='Print command line before executing')
 parser.add_argument('--', dest='arguments', help='Arguments to pass to opp_run')
 args, bin_args = parser.parse_known_args()
@@ -51,6 +51,8 @@ if args.tool == 'gdb':
     prefix = ['gdb', '--args']
 if args.tool == 'memcheck':
     prefix = ['valgrind', '--tool=memcheck', '--leak-check=full', '--dsymutil=yes', '--log-file=valgrind.out']
+if args.tool == 'callgrind':
+    prefix = ['valgrind', '--tool=callgrind', '--log-file=callgrind.out']
 
 cmdline = prefix + [os.path.join('src', bin_run)] + bin_args
 
