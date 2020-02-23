@@ -31,3 +31,8 @@ ifeq ($(PLATFORM),win32.x86_64)
   ENABLE_AUTO_IMPORT=-Wl,--enable-auto-import
   LDFLAGS := $(filter-out $(ENABLE_AUTO_IMPORT), $(LDFLAGS))
 endif
+
+VEINS_NEED_MSG4 := $(shell echo ${OMNETPP_VERSION} | grep "^5" >/dev/null 2>&1; echo $$?)
+ifneq ($(VEINS_NEED_MSG4),0)
+  MSGCOPTS += --msg4
+endif
