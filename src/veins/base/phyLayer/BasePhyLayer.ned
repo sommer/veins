@@ -49,14 +49,14 @@ simple BasePhyLayer like IWirelessPhy
         double minPowerLevel @unit(dBm); // The minimum receive power needed to even attempt decoding a frame
 
         //# switch times [s]:
-        double timeRXToTX       = default(0) @unit(s); // Elapsed time to switch from receive to send state
-        double timeRXToSleep    = default(0) @unit(s); // Elapsed time to switch from receive to sleep state
+        double timeRXToTX       = default(0 s) @unit(s); // Elapsed time to switch from receive to send state
+        double timeRXToSleep    = default(0 s) @unit(s); // Elapsed time to switch from receive to sleep state
 
-        double timeTXToRX       = default(0) @unit(s); // Elapsed time to switch from send to receive state
-        double timeTXToSleep    = default(0) @unit(s); // Elapsed time to switch from send to sleep state
+        double timeTXToRX       = default(0 s) @unit(s); // Elapsed time to switch from send to receive state
+        double timeTXToSleep    = default(0 s) @unit(s); // Elapsed time to switch from send to sleep state
 
-        double timeSleepToRX    = default(0) @unit(s); // Elapsed time to switch from sleep to receive state
-        double timeSleepToTX    = default(0) @unit(s); // Elapsed time to switch from sleep to send state
+        double timeSleepToRX    = default(0 s) @unit(s); // Elapsed time to switch from sleep to receive state
+        double timeSleepToTX    = default(0 s) @unit(s); // Elapsed time to switch from sleep to send state
 
         int initialRadioState   = default(0);   // State the radio is initially in (0=RX, 1=TX, 2=Sleep)
 
