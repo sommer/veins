@@ -91,7 +91,15 @@ public:
     /**
      * @brief Returns information about the current state.
      */
+#if OMNETPP_VERSION < 0x600
     std::string info() const override
+#else
+    std::string str() const override
+    {
+        return info();
+    }
+    std::string info() const
+#endif
     {
         std::ostringstream ost;
         switch (state) {

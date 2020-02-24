@@ -89,7 +89,15 @@ public:
     }
 
     /** @brief Returns a string with the value of the coordinate. */
+#if OMNETPP_VERSION < 0x600
     std::string info() const override;
+#else
+    std::string info() const;
+    std::string str() const override
+    {
+        return info();
+    }
+#endif
 
     /** @brief Adds two coordinate vectors. */
     friend Coord operator+(const Coord& a, const Coord& b)
