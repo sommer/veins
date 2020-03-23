@@ -35,6 +35,7 @@ VeinsInetManager::~VeinsInetManager()
 
 void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals)
 {
+    TraCIScenarioManager::preInitializeModule(mod, nodeId, position, road_id, speed, heading, signals);
     // pre-initialize VeinsInetMobility
     for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
         cModule* submod = *iter;
@@ -46,6 +47,7 @@ void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& node
 
 void VeinsInetManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals)
 {
+    TraCIScenarioManager::updateModulePosition(mod, p, edge, speed, heading, signals);
     // update position in VeinsInetMobility
     for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
         cModule* submod = *iter;
