@@ -45,7 +45,7 @@ namespace veins {
  * @see TraCIScenarioManager
  *
  */
-class VEINS_API TraCIScenarioManagerLaunchd : public TraCIScenarioManager {
+class VEINS_API TraCIScenarioManagerLaunchd : virtual public TraCIScenarioManager {
 public:
     ~TraCIScenarioManagerLaunchd() override;
     void initialize(int stage) override;

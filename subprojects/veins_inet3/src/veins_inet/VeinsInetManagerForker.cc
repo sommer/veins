@@ -21,38 +21,7 @@
 //
 
 #include "veins_inet/VeinsInetManagerForker.h"
-#include "veins/base/utils/Coord.h"
-#include "veins/base/utils/Heading.h"
-#include "veins_inet/VeinsInetMobility.h"
 
 using veins::VeinsInetManagerForker;
 
 Define_Module(veins::VeinsInetManagerForker);
-
-VeinsInetManagerForker::~VeinsInetManagerForker()
-{
-}
-
-void VeinsInetManagerForker::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals)
-{
-    TraCIScenarioManager::preInitializeModule(mod, nodeId, position, road_id, speed, heading, signals);
-    // pre-initialize VeinsInetMobility
-    for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-        cModule* submod = *iter;
-        VeinsInetMobility* inetmm = dynamic_cast<VeinsInetMobility*>(submod);
-        if (!inetmm) return;
-        inetmm->preInitialize(nodeId, inet::Coord(position.x, position.y), road_id, speed, heading.getRad());
-    }
-}
-
-void VeinsInetManagerForker::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals)
-{
-    TraCIScenarioManager::updateModulePosition(mod, p, edge, speed, heading, signals);
-    // update position in VeinsInetMobility
-    for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
-        cModule* submod = *iter;
-        VeinsInetMobility* inetmm = dynamic_cast<VeinsInetMobility*>(submod);
-        if (!inetmm) return;
-        inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, heading.getRad());
-    }
-}
