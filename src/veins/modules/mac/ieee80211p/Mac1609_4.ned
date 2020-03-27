@@ -66,6 +66,8 @@ simple Mac1609_4 extends BaseMacLayer
         int dot11LongRetryLimit = default(4);
         int ackLength @unit(bit) = default(112bit);
         bool useAcks = default(false);
+        // artificial drop rates for data frames and acknowledgements for testing purposes
+        double frameErrorRate = default(0);
         double ackErrorRate = default(0);
 
         // signal informing interested application about channel busy state
