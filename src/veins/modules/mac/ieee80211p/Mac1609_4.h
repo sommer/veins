@@ -296,6 +296,7 @@ protected:
     std::string myId;
 
     bool useAcks;
+    double frameErrorRate;
     double ackErrorRate;
     int dot11RTSThreshold;
     int dot11ShortRetryLimit;

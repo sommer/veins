@@ -61,6 +61,7 @@ void Mac1609_4::initialize(int stage)
         dot11LongRetryLimit = par("dot11LongRetryLimit");
         ackLength = par("ackLength");
         useAcks = par("useAcks").boolValue();
+        frameErrorRate = par("frameErrorRate").doubleValue();
         ackErrorRate = par("ackErrorRate").doubleValue();
         rxStartIndication = false;
         ignoreChannelState = false;
@@ -567,6 +568,9 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
 
     EV_TRACE << "Received frame name= " << macPkt->getName() << ", myState= src=" << macPkt->getSrcAddr() << " dst=" << macPkt->getDestAddr() << " myAddr=" << myMacAddr << std::endl;
 
+    bool frameReceived = true;
+    if (dblrand() < frameErrorRate) frameReceived = false;
+
     if (dest == myMacAddr) {
         if (auto* ack = dynamic_cast<Mac80211Ack*>(macPkt)) {
             ASSERT(useAcks);
@@ -575,13 +579,15 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
             delete res;
         }
         else {
-            unique_ptr<BaseFrame1609_4> wsm(check_and_cast<BaseFrame1609_4*>(macPkt->decapsulate()));
-            wsm->setControlInfo(new PhyToMacControlInfo(res));
-            handleUnicast(macPkt->getSrcAddr(), std::move(wsm));
+            if (frameReceived) {
+                unique_ptr<BaseFrame1609_4> wsm(check_and_cast<BaseFrame1609_4*>(macPkt->decapsulate()));
+                wsm->setControlInfo(new PhyToMacControlInfo(res));
+                handleUnicast(macPkt->getSrcAddr(), std::move(wsm));
+            }
         }
     }
     else if (dest == LAddress::L2BROADCAST()) {
-        handleBroadcast(macPkt, res);
+        if (frameReceived) handleBroadcast(macPkt, res);
     }
     else {
         EV_TRACE << "Packet not for me" << std::endl;
