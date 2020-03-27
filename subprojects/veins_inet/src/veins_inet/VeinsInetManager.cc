@@ -27,7 +27,6 @@
 
 #include "inet/common/scenario/ScenarioManager.h"
 
-
 using veins::VeinsInetManager;
 
 Define_Module(veins::VeinsInetManager);
@@ -36,7 +35,8 @@ VeinsInetManager::~VeinsInetManager()
 {
 }
 
-void VeinsInetManager::initialize(int stage) {
+void VeinsInetManager::initialize(int stage)
+{
     TraCIScenarioManagerLaunchd::initialize(stage);
 
     if (stage != 1)
@@ -49,7 +49,7 @@ void VeinsInetManager::initialize(int stage) {
 
         // The INET visualizer listens to model change notifications on the
         // network object by default. We assume this is our parent.
-        cModule *root = getParentModule();
+        cModule* root = getParentModule();
 
         auto* notification = new inet::cPreModuleInitNotification();
         notification->module = module;

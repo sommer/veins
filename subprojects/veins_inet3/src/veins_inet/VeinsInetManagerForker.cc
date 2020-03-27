@@ -20,8 +20,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins_inet/VeinsInetManager.h"
+#include "veins_inet/VeinsInetManagerForker.h"
 
-using veins::VeinsInetManager;
+using veins::VeinsInetManagerForker;
 
-Define_Module(veins::VeinsInetManager);
+Define_Module(veins::VeinsInetManagerForker);

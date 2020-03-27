@@ -44,7 +44,7 @@ namespace veins {
  * @see TraCIScenarioManager
  *
  */
-class VEINS_API TraCIScenarioManagerForker : public TraCIScenarioManager {
+class VEINS_API TraCIScenarioManagerForker : virtual public TraCIScenarioManager {
 public:
     TraCIScenarioManagerForker();
     ~TraCIScenarioManagerForker() override;

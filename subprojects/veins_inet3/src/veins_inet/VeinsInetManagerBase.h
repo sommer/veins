@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006-2012 Christoph Sommer <christoph.sommer@uibk.ac.at>
+// Copyright (C) 2006-2017 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "veins/veins.h"
+#include "veins_inet/veins_inet.h"
 
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 
@@ -30,39 +30,24 @@ namespace veins {
 
 /**
  * @brief
- * Extends the TraCIScenarioManager for use with sumo-launchd.py and SUMO.
- *
- * Connects to a running instance of the sumo-launchd.py script
- * to automatically launch/kill SUMO when the simulation starts/ends.
- *
- * All other functionality is provided by the TraCIScenarioManager.
+ * Creates and manages network nodes corresponding to cars.
  *
  * See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
  *
- * @author Christoph Sommer, David Eckhoff
- *
- * @see TraCIMobility
- * @see TraCIScenarioManager
+ * @author Christoph Sommer
  *
  */
-class VEINS_API TraCIScenarioManagerLaunchd : virtual public TraCIScenarioManager {
+class VEINS_INET_API VeinsInetManagerBase : virtual public TraCIScenarioManager {
 public:
-    ~TraCIScenarioManagerLaunchd() override;
-    void initialize(int stage) override;
-    void finish() override;
-
-protected:
-    cXMLElement* launchConfig; /**< launch configuration to send to sumo-launchd */
-    int seed; /**< seed value to set in launch configuration, if missing (-1: current run number) */
-
-    void init_traci() override;
+    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals) override;
+    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals) override;
 };
 
-class VEINS_API TraCIScenarioManagerLaunchdAccess {
+class VEINS_INET_API VeinsInetManagerBaseAccess {
 public:
-    TraCIScenarioManagerLaunchd* get()
+    VeinsInetManagerBase* get()
     {
-        return FindModule<TraCIScenarioManagerLaunchd*>::findGlobalModule();
+        return FindModule<VeinsInetManagerBase*>::findGlobalModule();
     };
 };
 
