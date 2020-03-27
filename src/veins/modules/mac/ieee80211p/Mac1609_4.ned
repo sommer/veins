@@ -66,7 +66,7 @@ simple Mac1609_4 extends BaseMacLayer
         int dot11LongRetryLimit = default(4);
         int ackLength @unit(bit) = default(112bit);
         bool useAcks = default(false);
-        double ackErrorRate = default(0.20);
+        double ackErrorRate = default(0);
 
         // signal informing interested application about channel busy state
         @signal[org_car2x_veins_modules_mac_sigChannelBusy](type=bool);
