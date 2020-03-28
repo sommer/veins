@@ -584,10 +584,20 @@ void Mac1609_4::handleLowerMsg(cMessage* msg)
                 wsm->setControlInfo(new PhyToMacControlInfo(res));
                 handleUnicast(macPkt->getSrcAddr(), std::move(wsm));
             }
+            else {
+                delete res;
+                EV_TRACE << "Artificially dropping frame";
+            }
         }
     }
     else if (dest == LAddress::L2BROADCAST()) {
-        if (frameReceived) handleBroadcast(macPkt, res);
+        if (frameReceived) {
+            handleBroadcast(macPkt, res);
+        }
+        else {
+            delete res;
+            EV_TRACE << "Artificially dropping frame";
+        }
     }
     else {
         EV_TRACE << "Packet not for me" << std::endl;
