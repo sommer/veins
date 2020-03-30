@@ -82,5 +82,8 @@ simple Mac1609_4 extends BaseMacLayer
         // signal informing interested application about a sent ackknowledgement
         @signal[org_car2x_veins_modules_mac_sigSentAck](type=bool);
         @statistic[sentAcks](source=org_car2x_veins_modules_mac_sigSentAck; record=count, vector?);
+        // signal informing interested application about a failed unicast transmission, passing the frame for which transmission has failed
+        @signal[org_car2x_veins_modules_mac_sigRetriesExceeded](type=BaseFrame1609_4);
+        @statistic[retriesExceeded](source=org_car2x_veins_modules_mac_sigRetriesExceeded; record=count, vector?);
 
 }
