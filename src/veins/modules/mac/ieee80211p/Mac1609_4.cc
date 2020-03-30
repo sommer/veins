@@ -39,6 +39,7 @@ const simsignal_t Mac1609_4::sigChannelBusy = registerSignal("org_car2x_veins_mo
 const simsignal_t Mac1609_4::sigCollision = registerSignal("org_car2x_veins_modules_mac_sigCollision");
 const simsignal_t Mac1609_4::sigSentPacket = registerSignal("org_car2x_veins_modules_mac_sigSentPacket");
 const simsignal_t Mac1609_4::sigSentAck = registerSignal("org_car2x_veins_modules_mac_sigSentAck");
+const simsignal_t Mac1609_4::sigRetriesExceeded = registerSignal("org_car2x_veins_modules_mac_sigRetriesExceeded");
 
 void Mac1609_4::initialize(int stage)
 {
@@ -143,6 +144,7 @@ void Mac1609_4::initialize(int stage)
         statsReceivedBroadcasts = 0;
         statsSentPackets = 0;
         statsSentAcks = 0;
+        statsRetriesExceeded = 0;
         statsTXRXLostPackets = 0;
         statsSNIRLostPackets = 0;
         statsDroppedPackets = 0;
@@ -433,6 +435,7 @@ void Mac1609_4::finish()
     recordScalar("ReceivedBroadcasts", statsReceivedBroadcasts);
     recordScalar("SentPackets", statsSentPackets);
     recordScalar("SentAcknowledgements", statsSentAcks);
+    recordScalar("RetriesExceeded", statsRetriesExceeded);
     recordScalar("SNIRLostPackets", statsSNIRLostPackets);
     recordScalar("RXTXLostPackets", statsTXRXLostPackets);
     recordScalar("TotalLostPackets", statsSNIRLostPackets + statsTXRXLostPackets);
@@ -1141,6 +1144,9 @@ void Mac1609_4::handleRetransmit(t_access_category ac)
             // start contention only if there are more packets in the queue
             contend = true;
         }
+        // notify interested applications of a failed transmission, together with the actual packet
+        emit(sigRetriesExceeded, appPkt);
+        statsRetriesExceeded++;
         delete appPkt;
         myEDCA[ChannelType::control]->myQueues[ac].cwCur = myEDCA[ChannelType::control]->myQueues[ac].cwMin;
         myEDCA[ChannelType::control]->backoff(ac);
