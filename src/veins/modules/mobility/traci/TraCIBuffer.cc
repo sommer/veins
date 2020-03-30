@@ -122,8 +122,10 @@ void TraCIBuffer::write(TraCICoord inv)
 template <>
 TraCICoord TraCIBuffer::read()
 {
+#if (VEINS_VERSION_MAJOR == 5)
     uint8_t posType = read<uint8_t>();
     ASSERT(posType == POSITION_2D);
+#endif
 
     TraCICoord p;
     p.x = read<double>();
