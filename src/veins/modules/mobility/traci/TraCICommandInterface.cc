@@ -429,7 +429,11 @@ double TraCICommandInterface::getDistance(const Coord& p1, const Coord& p2, bool
     uint8_t dType = static_cast<uint8_t>(returnDrivingDistance ? REQUEST_DRIVINGDIST : REQUEST_AIRDIST);
 
     // query road network boundaries
+#if (VEINS_VERSION_MAJOR == 5)
     TraCIBuffer buf = connection.query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << variable << simId << variableType << count << connection.omnet2traci(p1) << connection.omnet2traci(p2) << dType);
+#else
+    TraCIBuffer buf = connection.query(CMD_GET_SIM_VARIABLE, TraCIBuffer() << variable << simId << variableType << count << static_cast<uint8_t>(POSITION_2D) << connection.omnet2traci(p1) << static_cast<uint8_t>(POSITION_2D) << connection.omnet2traci(p2) << dType);
+#endif
     uint8_t cmdLength_resp;
     buf >> cmdLength_resp;
     uint8_t commandId_resp;
@@ -891,7 +895,11 @@ void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const
     p << static_cast<uint8_t>(TYPE_STRING) << poiType;
     p << static_cast<uint8_t>(TYPE_COLOR) << color.red << color.green << color.blue << color.alpha;
     p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
+#if (VEINS_VERSION_MAJOR == 5) 
     p << pos;
+#else
+    p << static_cast<uint8_t>(POSITION_2D) << pos;
+#endif
 
     TraCIBuffer buf = connection.query(CMD_SET_POI_VARIABLE, p);
     ASSERT(buf.eof());
@@ -1054,7 +1062,11 @@ void TraCICommandInterface::Vehicle::getParameter(const std::string& parameter, 
 std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord)
 {
     TraCIBuffer request;
+#if (VEINS_VERSION_MAJOR == 5)
     request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0") << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(2) << connection.omnet2traci(coord) << static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(POSITION_LON_LAT);
+#else
+    request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0") << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(2) << static_cast<uint8_t>(POSITION_2D) << connection.omnet2traci(coord) << static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(POSITION_LON_LAT);
+#endif
     TraCIBuffer response = connection.query(CMD_GET_SIM_VARIABLE, request);
 
     uint8_t cmdLength;
@@ -1085,7 +1097,11 @@ std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord)
 std::tuple<std::string, double, uint8_t> TraCICommandInterface::getRoadMapPos(const Coord& coord)
 {
     TraCIBuffer request;
+#if (VEINS_VERSION_MAJOR == 5)
     request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0") << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(2) << connection.omnet2traci(coord) << static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(POSITION_ROADMAP);
+#else
+    request << static_cast<uint8_t>(POSITION_CONVERSION) << std::string("sim0") << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(2) << static_cast<uint8_t>(POSITION_2D) << connection.omnet2traci(coord) << static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(POSITION_ROADMAP);
+#endif
     TraCIBuffer response = connection.query(CMD_GET_SIM_VARIABLE, request);
 
     uint8_t cmdLength;
