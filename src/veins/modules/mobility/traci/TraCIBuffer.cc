@@ -114,7 +114,9 @@ std::string TraCIBuffer::read()
 template <>
 void TraCIBuffer::write(TraCICoord inv)
 {
+#if (VEINS_VERSION_MAJOR == 5)
     write<uint8_t>(POSITION_2D);
+#endif
     write<double>(inv.x);
     write<double>(inv.y);
 }
