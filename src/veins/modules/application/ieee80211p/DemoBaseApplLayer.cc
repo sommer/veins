@@ -159,6 +159,8 @@ void DemoBaseApplLayer::populateWSM(BaseFrame1609_4* wsm, LAddress::L2Type rcvId
     if (DemoSafetyMessage* bsm = dynamic_cast<DemoSafetyMessage*>(wsm)) {
         bsm->setSenderPos(curPosition);
         bsm->setSenderSpeed(curSpeed);
+        bsm->setSenderAcceleration(curAcceleration);
+        bsm->setSenderHeading(curHeading);
         bsm->setPsid(-1);
         bsm->setChannelNumber(static_cast<int>(Channel::cch));
         bsm->addBitLength(beaconLengthBits);
@@ -196,6 +198,9 @@ void DemoBaseApplLayer::handlePositionUpdate(cObject* obj)
     ChannelMobilityPtrType const mobility = check_and_cast<ChannelMobilityPtrType>(obj);
     curPosition = mobility->getPositionAt(simTime());
     curSpeed = mobility->getCurrentSpeed();
+    curAcceleration = mobility->getCurrentAcceleration();
+    curHeading = mobility->getCurrentDirection();
+
 }
 
 void DemoBaseApplLayer::handleParkingUpdate(cObject* obj)

@@ -468,26 +468,26 @@ void TraCIScenarioManager::handleSelfMsg(cMessage* msg)
     throw cRuntimeError("TraCIScenarioManager received unknown self-message");
 }
 
-void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals)
+void TraCIScenarioManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double acceleration, Heading heading, VehicleSignalSet signals)
 {
     // pre-initialize TraCIMobility
     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
     for (auto mm : mobilityModules) {
-        mm->preInitialize(nodeId, position, road_id, speed, heading);
+        mm->preInitialize(nodeId, position, road_id, speed, acceleration, heading);
     }
 }
 
-void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals)
+void TraCIScenarioManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double acceleration, Heading heading, VehicleSignalSet signals)
 {
     // update position in TraCIMobility
     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
     for (auto mm : mobilityModules) {
-        mm->nextPosition(p, edge, speed, heading, signals);
+        mm->nextPosition(p, edge, speed, acceleration, heading, signals);
     }
 }
 
 // name: host;Car;i=vehicle.gif
-void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, Heading heading, VehicleSignalSet signals, double length, double height, double width)
+void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, double acceleration, Heading heading, VehicleSignalSet signals, double length, double height, double width)
 {
 
     if (hosts.find(nodeId) != hosts.end()) throw cRuntimeError("tried adding duplicate module");
@@ -517,7 +517,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     mod->buildInside();
     mod->scheduleStart(simTime() + updateInterval);
 
-    preInitializeModule(mod, nodeId, position, road_id, speed, heading, signals);
+    preInitializeModule(mod, nodeId, position, road_id, speed, acceleration, heading, signals);
 
     emit(traciModulePreInitSignal, mod);
 
@@ -617,7 +617,7 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId)
     simtime_t beginTime = 0;
     simtime_t endTime = SimTime::getMaxTime();
     std::string objectId = vehicleId;
-    uint8_t variableNumber = 8;
+    uint8_t variableNumber = 9;
     uint8_t variable1 = VAR_POSITION;
     uint8_t variable2 = VAR_ROAD_ID;
     uint8_t variable3 = VAR_SPEED;
@@ -626,8 +626,10 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId)
     uint8_t variable6 = VAR_LENGTH;
     uint8_t variable7 = VAR_HEIGHT;
     uint8_t variable8 = VAR_WIDTH;
+    uint8_t variable9 = VAR_ACCELERATION;
 
-    TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7 << variable8);
+    TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7 << variable8 << variable9);
+    //TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7 << variable8);
     processSubcriptionResult(buf);
     ASSERT(buf.eof());
 }
@@ -889,6 +891,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
     double py;
     std::string edge;
     double speed;
+    double acceleration;
     double angle_traci;
     int signals;
     double length;
@@ -1002,16 +1005,22 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
             buf >> width;
             numRead++;
         }
+        else if (variable1_resp == VAR_ACCELERATION) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_DOUBLE);
+            buf >> acceleration;
+            numRead++;
+        }
         else {
             throw cRuntimeError("Received unhandled vehicle subscription result");
         }
     }
-
     // bail out if we didn't want to receive these subscription results
     if (!isSubscribed) return;
 
     // make sure we got updates for all attributes
-    if (numRead != 8) return;
+    if (numRead != 9) return;
 
     Coord p = connection->traci2omnet(TraCICoord(px, py));
     if ((p.x < 0) || (p.y < 0)) throw cRuntimeError("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
@@ -1071,14 +1080,14 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
         }
 
         if (mType != "0") {
-            addModule(objectId, mType, mName, mDisplayString, p, edge, speed, heading, VehicleSignalSet(signals), length, height, width);
+            addModule(objectId, mType, mName, mDisplayString, p, edge, speed, acceleration, heading, VehicleSignalSet(signals), length, height, width);
             EV_DEBUG << "Added vehicle #" << objectId << endl;
         }
     }
     else {
         // module existed - update position
         EV_DEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;
-        updateModulePosition(mod, p, edge, speed, heading, VehicleSignalSet(signals));
+        updateModulePosition(mod, p, edge, speed, acceleration, heading, VehicleSignalSet(signals));
     }
 }
 

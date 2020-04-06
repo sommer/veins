@@ -43,14 +43,15 @@ public:
     VeinsInetMobility();
 
 public:
-    virtual void preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle);
-    virtual void nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle);
+    virtual void preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double acceleration, double angle);
+    virtual void nextPosition(const inet::Coord& position, std::string road_id, double speed, double acceleration, double angle);
 
 public:
     virtual double getMaxSpeed() const override;
 
     virtual inet::Coord getCurrentPosition() override;
     virtual inet::Coord getCurrentSpeed() override;
+    inet::Coord getCurrentAcceleration();
     virtual inet::EulerAngles getCurrentAngularPosition() override;
     virtual inet::EulerAngles getCurrentAngularSpeed() override
     {
@@ -74,6 +75,7 @@ protected:
 
     inet::Coord lastPosition;
     inet::Coord lastSpeed;
+    inet::Coord lastAcceleration;
     inet::EulerAngles lastOrientation;
 
 protected:

@@ -44,8 +44,8 @@ public:
 
     void initialize(int stage) override;
 
-    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals) override;
-    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals) override;
+    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double acceleration, Heading heading, VehicleSignalSet signals) override;
+    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double acceleration, Heading heading, VehicleSignalSet signals) override;
 
 protected:
     SignalManager signalManager;

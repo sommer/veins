@@ -46,12 +46,13 @@ VeinsInetMobility::~VeinsInetMobility()
     delete vehicleCommandInterface;
 }
 
-void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle)
+void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double acceleration, double angle)
 {
     Enter_Method_Silent();
     this->external_id = external_id;
     lastPosition = position;
     lastVelocity = inet::Coord(cos(angle), -sin(angle)) * speed;
+    lastAcceleration = inet::Coord(cos(angle), -sin(angle)) * acceleration;
     lastOrientation = inet::Quaternion(inet::EulerAngles(rad(-angle), rad(0.0), rad(0.0)));
 }
 
@@ -63,12 +64,13 @@ void VeinsInetMobility::initialize(int stage)
     ASSERT(hasPar("initFromDisplayString") && par("initFromDisplayString"));
 }
 
-void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle)
+void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string road_id, double speed, double acceleration, double angle)
 {
     Enter_Method_Silent();
 
     lastPosition = position;
     lastVelocity = inet::Coord(cos(angle), -sin(angle)) * speed;
+    lastAcceleration = inet::Coord(cos(angle), -sin(angle)) * acceleration;
     lastOrientation = inet::Quaternion(inet::EulerAngles(rad(-angle), rad(0.0), rad(0.0)));
 
     // Update display string to show node is getting updates
@@ -95,7 +97,7 @@ inet::Coord VeinsInetMobility::getCurrentVelocity()
 
 inet::Coord VeinsInetMobility::getCurrentAcceleration()
 {
-    throw cRuntimeError("Invalid operation");
+    throw lastAcceleration;
 }
 
 inet::Quaternion VeinsInetMobility::getCurrentAngularPosition()

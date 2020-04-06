@@ -48,25 +48,28 @@ VeinsInetMobility::VeinsInetMobility()
     , lastSpeed(Coord::ZERO)
     , lastOrientation(inet::EulerAngles::ZERO)
 {
+    lastAcceleration = Coord::ZERO;
 }
 
 //
 // Public, called from manager
 //
 
-void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle)
+void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double acceleration, double angle)
 {
     Enter_Method_Silent();
     lastPosition = position;
     lastSpeed = Coord(cos(angle), -sin(angle)) * speed;
+    lastAcceleration = Coord(cos(angle), -sin(angle)) * acceleration;
     lastOrientation.alpha = -angle;
 }
 
-void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle)
+void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string road_id, double speed, double acceleration, double angle)
 {
     Enter_Method_Silent();
     lastPosition = position;
     lastSpeed = Coord(cos(angle), -sin(angle)) * speed;
+    lastAcceleration = Coord(cos(angle), -sin(angle)) * acceleration;
     lastOrientation.alpha = -angle;
 
     // Update display string to show node is getting updates
@@ -101,10 +104,16 @@ Coord VeinsInetMobility::getCurrentSpeed()
     return lastSpeed;
 }
 
+Coord VeinsInetMobility::getCurrentAcceleration()
+{
+    return lastAcceleration;
+}
+
 inet::EulerAngles VeinsInetMobility::getCurrentAngularPosition()
 {
     return lastOrientation;
 }
+
 
 //
 // Protected

@@ -55,6 +55,8 @@ protected:
     Coord direction;
     /** @brief speed of the host in meters per second **/
     double speed;
+    /** @brief accel of the host in meters per second per second **/
+    double acceleration;
 
 public:
     Move()
@@ -64,6 +66,7 @@ public:
         , orientation()
         , direction()
         , speed(0.0)
+        , acceleration(0.0)
     {
     }
     Move(const Move& mSrc)
@@ -73,7 +76,24 @@ public:
         , orientation(mSrc.orientation)
         , direction(mSrc.direction)
         , speed(mSrc.speed)
+        , acceleration(mSrc.acceleration)
     {
+    }
+
+    /**
+     * @brief Returns the current accel.
+     */
+    double getAcceleration() const
+    {
+        return acceleration;
+    }
+
+    /**
+     * @brief Sets the current acceleration in meters per second per second.
+     */
+    void setAcceleration(double acceleration)
+    {
+        this->acceleration = acceleration;
     }
 
     /**

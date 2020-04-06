@@ -39,8 +39,8 @@ namespace veins {
  */
 class VEINS_INET_API VeinsInetManagerBase : virtual public TraCIScenarioManager {
 public:
-    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals) override;
-    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals) override;
+    virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, double acceleration, Heading heading, VehicleSignalSet signals) override;
+    virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, double acceleration, Heading heading, VehicleSignalSet signals) override;
 };
 
 class VEINS_INET_API VeinsInetManagerBaseAccess {

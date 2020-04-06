@@ -73,6 +73,7 @@ void TraCIMobility::initialize(int stage)
 
         hostPositionOffset = par("hostPositionOffset");
         setHostSpeed = par("setHostSpeed");
+        setHostAcceleration = par("setHostAcceleration");
         accidentCount = par("accidentCount");
 
         currentPosXVec.setName("posx");
@@ -148,7 +149,7 @@ void TraCIMobility::handleSelfMsg(cMessage* msg)
     }
 }
 
-void TraCIMobility::preInitialize(std::string external_id, const Coord& position, std::string road_id, double speed, Heading heading)
+void TraCIMobility::preInitialize(std::string external_id, const Coord& position, std::string road_id, double speed, double acceleration, Heading heading)
 {
     this->external_id = external_id;
     this->lastUpdate = 0;
@@ -156,8 +157,10 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
     this->road_id = road_id;
     this->speed = speed;
     this->heading = heading;
+    this->acceleration = acceleration;
     this->hostPositionOffset = par("hostPositionOffset");
     this->setHostSpeed = par("setHostSpeed");
+    this->setHostAcceleration = par("setHostAcceleration");
 
     Coord nextPos = calculateHostPosition(roadPosition);
     nextPos.z = move.getStartPosition().z;
@@ -168,17 +171,21 @@ void TraCIMobility::preInitialize(std::string external_id, const Coord& position
     if (this->setHostSpeed) {
         move.setSpeed(speed);
     }
+    if (this->setHostAcceleration) {
+        move.setAcceleration(acceleration);
+    }
 
     isPreInitialized = true;
 }
 
-void TraCIMobility::nextPosition(const Coord& position, std::string road_id, double speed, Heading heading, VehicleSignalSet signals)
+void TraCIMobility::nextPosition(const Coord& position, std::string road_id, double speed, double acceleration, Heading heading, VehicleSignalSet signals)
 {
     EV_DEBUG << "nextPosition " << position.x << " " << position.y << " " << road_id << " " << speed << " " << heading << std::endl;
     isPreInitialized = false;
     this->roadPosition = position;
     this->road_id = road_id;
     this->speed = speed;
+    this->acceleration = acceleration;
     this->heading = heading;
     this->signals = signals;
 
@@ -239,6 +246,9 @@ void TraCIMobility::changePosition()
     move.setOrientationByVector(heading.toCoord());
     if (this->setHostSpeed) {
         move.setSpeed(speed);
+    }
+    if (this->setHostAcceleration) {
+        move.setAcceleration(acceleration);
     }
     fixIfHostGetsOutside();
     updatePosition();

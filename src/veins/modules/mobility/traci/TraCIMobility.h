@@ -92,8 +92,8 @@ public:
     void finish() override;
 
     void handleSelfMsg(cMessage* msg) override;
-    virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan);
-    virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan, VehicleSignalSet signals = {VehicleSignal::undefined});
+    virtual void preInitialize(std::string external_id, const Coord& position, std::string road_id = "", double speed = -1,  double acceleration = -1, Heading heading = Heading::nan);
+    virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, double acceleration = -1, Heading heading = Heading::nan, VehicleSignalSet signals = {VehicleSignal::undefined});
     virtual void changePosition();
     virtual void changeParkingState(bool);
     virtual void setExternalId(std::string external_id)
@@ -160,6 +160,16 @@ public:
         return BaseMobility::getCurrentSpeed();
     }
 
+    double getplaygroundSizeX() const
+    {
+        return BaseMobility::playgroundSizeX();
+    }
+
+    double getplaygroundSizeY() const
+    {
+        return BaseMobility::playgroundSizeY();
+    }
+
 protected:
     int accidentCount; /**< number of accidents */
 
@@ -176,12 +186,14 @@ protected:
     std::string external_id; /**< updated by setExternalId() */
     double hostPositionOffset; /**< front offset for the antenna on this car */
     bool setHostSpeed; /**< whether to update the speed of the host (along with its position)  */
+    bool setHostAcceleration; /**< whether to update the accel of the host (along with its position)  */
 
     simtime_t lastUpdate; /**< updated by nextPosition() */
     Coord roadPosition; /**< position of front bumper, updated by nextPosition() */
     std::string road_id; /**< updated by nextPosition() */
     double speed; /**< updated by nextPosition() */
     Heading heading; /**< updated by nextPosition() */
+    double acceleration; /**< updated by nextPosition() */
     VehicleSignalSet signals; /**<updated by nextPosition() */
 
     cMessage* startAccidentMsg;

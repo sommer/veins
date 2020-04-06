@@ -166,6 +166,8 @@ protected:
     /* state of the vehicle */
     Coord curPosition;
     Coord curSpeed;
+    Coord curAcceleration;
+    Coord curHeading;
     LAddress::L2Type myId = 0;
     int mySCH;
 

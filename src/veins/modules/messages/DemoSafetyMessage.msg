@@ -35,4 +35,6 @@ class LAddress::L2Type extends void;
 packet DemoSafetyMessage extends BaseFrame1609_4 {
     Coord senderPos;
     Coord senderSpeed;
+    Coord senderAcceleration;
+    Coord senderHeading;
 }

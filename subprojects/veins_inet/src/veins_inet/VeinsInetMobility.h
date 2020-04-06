@@ -47,12 +47,12 @@ public:
     virtual ~VeinsInetMobility();
 
     /** @brief called by class VeinsInetManager */
-    virtual void preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double angle);
+    virtual void preInitialize(std::string external_id, const inet::Coord& position, std::string road_id, double speed, double acceleration, double angle);
 
     virtual void initialize(int stage) override;
 
     /** @brief called by class VeinsInetManager */
-    virtual void nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle);
+    virtual void nextPosition(const inet::Coord& position, std::string road_id, double speed, double acceleration, double angle);
 
     virtual inet::Coord getCurrentPosition() override;
     virtual inet::Coord getCurrentVelocity() override;
@@ -70,6 +70,9 @@ public:
 protected:
     /** @brief The last velocity that was set by nextPosition(). */
     inet::Coord lastVelocity;
+
+    /** @brief The last acceleration that was set by nextPosition(). */
+    inet::Coord lastAcceleration;
 
     /** @brief The last angular velocity that was set by nextPosition(). */
     inet::Quaternion lastAngularVelocity;
