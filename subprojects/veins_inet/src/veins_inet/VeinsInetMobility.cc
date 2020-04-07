@@ -97,7 +97,7 @@ inet::Coord VeinsInetMobility::getCurrentVelocity()
 
 inet::Coord VeinsInetMobility::getCurrentAcceleration()
 {
-    throw lastAcceleration;
+    return lastAcceleration;
 }
 
 inet::Quaternion VeinsInetMobility::getCurrentAngularPosition()
