@@ -32,8 +32,6 @@
 
 namespace veins {
 
-using inet::Coord;
-
 Register_Class(VeinsInetMobility);
 
 //
@@ -42,10 +40,10 @@ Register_Class(VeinsInetMobility);
 
 VeinsInetMobility::VeinsInetMobility()
     : visualRepresentation(nullptr)
-    , constraintAreaMin(Coord::ZERO)
-    , constraintAreaMax(Coord::ZERO)
-    , lastPosition(Coord::ZERO)
-    , lastSpeed(Coord::ZERO)
+    , constraintAreaMin(inet::Coord::ZERO)
+    , constraintAreaMax(inet::Coord::ZERO)
+    , lastPosition(inet::Coord::ZERO)
+    , lastSpeed(inet::Coord::ZERO)
     , lastOrientation(inet::EulerAngles::ZERO)
 {
 }
@@ -58,7 +56,7 @@ void VeinsInetMobility::preInitialize(std::string external_id, const inet::Coord
 {
     Enter_Method_Silent();
     lastPosition = position;
-    lastSpeed = Coord(cos(angle), -sin(angle)) * speed;
+    lastSpeed =inet::Coord(cos(angle), -sin(angle)) * speed;
     lastOrientation.alpha = -angle;
 }
 
@@ -66,7 +64,7 @@ void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string ro
 {
     Enter_Method_Silent();
     lastPosition = position;
-    lastSpeed = Coord(cos(angle), -sin(angle)) * speed;
+    lastSpeed =inet::Coord(cos(angle), -sin(angle)) * speed;
     lastOrientation.alpha = -angle;
 
     // Update display string to show node is getting updates
@@ -91,12 +89,12 @@ double VeinsInetMobility::getMaxSpeed() const
     return NaN;
 }
 
-Coord VeinsInetMobility::getCurrentPosition()
+inet::Coord VeinsInetMobility::getCurrentPosition()
 {
     return lastPosition;
 }
 
-Coord VeinsInetMobility::getCurrentSpeed()
+inet::Coord VeinsInetMobility::getCurrentSpeed()
 {
     return lastSpeed;
 }
@@ -152,6 +150,30 @@ void VeinsInetMobility::updateVisualRepresentation()
 void VeinsInetMobility::emitMobilityStateChangedSignal()
 {
     emit(mobilityStateChangedSignal, this);
+}
+
+std::string VeinsInetMobility::getExternalId() const
+{
+    if (external_id == "") throw cRuntimeError("VeinsInetMobility::getExternalId called with no external_id set yet");
+    return external_id;
+}
+
+TraCIScenarioManager* VeinsInetMobility::getManager() const
+{
+    if (!manager) manager = TraCIScenarioManagerAccess().get();
+    return manager;
+}
+
+TraCICommandInterface* VeinsInetMobility::getCommandInterface() const
+{
+    if (!commandInterface) commandInterface = getManager()->getCommandInterface();
+    return commandInterface;
+}
+
+TraCICommandInterface::Vehicle* VeinsInetMobility::getVehicleCommandInterface() const
+{
+    if (!vehicleCommandInterface) vehicleCommandInterface = new TraCICommandInterface::Vehicle(getCommandInterface()->vehicle(getExternalId()));
+    return vehicleCommandInterface;
 }
 
 } // namespace veins
