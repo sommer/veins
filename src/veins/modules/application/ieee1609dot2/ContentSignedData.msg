@@ -26,5 +26,6 @@ class ContentChoice;
 class SignedData;
 
 packet ContentSignedData extends ContentChoice{
+    contentType = SIGNED_DATA;
     SignedData signedData;
 }

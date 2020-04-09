@@ -27,5 +27,6 @@ class ContentChoice;
 class EncryptedData;
 
 packet ContentEncryptedData extends ContentChoice{
+    contentType = ENCRYPTED_DATA;
     EncryptedData encryptedData;
 }

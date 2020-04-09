@@ -24,6 +24,7 @@ cplusplus
 
 class ContentChoice;
 
-packet ContentSignedCertificateRequest {
+packet ContentSignedCertificateRequest extends ContentChoice{
+    contentType = SIGNED_CERTIFICATE_REQUEST;    
     string signedCertificateRequest;
 }
