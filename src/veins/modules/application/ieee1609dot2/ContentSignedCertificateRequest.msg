@@ -17,18 +17,13 @@
 // TODO generated message class
 //
 
-cplusplus 
+cplusplus
 {{
-#include "ContentChoice_m.h"
+#include "ContentChoice_m.h"  
 }}
 
-class EncryptedData;
 class ContentChoice;
 
-packet Ieee1609Dot2Content {
-	//char unsecuredData[8]; //should be Opaque
-    //SignedData signedData;
-    //EncryptedData encryptedData;
-    //char signedCertificateRequest[8]; //should be Opaque
-    ContentChoice contentChoices;
+packet ContentSignedCertificateRequest {
+    string signedCertificateRequest;
 }

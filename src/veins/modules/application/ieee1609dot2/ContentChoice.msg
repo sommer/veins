@@ -16,19 +16,16 @@
 //
 // TODO generated message class
 //
+enum ContentChoiceType
+{
+   UNSECURE_DATA = 0;
+   SIGNED_DATA = 1;
+   ENCRYPTED_DATA = 2;
+   SIGNED_CERTIFICATE_REQUEST = 3;   
+};
 
-cplusplus 
-{{
-#include "ContentChoice_m.h"
-}}
 
-class EncryptedData;
-class ContentChoice;
-
-packet Ieee1609Dot2Content {
-	//char unsecuredData[8]; //should be Opaque
-    //SignedData signedData;
-    //EncryptedData encryptedData;
-    //char signedCertificateRequest[8]; //should be Opaque
-    ContentChoice contentChoices;
+packet ContentChoice {
+    int contentType;
+    
 }
