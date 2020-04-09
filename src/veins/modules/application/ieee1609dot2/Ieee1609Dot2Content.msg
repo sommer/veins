@@ -22,7 +22,6 @@ cplusplus
 #include "ContentChoice_m.h"
 }}
 
-class EncryptedData;
 class ContentChoice;
 
 packet Ieee1609Dot2Content {
