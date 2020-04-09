@@ -12,8 +12,6 @@ doc/neddoc
 
 /out
 
-/.settings
-
 examples/**/results
 examples/**/.tkenvrc
 examples/**/.qtenvrc
@@ -22,7 +20,6 @@ examples/**/valgrind.out
 
 subprojects/veins_catch/out
 subprojects/veins_catch/run
-subprojects/veins_catch/.settings
 subprojects/veins_catch/src/*.dll
 subprojects/veins_catch/src/*.dylib
 subprojects/veins_catch/src/*.so
@@ -38,7 +35,6 @@ subprojects/veins_inet3/src/**/*_m.h
 subprojects/veins_inet3/src/**/*_m.cc
 subprojects/veins_inet3/out
 subprojects/veins_inet3/run
-subprojects/veins_inet3/.settings
 subprojects/veins_inet3/examples/**/results
 subprojects/veins_inet3/examples/**/.tkenvrc
 subprojects/veins_inet3/examples/**/.qtenvrc
@@ -53,7 +49,6 @@ subprojects/veins_inet/src/**/*_m.h
 subprojects/veins_inet/src/**/*_m.cc
 subprojects/veins_inet/out
 subprojects/veins_inet/run
-subprojects/veins_inet/.settings
 subprojects/veins_inet/examples/**/results
 subprojects/veins_inet/examples/**/.tkenvrc
 subprojects/veins_inet/examples/**/.qtenvrc
@@ -68,7 +63,6 @@ subprojects/veins_testsims/src/**/*_m.h
 subprojects/veins_testsims/src/**/*_m.cc
 subprojects/veins_testsims/out
 subprojects/veins_testsims/run
-subprojects/veins_testsims/.settings
 subprojects/veins_testsims/sim/**/results
 subprojects/veins_testsims/sim/**/veins-runall-output
 subprojects/veins_testsims/sim/**/.tkenvrc
@@ -76,3 +70,4 @@ subprojects/veins_testsims/sim/**/.qtenvrc
 subprojects/veins_testsims/sim/**/.cmdenv-log
 subprojects/veins_testsims/sim/**/valgrind.out
 subprojects/veins_testsims/opp_tests/**/work
+
