@@ -13,18 +13,12 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-//
-// TODO generated message class
-//
+package org.car2x.veins.modules.application.ieee1609dot2;
 
-cplusplus
-{{
-#include "ContentChoice_m.h"  
-}}
+import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
 
-class ContentChoice;
-
-packet ContentSignedCertificateRequest extends ContentChoice {
-    contentType = SIGNED_CERTIFICATE_REQUEST;    
-    string signedCertificateRequest;
+simple Ieee1609Dot2 extends DemoBaseApplLayer
+{
+    @class(veins::Ieee1609Dot2);
+    @display("i=block/app2");
 }

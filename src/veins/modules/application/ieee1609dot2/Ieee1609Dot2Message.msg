@@ -11,20 +11,23 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
-
-//
-// TODO generated message class
 //
 
-cplusplus
-{{
-#include "ContentChoice_m.h"  
+
+cplusplus {{
+#include "veins/modules/messages/BaseFrame1609_4_m.h"
+#include "veins/base/utils/SimpleAddress.h"
+#include "veins/modules/application/ieee1609dot2/Ieee1609Dot2Data_m.h"
 }}
 
-class ContentChoice;
+namespace veins;
 
-packet ContentSignedCertificateRequest extends ContentChoice {
-    contentType = SIGNED_CERTIFICATE_REQUEST;    
-    string signedCertificateRequest;
+class BaseFrame1609_4;
+class Ieee1609Dot2Data;
+class LAddress::L2Type extends void;
+
+packet Ieee1609Dot2Message extends BaseFrame1609_4 {
+    Ieee1609Dot2Data data;
+    LAddress::L2Type senderAddress = -1;
 }
+

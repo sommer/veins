@@ -27,4 +27,5 @@ cplusplus
 packet Ieee1609Dot2Data {
     uint8_t protocolVersion;
     //Ieee1609Dot2Content content;
+    string content;
 }
