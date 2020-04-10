@@ -23,6 +23,16 @@
 #include "veins/modules/application/ieee1609dot2/Ieee1609Dot2.h"
 #include "veins/modules/application/ieee1609dot2/Ieee1609Dot2Message_m.h"
 
+#include "veins/modules/application/ieee1609dot2/ContentUnsecuredData_m.h"
+
+#include "veins/modules/application/ieee1609dot2/ContentChoiceType_m.h"
+
+#include "veins/modules/application/ieee1609dot2/ContentChoice_m.h"
+
+
+
+
+
 using namespace veins;
 
 Define_Module(veins::Ieee1609Dot2);
@@ -43,32 +53,56 @@ void Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
     if(spdu->getData().getProtocolVersion() != 3){
         delete(spdu);
     } else {
-
-        /*findHost()->getDisplayString().setTagArg("i", 1, "green");
-
-        if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
-        if (!sentMessage) {
-            sentMessage = true;
-            // repeat the received traffic update once in 2 seconds plus some random delay
-            wsm->setSenderAddress(myId);
-            wsm->setSerial(3);
-            scheduleAt(simTime() + 2 + uniform(0.01, 0.2), wsm->dup());
-        }*/
-
         EV << "Content: " << spdu->getData().getContent() << "\n";
+
+        findHost()->getDisplayString().setTagArg("i", 1, "green");
+
+        std::string data = "";
+        int checkType = spdu->getData().getContent().getContentChoices().getContentType();
+
+        switch (checkType) {
+        case ContentChoiceType::UNSECURE_DATA:
+            ContentUnsecuredData* unsecuredData = dynamic_cast<ContentUnsecuredData*>(&spdu->getData().getContent().getContentChoices());
+            if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(unsecuredData->getUnsecuredData(), 9999); //empty string for debug
+                if (!sentMessage) {
+                    sentMessage = true;
+                    // repeat the received traffic update once in 2 seconds plus some random delay
+                    spdu->setSenderAddress(myId);
+                    scheduleAt(simTime() + 2 + uniform(0.01, 0.2), spdu->dup());
+                }
+            break;
+        }
     }
 }
 
-Ieee1609Dot2Message* Ieee1609Dot2::createSPDU(const char * msg)
+Ieee1609Dot2Message* Ieee1609Dot2::createSPDU(int type, const char * msg)
 {
-    Ieee1609Dot2Message* wsm = new Ieee1609Dot2Message();
-    populateWSM(wsm);
+    findHost()->getDisplayString().setTagArg("i", 1, "red");
+    sentMessage = true;
+    Ieee1609Dot2Message* message = new Ieee1609Dot2Message();
+    populateWSM(message);
+
     Ieee1609Dot2Data* data = new Ieee1609Dot2Data();
     data->setProtocolVersion(3);
-    data->setContent(msg);
-    wsm->setData(*data);
 
-    return wsm;
+    Ieee1609Dot2Content* content = new Ieee1609Dot2Content();
+
+    ContentChoice* contentChoice;
+
+    switch(type){
+    case ContentChoiceType::UNSECURE_DATA:
+        ContentUnsecuredData* unsecuredData = new ContentUnsecuredData();
+        unsecuredData->setUnsecuredData(msg);
+        contentChoice = unsecuredData;
+        content->setContentChoices(*contentChoice);
+        data->setContent(*content);
+
+        break;
+
+    }
+    //wsm->setData(*data);
+
+    return message;
 }
 
 
@@ -92,23 +126,14 @@ void Ieee1609Dot2::onWSM(BaseFrame1609_4* frame)
 
 void Ieee1609Dot2::handleSelfMsg(cMessage* msg)
 {
-    /*if (TraCIDemo11pMessage* wsm = dynamic_cast<TraCIDemo11pMessage*>(msg)) {
+    if (Ieee1609Dot2Message* wsm = dynamic_cast<Ieee1609Dot2Message*>(msg)) {
         // send this message on the service channel until the counter is 3 or higher.
         // this code only runs when channel switching is enabled
         sendDown(wsm->dup());
-        wsm->setSerial(wsm->getSerial() + 1);
-        if (wsm->getSerial() >= 3) {
-            // stop service advertisements
-            stopService();
-            delete (wsm);
-        }
-        else {
-            scheduleAt(simTime() + 1, wsm);
-        }
     }
     else {
         DemoBaseApplLayer::handleSelfMsg(msg);
-    }*/
+    }
 }
 
 void Ieee1609Dot2::handlePositionUpdate(cObject* obj)
@@ -118,14 +143,10 @@ void Ieee1609Dot2::handlePositionUpdate(cObject* obj)
     // stopped for for at least 10s?
     if (mobility->getSpeed() < 1) {
         if (simTime() - lastDroveAt >= 10 && sentMessage == false) {
-            findHost()->getDisplayString().setTagArg("i", 1, "red");
-            sentMessage = true;
 
             EV << "Creating new SPUD\n";
 
-            Ieee1609Dot2Message *wsm = createSPDU(mobility->getRoadId().c_str());
-
-            //wsm->setDemoData(mobility->getRoadId().c_str());
+            Ieee1609Dot2Message *wsm = createSPDU(ContentChoiceType::UNSECURE_DATA, mobility->getRoadId().c_str());
 
             // host is standing still due to crash
             if (dataOnSch) {

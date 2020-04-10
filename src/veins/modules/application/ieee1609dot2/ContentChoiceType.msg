@@ -16,16 +16,11 @@
 //
 // TODO generated message class
 //
+enum ContentChoiceType
+{
+   UNSECURE_DATA = 0;
+   SIGNED_DATA = 1;
+   ENCRYPTED_DATA = 2;
+   SIGNED_CERTIFICATE_REQUEST = 3;   
+};
 
-cplusplus 
-{{
-#include "Ieee1609Dot2Content_m.h"  
-}}
-
-class Ieee1609Dot2Content;
-
-packet Ieee1609Dot2Data {
-    uint8_t protocolVersion;
-    Ieee1609Dot2Content content;
-    //string content;
-}

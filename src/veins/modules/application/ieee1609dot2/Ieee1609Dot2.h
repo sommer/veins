@@ -15,7 +15,7 @@ class VEINS_API Ieee1609Dot2 : public DemoBaseApplLayer {
 public:
     void initialize(int stage) override;
 
-    Ieee1609Dot2Message* createSPDU(const char * content);
+    Ieee1609Dot2Message* createSPDU(int type, const char * content);
     void processSPDU(Ieee1609Dot2Message* spdu);
 
 protected:

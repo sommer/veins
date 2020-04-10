@@ -11,21 +11,14 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
-
 //
-// TODO generated message class
-//
-enum ContentChoiceType
-{
-   UNSECURE_DATA = 0;
-   SIGNED_DATA = 1;
-   ENCRYPTED_DATA = 2;
-   SIGNED_CERTIFICATE_REQUEST = 3;   
-};
 
+cplusplus {{
+#include "ContentChoiceType_m.h"
+}}
+
+enum ContentChoiceType;
 
 packet ContentChoice {
-    int contentType;
-    
+    int contentType @enum(ContentChoiceType);
 }
