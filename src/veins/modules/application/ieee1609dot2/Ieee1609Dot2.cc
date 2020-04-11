@@ -11,7 +11,7 @@
 
 using namespace veins;
 
-const char * Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
+std::string Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
 {
     if(spdu->getData().getProtocolVersion() != 3){
         delete(spdu);
@@ -22,6 +22,8 @@ const char * Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
         switch (checkType) {
         case ContentChoiceType::UNSECURE_DATA:
             ContentUnsecuredData unsecuredData = spdu->getData().getContent().getUnsecuredData();
+            //EV << "DATA: " << unsecuredData.getUnsecuredData() << "\n";
+            //findHost()->getDisplayString().setTagArg("i", 1, "green");
             return unsecuredData.getUnsecuredData();
 
         }

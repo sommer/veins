@@ -53,7 +53,6 @@ void TraCIDemo11p::onWSA(DemoServiceAdvertisment* wsa)
 void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
 {
     TraCIDemo11pMessage* wsm = check_and_cast<TraCIDemo11pMessage*>(frame);
-
     findHost()->getDisplayString().setTagArg("i", 1, "green");
 
     if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
