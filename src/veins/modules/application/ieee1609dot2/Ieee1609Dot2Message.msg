@@ -29,5 +29,6 @@ class LAddress::L2Type extends void;
 packet Ieee1609Dot2Message extends BaseFrame1609_4 {
     Ieee1609Dot2Data data;
     LAddress::L2Type senderAddress = -1;
+    int serial = 0;
 }
 
