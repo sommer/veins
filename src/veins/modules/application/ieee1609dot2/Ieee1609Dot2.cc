@@ -27,11 +27,6 @@
 
 #include "veins/modules/application/ieee1609dot2/ContentChoiceType_m.h"
 
-#include "veins/modules/application/ieee1609dot2/ContentChoice_m.h"
-
-
-
-
 
 using namespace veins;
 
@@ -53,17 +48,16 @@ void Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
     if(spdu->getData().getProtocolVersion() != 3){
         delete(spdu);
     } else {
-        EV << "Content: " << spdu->getData().getContent() << "\n";
+        //EV << "Content: " << spdu->getData().getContent() << "\n";
 
         findHost()->getDisplayString().setTagArg("i", 1, "green");
 
-        std::string data = "";
-        int checkType = spdu->getData().getContent().getContentChoices().getContentType();
+        int checkType = spdu->getData().getContent().getContentType();
 
         switch (checkType) {
         case ContentChoiceType::UNSECURE_DATA:
-            ContentUnsecuredData* unsecuredData = dynamic_cast<ContentUnsecuredData*>(&spdu->getData().getContent().getContentChoices());
-            if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(unsecuredData->getUnsecuredData(), 9999); //empty string for debug
+            ContentUnsecuredData unsecuredData = spdu->getData().getContent().getUnsecuredData();
+            if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(unsecuredData.getUnsecuredData(), 9999);
                 if (!sentMessage) {
                     sentMessage = true;
                     // repeat the received traffic update once in 2 seconds plus some random delay
@@ -77,8 +71,7 @@ void Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
 
 Ieee1609Dot2Message* Ieee1609Dot2::createSPDU(int type, const char * msg)
 {
-    findHost()->getDisplayString().setTagArg("i", 1, "red");
-    sentMessage = true;
+
     Ieee1609Dot2Message* message = new Ieee1609Dot2Message();
     populateWSM(message);
 
@@ -87,20 +80,16 @@ Ieee1609Dot2Message* Ieee1609Dot2::createSPDU(int type, const char * msg)
 
     Ieee1609Dot2Content* content = new Ieee1609Dot2Content();
 
-    ContentChoice* contentChoice;
-
     switch(type){
     case ContentChoiceType::UNSECURE_DATA:
-        ContentUnsecuredData* unsecuredData = new ContentUnsecuredData();
-        unsecuredData->setUnsecuredData(msg);
-        contentChoice = unsecuredData;
-        content->setContentChoices(*contentChoice);
-        data->setContent(*content);
-
+        ContentUnsecuredData* contentUnsecuredData = new ContentUnsecuredData();
+        contentUnsecuredData->setUnsecuredData(msg);
+        content->setUnsecuredData(*contentUnsecuredData);
         break;
-
     }
-    //wsm->setData(*data);
+
+    data->setContent(*content);
+    message->setData(*data);
 
     return message;
 }
@@ -145,6 +134,8 @@ void Ieee1609Dot2::handlePositionUpdate(cObject* obj)
         if (simTime() - lastDroveAt >= 10 && sentMessage == false) {
 
             EV << "Creating new SPUD\n";
+            findHost()->getDisplayString().setTagArg("i", 1, "red");
+            sentMessage = true;
 
             Ieee1609Dot2Message *wsm = createSPDU(ContentChoiceType::UNSECURE_DATA, mobility->getRoadId().c_str());
 

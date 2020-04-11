@@ -19,15 +19,22 @@
 
 cplusplus 
 {{
-#include "ContentChoice_m.h"
+#include "ContentChoiceType_m.h"
+#include "ContentUnsecuredData_m.h"
 }}
 
-class ContentChoice;
+enum ContentChoiceType;
+class ContentUnsecuredData;
 
 packet Ieee1609Dot2Content {
 	//char unsecuredData[8]; //should be Opaque
     //SignedData signedData;
     //EncryptedData encryptedData;
     //char signedCertificateRequest[8]; //should be Opaque
-    ContentChoice contentChoices;
+    //ContentChoice contentChoices;
+    int contentType @enum(ContentChoiceType);
+    ContentUnsecuredData unsecuredData;
+    
+    
+    
 }
