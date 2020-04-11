@@ -17,8 +17,8 @@ package org.car2x.veins.modules.application.ieee1609dot2;
 
 import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
 
-simple Ieee1609Dot2 extends DemoBaseApplLayer
+simple Ieee1609Dot2ALL extends DemoBaseApplLayer
 {
-    @class(veins::Ieee1609Dot2);
+    @class(veins::Ieee1609Dot2ALL);
     @display("i=block/app2");
 }
