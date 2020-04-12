@@ -5,6 +5,10 @@
 #include "veins/modules/application/ieee1609dot2/Ieee1609Dot2Message_m.h"
 
 #include "veins/modules/application/ieee1609dot2/ContentUnsecuredData_m.h"
+#include "veins/modules/application/ieee1609dot2/ContentEncryptedData_m.h"
+#include "veins/modules/application/ieee1609dot2/ContentSignedCertificateRequest_m.h"
+
+
 
 #include "veins/modules/application/ieee1609dot2/ContentChoiceType_m.h"
 
@@ -21,10 +25,20 @@ std::string Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
 
         switch (checkType) {
         case ContentChoiceType::UNSECURE_DATA:
+        {
             ContentUnsecuredData unsecuredData = spdu->getData().getContent().getUnsecuredData();
-            //EV << "DATA: " << unsecuredData.getUnsecuredData() << "\n";
-            //findHost()->getDisplayString().setTagArg("i", 1, "green");
             return unsecuredData.getUnsecuredData();
+        }
+        case ContentChoiceType::ENCRYPTED_DATA:
+        {
+            ContentEncryptedData encryptedData = spdu->getData().getContent().getEncryptedData();
+            return "encrypted"; //TODO
+        }
+        case ContentChoiceType::SIGNED_CERTIFICATE_REQUEST:
+        {
+            ContentSignedCertificateRequest signedCertificateRequest = spdu->getData().getContent().getSignedCertificateRequest();
+            return "sigendCertificateRequest"; //TODO
+        }
 
         }
     }
