@@ -80,3 +80,20 @@ Ieee1609Dot2Data* Ieee1609Dot2::createSPDU(int type, const char * msg)
     return data;
 }
 
+EncryptedData* Ieee1609Dot2::SecEncryptedDataRequest(
+            Ieee1609Dot2Data* data,
+            int dataType,
+            int dataEncryptionKeyType,
+            int symmetricCHM,
+            CertificateBase* recipientCertificates,
+            std::string signedDataRecipientInfo,
+            std::string responseEncryptionKey,
+            int ecPointFormat
+            )
+{
+    EncryptedData* encryptedData = new EncryptedData();
+    encryptedData->setCiphertext(data->getContent().getUnsecuredData().getUnsecuredData());
+    encryptedData->setRecipients("recipients");
+    return encryptedData;
+}
+
