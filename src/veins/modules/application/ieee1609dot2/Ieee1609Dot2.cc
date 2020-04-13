@@ -94,6 +94,17 @@ Ieee1609Dot2Data* Ieee1609Dot2::createSPDU(int type, Ieee1609Dot2Data* data)
 
             break;
         }
+    case ContentChoiceType::SIGNED_CERTIFICATE_REQUEST:
+    {
+        Ieee1609Dot2Content* content = new Ieee1609Dot2Content();
+        content->setContentType(ContentChoiceType::SIGNED_CERTIFICATE_REQUEST);
+
+        ContentSignedCertificateRequest* contentSigendCertificateRequest = new ContentSignedCertificateRequest();
+        contentSigendCertificateRequest->setSignedCertificateRequest("signedCertificateRequest");
+
+        content->setSignedCertificateRequest(*contentSigendCertificateRequest);
+        spdu->setContent(*content);
+    }
     }
 
     //data->setContent(*content);
