@@ -85,7 +85,7 @@ EncryptedData* Ieee1609Dot2::SecEncryptedDataRequest(
             int dataType,
             int dataEncryptionKeyType,
             int symmetricCHM,
-            CertificateBase* recipientCertificates,
+            std::vector<CertificateBase> recipientCertificates,
             std::string signedDataRecipientInfo,
             std::string responseEncryptionKey,
             int ecPointFormat
@@ -96,4 +96,14 @@ EncryptedData* Ieee1609Dot2::SecEncryptedDataRequest(
     encryptedData->setRecipients("recipients");
     return encryptedData;
 }
+
+EncryptedData* Ieee1609Dot2::SecEncryptedDataConfirm(
+            int resultCode,
+            Ieee1609Dot2Data* data,
+            std::string signedDataRecipientInfo
+            )
+{
+
+}
+
 

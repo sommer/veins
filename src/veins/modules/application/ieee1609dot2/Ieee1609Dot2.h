@@ -23,11 +23,17 @@ public:
             int dataType,
             int dataEncryptionKeyType,
             int symmetricCHM,
-            CertificateBase* recipientCertificates,
+            std::vector<CertificateBase> recipientCertificates,
             std::string signedDataRecipientInfo,
             std::string responseEncryptionKey,
             int ecPointFormat
             );
+
+    EncryptedData* SecEncryptedDataConfirm(
+                int resultCode,
+                Ieee1609Dot2Data* data,
+                std::string signedDataRecipientInfo
+                );
 
 
 };
