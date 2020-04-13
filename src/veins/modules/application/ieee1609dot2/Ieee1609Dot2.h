@@ -15,7 +15,10 @@ namespace veins {
 class VEINS_API Ieee1609Dot2{
 public:
     Ieee1609Dot2() { }
-    Ieee1609Dot2Data* createSPDU(int type, const char * content);
+    Ieee1609Dot2Data* createSPDU(int type, Ieee1609Dot2Data* data);
+
+    //Ieee1609Dot2Data* createSPDU(int type, std::string content);
+
     std::string processSPDU(Ieee1609Dot2Message* spdu);
 
     EncryptedData* SecEncryptedDataRequest(

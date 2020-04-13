@@ -31,6 +31,8 @@ protected:
 
     void handleSelfMsg(cMessage* msg) override;
     void handlePositionUpdate(cObject* obj) override;
+
+    Ieee1609Dot2Data* createUnsecureDataFormString(const char *msg);
 };
 
 }

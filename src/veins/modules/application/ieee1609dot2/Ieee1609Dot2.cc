@@ -29,7 +29,7 @@ std::string Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
             SDS.*/
 
             ContentUnsecuredData unsecuredData = spdu->getData().getContent().getUnsecuredData();
-            return unsecuredData.getUnsecuredData();
+            return unsecuredData.getUnsecuredData().getUnsecuredData();
         }
         case ContentChoiceType::SIGNED_DATA:
         {
@@ -59,25 +59,51 @@ std::string Ieee1609Dot2::processSPDU(Ieee1609Dot2Message* spdu)
     }
 }
 
-Ieee1609Dot2Data* Ieee1609Dot2::createSPDU(int type, const char * msg)
+Ieee1609Dot2Data* Ieee1609Dot2::createSPDU(int type, Ieee1609Dot2Data* data)
 {
 
-    Ieee1609Dot2Data* data = new Ieee1609Dot2Data();
-    data->setProtocolVersion(3);
-
-    Ieee1609Dot2Content* content = new Ieee1609Dot2Content();
+    Ieee1609Dot2Data* spdu = new Ieee1609Dot2Data();
+    spdu->setProtocolVersion(3);
 
     switch(type){
     case ContentChoiceType::UNSECURE_DATA:
-        ContentUnsecuredData* contentUnsecuredData = new ContentUnsecuredData();
-        contentUnsecuredData->setUnsecuredData(msg);
-        content->setUnsecuredData(*contentUnsecuredData);
+    {
+        spdu->setContent(data->getContent());
+        /*ContentUnsecuredData* contentUnsecuredData = new ContentUnsecuredData();
+        UnsecuredData* unsecuredData = data->getContent()
+        contentUnsecuredData->setUnsecuredData();
+        //content->setUnsecuredData(*contentUnsecuredData);*/
+
         break;
     }
+    case ContentChoiceType::ENCRYPTED_DATA:
+        {
+            Ieee1609Dot2Content* content = new Ieee1609Dot2Content();
+            content->setContentType(ContentChoiceType::ENCRYPTED_DATA);
+            ContentEncryptedData* contentEncryptedData = new ContentEncryptedData();
 
-    data->setContent(*content);
+            EncryptedData* encryptedData = SecEncryptedDataRequest(
+                    data,
+                    data->getContent().getContentType(),
+                    0,
+                    0,
+                    std::vector<CertificateBase>(),
+                    "",
+                    "",
+                    0
+                    );
 
-    return data;
+            contentEncryptedData->setEncryptedData(*encryptedData);
+            content->setEncryptedData(*contentEncryptedData);
+            spdu->setContent(*content);
+
+            break;
+        }
+    }
+
+    //data->setContent(*content);
+
+    return spdu;
 }
 
 EncryptedData* Ieee1609Dot2::SecEncryptedDataRequest(
@@ -92,7 +118,7 @@ EncryptedData* Ieee1609Dot2::SecEncryptedDataRequest(
             )
 {
     EncryptedData* encryptedData = new EncryptedData();
-    encryptedData->setCiphertext(data->getContent().getUnsecuredData().getUnsecuredData());
+    encryptedData->setCiphertext(data->getContent().getUnsecuredData().getUnsecuredData().getUnsecuredData());
     encryptedData->setRecipients("recipients");
     return encryptedData;
 }

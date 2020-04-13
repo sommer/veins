@@ -28,6 +28,26 @@ void Ieee1609Dot2ALL::initialize(int stage)
     }
 }
 
+Ieee1609Dot2Data* Ieee1609Dot2ALL::createUnsecureDataFormString(const char* msg){
+    Ieee1609Dot2Data* data = new Ieee1609Dot2Data();
+    data->setProtocolVersion(3);
+
+    Ieee1609Dot2Content* content = new Ieee1609Dot2Content();
+    content->setContentType(ContentChoiceType::UNSECURE_DATA);
+
+    ContentUnsecuredData* contentUnsecuredData = new ContentUnsecuredData();
+    UnsecuredData* unsecuredData = new UnsecuredData();
+    unsecuredData->setUnsecuredData(msg);
+
+    contentUnsecuredData->setUnsecuredData(*unsecuredData);
+    content->setUnsecuredData(*contentUnsecuredData);
+
+    data->setContent(*content);
+    return data;
+    //content->setUnsecuredData(*contentUnsecuredData);
+
+}
+
 void Ieee1609Dot2ALL::onWSA(DemoServiceAdvertisment* wsa)
 {
     if (currentSubscribedServiceId == -1) {
@@ -95,7 +115,8 @@ void Ieee1609Dot2ALL::handlePositionUpdate(cObject* obj)
             Ieee1609Dot2Message* wsm = new Ieee1609Dot2Message();
             populateWSM(wsm);
 
-            wsm->setData(*(ieee1609Dot2->createSPDU(ContentChoiceType::UNSECURE_DATA, mobility->getRoadId().c_str())));
+            Ieee1609Dot2Data* unsecuredData = createUnsecureDataFormString(mobility->getRoadId().c_str());
+            wsm->setData(*(ieee1609Dot2->createSPDU(ContentChoiceType::UNSECURE_DATA, unsecuredData)));
 
 
             // host is standing still due to crash
