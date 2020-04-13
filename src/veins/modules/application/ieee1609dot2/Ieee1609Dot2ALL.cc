@@ -65,11 +65,7 @@ void Ieee1609Dot2ALL::onWSM(BaseFrame1609_4* frame)
     Ieee1609Dot2Message* wsm = check_and_cast<Ieee1609Dot2Message*>(frame);
     std::string returnedData = ieee1609Dot2->processSPDU(wsm);
 
-    //EV << "Before: " << returnedData << "\n";
-
     findHost()->getDisplayString().setTagArg("i", 1, "green");
-
-    //EV << "After: " << returnedData << "\n";
 
     if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(returnedData, 9999);
     if (!sentMessage) {

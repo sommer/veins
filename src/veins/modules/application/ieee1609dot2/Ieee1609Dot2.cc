@@ -69,11 +69,6 @@ Ieee1609Dot2Data* Ieee1609Dot2::createSPDU(int type, Ieee1609Dot2Data* data)
     case ContentChoiceType::UNSECURE_DATA:
     {
         spdu->setContent(data->getContent());
-        /*ContentUnsecuredData* contentUnsecuredData = new ContentUnsecuredData();
-        UnsecuredData* unsecuredData = data->getContent()
-        contentUnsecuredData->setUnsecuredData();
-        //content->setUnsecuredData(*contentUnsecuredData);*/
-
         break;
     }
     case ContentChoiceType::ENCRYPTED_DATA:
