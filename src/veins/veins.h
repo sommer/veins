@@ -69,7 +69,7 @@ using namespace omnetpp;
  */
 namespace veins {
 #ifdef __cpp_lib_make_unique
-using make_unique = std::make_unique;
+using std::make_unique;
 #else
 /**
  * User-defined implementation of std::make_unique.
