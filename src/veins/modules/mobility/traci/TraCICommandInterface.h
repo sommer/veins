@@ -405,6 +405,7 @@ public:
             connection = &traci->connection;
         }
 
+        Coord getPosition();
         void remove(int32_t layer);
 
     protected:

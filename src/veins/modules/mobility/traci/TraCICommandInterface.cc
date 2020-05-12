@@ -897,6 +897,11 @@ void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const
     ASSERT(buf.eof());
 }
 
+Coord TraCICommandInterface::Poi::getPosition()
+{
+    return traci->genericGetCoord(CMD_GET_POI_VARIABLE, poiId, VAR_POSITION, RESPONSE_GET_POI_VARIABLE);
+}
+
 void TraCICommandInterface::Poi::remove(int32_t layer)
 {
     TraCIBuffer p;
