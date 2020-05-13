@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2017 Christoph Sommer <sommer@ccs-labs.org>
+// Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,4 +20,4 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.subprojects.veins_inet.examples.veins_inet;
+package org.car2x.veins.subprojects.veins_testsims.sim.veins_testsims.traci;
