@@ -239,11 +239,16 @@ void TraCITestApp::handlePositionUpdate()
             assertEqual("(TraCICommandInterface::getPoiIds) number is 0", size_t(0), o.size());
         }
         if (t == 2) {
-            traci->addPoi("poi0", "building", TraCIColor::fromTkColor("red"), 0, Coord(0, 0));
+            traci->addPoi("poi0", "building", TraCIColor::fromTkColor("red"), 0, Coord(1234.5, 6789.0));
         }
         if (t == 3) {
             std::list<std::string> o = traci->getPoiIds();
             assertEqual("(TraCICommandInterface::addPoi) number is 1", size_t(1), o.size());
+        }
+        if (t == 4) {
+            Coord c = traci->poi("poi0").getPosition();
+            assertClose("(TraCICommandInterface::Poi::getPosition) x Position is correct", 1234.5, c.x);
+            assertClose("(TraCICommandInterface::Poi::getPosition) y Position is correct", 6789.0, c.y);
         }
         if (t == 4) {
             traci->poi("poi0").remove(0);
