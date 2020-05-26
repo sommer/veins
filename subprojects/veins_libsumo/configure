@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2013-2019 Christoph Sommer <sommer@ccs-labs.org>
+#
+# Documentation for these modules is at http://veins.car2x.org/
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+"""
+Creates Makefile(s) for building this project.
+"""
+
+import os
+import sys
+import subprocess
+import logging
+from logging import info, warning, error
+from optparse import OptionParser
+
+# check python version
+if sys.version_info[0] < 3:
+    warning("Warning: running configure with Python 2 might result in subtle errors.")
+
+# pretty-print version
+def version_to_hr(v):
+    s = '"%s"' % v.decode(errors='replace')
+    return(s)
+
+# pretty-print list of versions
+def versions_to_hr(vv):
+    s = ' or '.join([version_to_hr(v) for v in vv])
+    return(s)
+
+# Option handling
+parser = OptionParser()
+parser.add_option("-v", "--verbose", dest="count_verbose", default=0, action="count", help="increase verbosity [default: don't log infos, debug]")
+parser.add_option("-q", "--quiet", dest="count_quiet", default=0, action="count", help="decrease verbosity [default: log warnings, errors]")
+parser.add_option("--with-veins", dest="veins", help="link with a version of Veins installed in PATH", metavar="PATH", default="../..")
+parser.add_option("--with-sumo-includes", dest="sumo_includes", help="compile with a version of sumo includes installed in PATH", metavar="PATH", default="../../../sumo/src")
+parser.add_option("--with-sumo-build-includes", dest="sumo_build_includes", help="compile with a version of sumo build includes installed in PATH", metavar="PATH", default="../../../sumo/build/src")
+parser.add_option("--with-libsumo", dest="libsumo", help="link with a version of libsumo installed in PATH", metavar="PATH", default="../../../sumo/tools/libsumo")
+(options, args) = parser.parse_args()
+
+_LOGLEVELS = (logging.ERROR, logging.WARN, logging.INFO, logging.DEBUG)
+loglevel = _LOGLEVELS[max(0, min(1 + options.count_verbose - options.count_quiet, len(_LOGLEVELS)-1))]
+logging.basicConfig(level=loglevel)
+
+if args:
+    warning("Superfluous command line arguments: \"%s\"" % " ".join(args))
+
+
+# Start with default flags
+makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins_libsumo', '-O', 'out']
+run_libs = [os.path.join('src', 'veins_libsumo')]
+run_neds = [os.path.join('src', 'veins_libsumo')]
+run_imgs = [os.path.join('images')]
+inc_vars = {}
+
+
+# Add flags for Veins
+if options.veins:
+    fname = os.path.join(options.veins, 'print-veins-version')
+    expect_version = [b'5.0']
+    try:
+        info('Running "%s" to determine Veins version.' % fname)
+        version = subprocess.check_output(['env', fname]).strip()
+        if not version in expect_version:
+            warning('')
+            warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            warning('Unsupported Veins Version. Expecting %s, found %s' % (versions_to_hr(expect_version), version_to_hr(version)))
+            warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            warning('')
+        else:
+            info('Found Veins version %s. Okay.' % version_to_hr(version))
+    except subprocess.CalledProcessError as e:
+        error('Could not determine Veins Version (by running %s): %s. Check the path to Veins (--with-veins=... option) and the Veins version (should be version %s)' % (fname, e, versions_to_hr(expect_version)))
+        sys.exit(1)
+
+    veins_header_dirs = [os.path.join(os.path.relpath(options.veins, 'src'), 'src')]
+    veins_includes = ['-I' + s for s in veins_header_dirs]
+    veins_link = ["-L" + os.path.join(os.path.relpath(options.veins, 'src'), 'src'), "-lveins$(D)"]
+    veins_defs = []
+
+    makemake_flags += veins_includes + veins_link + veins_defs
+    run_libs = [os.path.relpath(os.path.join(options.veins, 'src', 'veins'))] + run_libs
+    run_neds = [os.path.relpath(os.path.join(options.veins, 'src', 'veins'))] + run_neds
+    run_imgs = [os.path.relpath(os.path.join(options.veins, 'images'))] + run_imgs
+
+
+# Add flags for sumo_includes
+if options.sumo_includes:
+    check_fname = os.path.join(options.sumo_includes, 'libsumo', 'Simulation.h')
+    expect_version = '1.6.0'
+    if not os.path.isfile(check_fname):
+        error('Could not make sure sumo includes exist (by looking for %s). Check the path to sumo includes (--with-sumo-includes=... option) and the SUMO version (should be version %s)' % (check_fname_w, expect_version))
+        sys.exit(1)
+
+    inc_vars['VEINS_LIBSUMO_INCLUDES'] = os.path.relpath(options.sumo_includes, 'src')
+
+
+# Add flags for sumo_build_includes
+if options.sumo_build_includes:
+    check_fname = os.path.join(options.sumo_build_includes, 'config.h')
+    expect_version = '1.6.0'
+    if not os.path.isfile(check_fname):
+        error('Could not make sure sumo build includes exist (by looking for %s). Check the path to sumo build includes (--with-sumo-build-includes=... option) and the SUMO version (should be version %s)' % (check_fname_w, expect_version))
+        sys.exit(1)
+
+    inc_vars['VEINS_LIBSUMO_BUILD_INCLUDES'] = os.path.relpath(options.sumo_build_includes, 'src')
+
+
+# Add flags for libsumo
+if options.libsumo:
+    check_path = os.path.join(options.libsumo)
+    check_fname_w = os.path.join(check_path, 'libsumoc.dll')
+    check_fname_l = os.path.join(check_path, 'libsumoc.so')
+    check_fname_m = os.path.join(check_path, 'libsumoc.dylib')
+    expect_version = '1.6.0'
+    if not any((os.path.isfile(check_fname_w), os.path.isfile(check_fname_l), os.path.isfile(check_fname_m))):
+        error('Could not make sure libsumo exists (by looking for %s, %s, and %s). Check the path to libsumo (--with-libsumo=... option) and the SUMO version (should be version %s)' % (check_fname_w, check_fname_l, check_fname_m, expect_version))
+        sys.exit(1)
+
+    inc_vars['VEINS_LIBSUMO_LIBRARY'] = os.path.relpath(check_path, 'src')
+
+
+# Start creating files
+if not os.path.isdir('out'):
+    os.mkdir('out')
+
+f = open(os.path.join('out', 'config.py'), 'w')
+f.write('run_libs = %s\n' % repr(run_libs))
+f.write('run_neds = %s\n' % repr(run_neds))
+f.write('run_imgs = %s\n' % repr(run_imgs))
+f.close()
+
+inc_in = open(os.path.join('src', 'Makefile.inc.default'), 'r')
+inc_out = open(os.path.join('src', 'Makefile.inc'), 'w')
+inc_out.write('\n# This file was generated by ./configure - changes will be lost when re-run.\n\n')
+for s in inc_in:
+    for k in inc_vars:
+        needle = "{} ?= ".format(k)
+        if s.startswith(needle):
+            s = s[0:len(needle)] + inc_vars[k] + '\n'
+    inc_out.write(s)
+inc_out.close()
+inc_in.close()
+
+subprocess.check_call(['env', 'opp_makemake'] + makemake_flags, cwd='src')
+
+info('Configure done. You can now run "make".')
