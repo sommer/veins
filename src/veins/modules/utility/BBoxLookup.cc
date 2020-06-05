@@ -111,12 +111,16 @@ BBoxLookup::BBoxLookup(const std::vector<Obstacle*>& obstacles, std::function<BB
     size_t numEntries = 0;
     for (const auto obstaclePtr : obstacles) {
         auto bbox = makeBBox(obstaclePtr);
-        const size_t fromCol = std::max(0, int(bbox.p1.x / cellSize));
-        const size_t toCol = std::max(0, int(bbox.p2.x / cellSize));
-        const size_t fromRow = std::max(0, int(bbox.p1.y / cellSize));
-        const size_t toRow = std::max(0, int(bbox.p2.y / cellSize));
+        const size_t fromCol = std::min(size_t(std::max(0, int(bbox.p1.x / cellSize))), numCols - 1);
+        const size_t toCol = std::min(size_t(std::max(0, int(bbox.p2.x / cellSize))), numCols - 1);
+        const size_t fromRow = std::min(size_t(std::max(0, int(bbox.p1.y / cellSize))), numRows - 1);
+        const size_t toRow = std::min(size_t(std::max(0, int(bbox.p2.y / cellSize))), numRows - 1);
         for (size_t row = fromRow; row <= toRow; ++row) {
             for (size_t col = fromCol; col <= toCol; ++col) {
+                ASSERT(row >= 0);
+                ASSERT(col >= 0);
+                ASSERT(row < numRows);
+                ASSERT(col < numCols);
                 const size_t cellIndex = col + row * numCols;
                 protoCells[cellIndex].push_back(bbox);
                 protoLookup[cellIndex].push_back(obstaclePtr);
@@ -163,10 +167,10 @@ std::vector<Obstacle*> BBoxLookup::findOverlapping(Point sender, Point receiver)
     };
 
     // determine coordinates for all cells touched by bbox
-    const size_t firstCol = std::max(0, int(bbox.p1.x / cellSize));
-    const size_t lastCol = std::max(0, int(bbox.p2.x / cellSize));
-    const size_t firstRow = std::max(0, int(bbox.p1.y / cellSize));
-    const size_t lastRow = std::max(0, int(bbox.p2.y / cellSize));
+    const size_t firstCol = std::min(size_t(std::max(0, int(bbox.p1.x / cellSize))), numCols - 1);
+    const size_t lastCol = std::min(size_t(std::max(0, int(bbox.p2.x / cellSize))), numCols - 1);
+    const size_t firstRow = std::min(size_t(std::max(0, int(bbox.p1.y / cellSize))), numRows - 1);
+    const size_t lastRow = std::min(size_t(std::max(0, int(bbox.p2.y / cellSize))), numRows - 1);
     ASSERT(lastCol < numCols && lastRow < numRows);
     // precompute transmission ray properties
     const Ray ray = makeRay(sender, receiver);
