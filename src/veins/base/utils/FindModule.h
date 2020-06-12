@@ -56,6 +56,26 @@ public:
         }
         return NULL;
     }
+    /**
+     * @brief Returns a list of pointers to sub modules of the passed module with
+     * the type of this template.
+     *
+     * Returns an empty list if no matching submodule could be found.
+     */
+    static std::vector<T> findSubModules(const cModule* const top)
+    {
+        std::vector<T> modules;
+        for (cModule::SubmoduleIterator i(top); !i.end(); i++) {
+            cModule* const sub = *i;
+            // this allows also a return type of read only pointer: const cModule *const
+            T dCastRet = dynamic_cast<T>(sub);
+            if (dCastRet != NULL) modules.push_back(dCastRet);
+            // this allows also a return type of read only pointer: const cModule *const
+            std::vector<T> recFnd = findSubModules(sub);
+            if (recFnd.size()) std::copy(recFnd.begin(), recFnd.end(), std::back_inserter(modules));;
+        }
+        return modules;
+    }
 
     /**
      * @brief Returns a pointer to the module with the type of this
