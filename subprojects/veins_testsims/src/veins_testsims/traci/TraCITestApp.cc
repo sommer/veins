@@ -140,9 +140,11 @@ void TraCITestApp::handlePositionUpdate()
             std::map<std::string, cModule*>::const_iterator i = mobility->getManager()->getManagedHosts().find("testVehicle0");
             bool r = (i != mobility->getManager()->getManagedHosts().end());
             assertTrue("(TraCICommandInterface::addVehicle) vehicle now driving", r);
-            const cModule* mod = i->second;
-            const TraCIMobility* traci2 = FindModule<TraCIMobility*>::findSubModule(const_cast<cModule*>(mod));
-            assertTrue("(TraCICommandInterface::addVehicle) vehicle driving at speed", traci2->getSpeed() > 25);
+            if (r) {
+                const cModule* mod = i->second;
+                const TraCIMobility* traci2 = FindModule<TraCIMobility*>::findSubModule(const_cast<cModule*>(mod));
+                assertTrue("(TraCICommandInterface::addVehicle) vehicle driving at speed", traci2->getSpeed() > 25);
+            }
         }
     }
 
