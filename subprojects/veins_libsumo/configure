@@ -106,7 +106,7 @@ if options.veins:
 # Add flags for sumo_includes
 if options.sumo_includes:
     check_fname = os.path.join(options.sumo_includes, 'libsumo', 'Simulation.h')
-    expect_version = '1.6.0'
+    expect_version = [b'1.6.0']
     if not os.path.isfile(check_fname):
         error('Could not make sure sumo includes exist (by looking for %s). Check the path to sumo includes (--with-sumo-includes=... option) and the SUMO version (should be version %s)' % (check_fname_w, expect_version))
         sys.exit(1)
@@ -117,10 +117,25 @@ if options.sumo_includes:
 # Add flags for sumo_build_includes
 if options.sumo_build_includes:
     check_fname = os.path.join(options.sumo_build_includes, 'config.h')
-    expect_version = '1.6.0'
+    expect_version = [b'1.6.0']
     if not os.path.isfile(check_fname):
-        error('Could not make sure sumo build includes exist (by looking for %s). Check the path to sumo build includes (--with-sumo-build-includes=... option) and the SUMO version (should be version %s)' % (check_fname_w, expect_version))
+        error('Could not make sure sumo build includes exist (by looking for %s). Check the path to sumo build includes (--with-sumo-build-includes=... option) and the SUMO version (should be version %s)' % (check_fname, expect_version))
         sys.exit(1)
+    version = None
+    for line in open(check_fname, 'rb'):
+        if line.startswith(b'#define VERSION_STRING "'):
+            version = line[24:-2]
+    if not version:
+        error('Could not determine sumo build includes version (by looking in %s). Check the path to sumo build includes (--with-sumo-build-includes=... option) and the SUMO version (should be version %s)' % (check_fname, expect_version))
+        sys.exit(1)
+    if not version in expect_version:
+        warning('')
+        warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        warning('Unsupported sumo build includes Version. Expecting %s, found %s' % (versions_to_hr(expect_version), version_to_hr(version)))
+        warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        warning('')
+    else:
+        info('Found sumo build includes version %s. Okay.' % version_to_hr(version))
 
     inc_vars['VEINS_LIBSUMO_BUILD_INCLUDES'] = os.path.relpath(options.sumo_build_includes, 'src')
 
@@ -131,7 +146,7 @@ if options.libsumo:
     check_fname_w = os.path.join(check_path, 'libsumoc.dll')
     check_fname_l = os.path.join(check_path, 'libsumoc.so')
     check_fname_m = os.path.join(check_path, 'libsumoc.dylib')
-    expect_version = '1.6.0'
+    expect_version = [b'1.6.0']
     if not any((os.path.isfile(check_fname_w), os.path.isfile(check_fname_l), os.path.isfile(check_fname_m))):
         error('Could not make sure libsumo exists (by looking for %s, %s, and %s). Check the path to libsumo (--with-libsumo=... option) and the SUMO version (should be version %s)' % (check_fname_w, check_fname_l, check_fname_m, expect_version))
         sys.exit(1)
