@@ -191,12 +191,12 @@ void TraCIMobility::changePosition()
     // ensure we're not called twice in one time step
     ASSERT(lastUpdate != simTime());
 
-    // keep statistics (for current step)
-    currentPosXVec.record(move.getStartPos().x);
-    currentPosYVec.record(move.getStartPos().y);
-
     Coord nextPos = calculateHostPosition(roadPosition);
     nextPos.z = move.getStartPosition().z;
+
+    // keep statistics (for current step)
+    currentPosXVec.record(nextPos.x);
+    currentPosYVec.record(nextPos.y);
 
     // keep statistics (relative to last step)
     if (statistics.startTime != simTime()) {
