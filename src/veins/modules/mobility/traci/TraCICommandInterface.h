@@ -125,7 +125,7 @@ public:
      * @param emitLane The new vehicle's lane. Special Also accepts special values from DepartLane.
      * @return Success indication
      */
-    bool addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = DEPART_TIME_TRIGGERED, double emitPosition = DEPART_POSITION_BASE, double emitSpeed = DEPART_SPEED_MAX, int8_t emitLane = DEPART_LANE_BEST);
+    bool addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = 0, double emitPosition = DEPART_POSITION_BASE, double emitSpeed = DEPART_SPEED_MAX, int8_t emitLane = DEPART_LANE_BEST);
     class VEINS_API Vehicle {
     public:
         Vehicle(TraCICommandInterface* traci, std::string nodeId)
