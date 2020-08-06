@@ -877,7 +877,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
             ASSERT(varType == getCommandInterface()->getTimeType());
             simtime_t serverTimestep;
             buf >> serverTimestep;
-            EV_DEBUG << "TraCI reports current time step as " << serverTimestep << "ms." << endl;
+            EV_DEBUG << "TraCI reports current time step as " << serverTimestep << " s." << endl;
             simtime_t omnetTimestep = simTime();
             ASSERT(omnetTimestep == serverTimestep);
         }
