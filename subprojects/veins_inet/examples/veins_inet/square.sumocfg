@@ -43,6 +43,10 @@
         <step-length value="0.1"/>
     </time>
 
+    <processing>
+        <lanechange.duration value="1.5"/>
+    </processing>
+
     <report>
         <xml-validation value="never"/>
         <xml-validation.net value="never"/>
