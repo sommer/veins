@@ -112,9 +112,6 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
     simtime_t start = s.getReceptionStart();
     simtime_t end = s.getReceptionEnd();
 
-    // compute receive power
-    double recvPower_dBm = 10 * log10(s.getAtCenterFrequency());
-
     start = start + PHY_HDR_PREAMBLE_DURATION; // its ok if something in the training phase is broken
 
     AirFrameVector airFrames;
@@ -138,6 +135,9 @@ DeciderResult* Decider80211p::checkIfSignalOk(AirFrame* frame)
     double payloadBitrate = getOfdmDatarate(static_cast<MCS>(frame11p->getMcs()), BANDWIDTH_11P);
 
     DeciderResult80211* result = nullptr;
+
+    // compute receive power
+    double recvPower_dBm = 10 * log10(s.getAtCenterFrequency());
 
     switch (packetOk(sinrMin, snrMin, frame->getBitLength(), payloadBitrate)) {
 
