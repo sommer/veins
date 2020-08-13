@@ -68,9 +68,6 @@ public:
     };
 
 protected:
-    // threshold value for checking a SNR-map (SNR-threshold)
-    double snrThreshold;
-
     /** @brief Power level threshold used to declare channel busy if
      * preamble portion is missed (802.11-2012 18.3.10.6
      * CCA requirements). Notice that in 18.3.10.6, the mandatory CCA threshold
