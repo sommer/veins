@@ -366,6 +366,21 @@ double TraCICommandInterface::Vehicle::getDeccel()
     return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_DECEL, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
+double TraCICommandInterface::Vehicle::getSpeed()
+{
+    return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_SPEED, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+double TraCICommandInterface::Vehicle::getAcceleration()
+{
+    return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ACCELERATION, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+double TraCICommandInterface::Vehicle::getDistanceTravelled()
+{
+    return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_DISTANCE, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
 double TraCICommandInterface::Vehicle::getCO2Emissions() const
 {
     return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_CO2EMISSION, RESPONSE_GET_VEHICLE_VARIABLE);
