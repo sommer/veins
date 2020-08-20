@@ -319,6 +319,17 @@ void TraCITestApp::handlePositionUpdate()
     }
 
     if (testNumber == testCounter++) {
+        if (t == 6) { // both vehicles should be on the scene by now
+            auto pair0 = traci->vehicle("flow0.0").getLeader(1000);
+            auto pair1 = traci->vehicle("flow0.1").getLeader(1000);
+            assertEqual("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 0 leaderID", "", pair0.first);
+            assertClose("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 0 distance", -1.0, pair0.second);
+            assertEqual("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 1 leaderID", "flow0.0", pair1.first);
+            assertClose("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 1 distance", 146.4500273, pair1.second);
+        }
+    }
+
+    if (testNumber == testCounter++) {
         if (t == 1) {
             assertEqual("(TraCICommandInterface::Vehicle::getTypeId)", traciVehicle->getTypeId(), "vtype0");
         }
@@ -425,6 +436,37 @@ void TraCITestApp::handlePositionUpdate()
     if (testNumber == testCounter++) {
         if (t == 1) {
             assertEqual("(TraCICommandInterface::Vehicle::getLaneIndex)", 0, traciVehicle->getLaneIndex());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            assertClose("(TraCICommandInterface::Vehicle::getSpeed)", 31.0110309, traciVehicle->getSpeed());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            assertClose("(TraCICommandInterface::Vehicle::getAngle)", 90.0, traciVehicle->getAngle());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            traciVehicle->setSpeed(0);
+            assertEqual("(TraCICommandInterface::Vehicle::getAcceleration) at t=1 should be 0", 0.0, traciVehicle->getAcceleration());
+        }
+        if (t == 2) {
+            assertClose("(TraCICommandInterface::Vehicle::getAcceleration) at t=2", -9.81, traciVehicle->getAcceleration());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 0) {
+            assertEqual("(TraCICommandInterface::Vehicle::getDistanceTravelled) at t=0", 0.0, traciVehicle->getDistanceTravelled());
+        }
+        if (t == 10) {
+            assertClose("(TraCICommandInterface::Vehicle::getDistanceTravelled) at t=10", 272.5853340, traciVehicle->getDistanceTravelled());
         }
     }
 

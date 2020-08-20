@@ -159,6 +159,10 @@ public:
         double getHeight();
         double getAccel();
         double getDeccel();
+        double getSpeed();
+        double getAngle();
+        double getAcceleration();
+        double getDistanceTravelled();
 
         void setParameter(const std::string& parameter, int value);
         void setParameter(const std::string& parameter, double value);
@@ -245,6 +249,8 @@ public:
          * @return the accumulated waiting time
          */
         double getAccumulatedWaitingTime() const;
+
+        std::pair<std::string, double> getLeader(const double distance);
 
     protected:
         TraCICommandInterface* traci;

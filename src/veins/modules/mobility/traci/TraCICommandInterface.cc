@@ -366,6 +366,26 @@ double TraCICommandInterface::Vehicle::getDeccel()
     return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_DECEL, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
+double TraCICommandInterface::Vehicle::getSpeed()
+{
+    return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_SPEED, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+double TraCICommandInterface::Vehicle::getAngle()
+{
+    return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ANGLE, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+double TraCICommandInterface::Vehicle::getAcceleration()
+{
+    return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ACCELERATION, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
+double TraCICommandInterface::Vehicle::getDistanceTravelled()
+{
+    return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_DISTANCE, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
 double TraCICommandInterface::Vehicle::getCO2Emissions() const
 {
     return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_CO2EMISSION, RESPONSE_GET_VEHICLE_VARIABLE);
@@ -472,6 +492,48 @@ void TraCICommandInterface::Vehicle::stopAt(std::string roadId, double pos, uint
 
     TraCIBuffer buf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << edgeIdT << edgeId << stopPosT << stopPos << stopLaneT << stopLane << durationT << duration);
     ASSERT(buf.eof());
+}
+
+std::pair<std::string, double> TraCICommandInterface::Vehicle::getLeader(const double distance)
+{
+    TraCIBuffer request = TraCIBuffer() << VAR_LEADER << nodeId << TYPE_DOUBLE << distance;
+    TraCIBuffer response = connection->query(CMD_GET_VEHICLE_VARIABLE, request);
+
+    uint8_t cmdLength;
+    response >> cmdLength;
+    if (cmdLength == 0) {
+        uint32_t cmdLengthX;
+        response >> cmdLengthX;
+    }
+    uint8_t responseId;
+    response >> responseId;
+    ASSERT(responseId == RESPONSE_GET_VEHICLE_VARIABLE);
+    uint8_t variableType;
+    response >> variableType;
+    ASSERT(variableType == VAR_LEADER);
+    std::string rspNodeId;
+    response >> rspNodeId;
+    ASSERT(strcmp(rspNodeId.c_str(), nodeId.c_str()) == 0);
+    uint8_t responseType;
+    response >> responseType;
+    ASSERT(responseType == TYPE_COMPOUND);
+    uint32_t numElements;
+    response >> numElements;
+    ASSERT(numElements == 2);
+    uint8_t leaderType;
+    response >> leaderType;
+    ASSERT(leaderType == TYPE_STRING);
+    std::string leaderId;
+    response >> leaderId;
+    uint8_t distanceType;
+    response >> distanceType;
+    ASSERT(distanceType == TYPE_DOUBLE);
+    double distanceToLeader;
+    response >> distanceToLeader;
+
+    ASSERT(response.eof());
+
+    return std::make_pair(leaderId, distanceToLeader);
 }
 
 std::list<std::string> TraCICommandInterface::getTrafficlightIds()
