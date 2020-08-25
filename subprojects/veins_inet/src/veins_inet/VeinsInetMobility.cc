@@ -83,6 +83,38 @@ void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string ro
     emitMobilityStateChangedSignal();
 }
 
+#if INET_VERSION >= 0x0403
+const inet::Coord& VeinsInetMobility::getCurrentPosition()
+{
+    return lastPosition;
+}
+
+const inet::Coord& VeinsInetMobility::getCurrentVelocity()
+{
+    return lastVelocity;
+}
+
+const inet::Coord& VeinsInetMobility::getCurrentAcceleration()
+{
+    throw cRuntimeError("Invalid operation");
+}
+
+const inet::Quaternion& VeinsInetMobility::getCurrentAngularPosition()
+{
+    return lastOrientation;
+}
+
+const inet::Quaternion& VeinsInetMobility::getCurrentAngularVelocity()
+{
+    return lastAngularVelocity;
+}
+
+const inet::Quaternion& VeinsInetMobility::getCurrentAngularAcceleration()
+{
+    throw cRuntimeError("Invalid operation");
+}
+#else
+
 inet::Coord VeinsInetMobility::getCurrentPosition()
 {
     return lastPosition;
@@ -112,7 +144,7 @@ inet::Quaternion VeinsInetMobility::getCurrentAngularAcceleration()
 {
     throw cRuntimeError("Invalid operation");
 }
-
+#endif
 void VeinsInetMobility::setInitialPosition()
 {
     subjectModule->getDisplayString().setTagArg("p", 0, lastPosition.x);

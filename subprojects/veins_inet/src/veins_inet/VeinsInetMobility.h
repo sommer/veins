@@ -54,6 +54,15 @@ public:
     /** @brief called by class VeinsInetManager */
     virtual void nextPosition(const inet::Coord& position, std::string road_id, double speed, double angle);
 
+#if INET_VERSION >= 0x0403
+    virtual const inet::Coord& getCurrentPosition() override;
+    virtual const inet::Coord& getCurrentVelocity() override;
+    virtual const inet::Coord& getCurrentAcceleration() override;
+
+    virtual const inet::Quaternion& getCurrentAngularPosition() override;
+    virtual const inet::Quaternion& getCurrentAngularVelocity() override;
+    virtual const inet::Quaternion& getCurrentAngularAcceleration() override;
+#else
     virtual inet::Coord getCurrentPosition() override;
     virtual inet::Coord getCurrentVelocity() override;
     virtual inet::Coord getCurrentAcceleration() override;
@@ -61,6 +70,7 @@ public:
     virtual inet::Quaternion getCurrentAngularPosition() override;
     virtual inet::Quaternion getCurrentAngularVelocity() override;
     virtual inet::Quaternion getCurrentAngularAcceleration() override;
+#endif
 
     virtual std::string getExternalId() const;
     virtual TraCIScenarioManager* getManager() const;
