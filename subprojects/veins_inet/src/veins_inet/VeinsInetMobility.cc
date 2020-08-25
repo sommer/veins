@@ -83,32 +83,32 @@ void VeinsInetMobility::nextPosition(const inet::Coord& position, std::string ro
     emitMobilityStateChangedSignal();
 }
 
-inet::Coord VeinsInetMobility::getCurrentPosition()
+const inet::Coord& VeinsInetMobility::getCurrentPosition()
 {
     return lastPosition;
 }
 
-inet::Coord VeinsInetMobility::getCurrentVelocity()
+const inet::Coord& VeinsInetMobility::getCurrentVelocity()
 {
     return lastVelocity;
 }
 
-inet::Coord VeinsInetMobility::getCurrentAcceleration()
+const inet::Coord& VeinsInetMobility::getCurrentAcceleration()
 {
     throw cRuntimeError("Invalid operation");
 }
 
-inet::Quaternion VeinsInetMobility::getCurrentAngularPosition()
+const inet::Quaternion& VeinsInetMobility::getCurrentAngularPosition()
 {
     return lastOrientation;
 }
 
-inet::Quaternion VeinsInetMobility::getCurrentAngularVelocity()
+const inet::Quaternion& VeinsInetMobility::getCurrentAngularVelocity()
 {
     return lastAngularVelocity;
 }
 
-inet::Quaternion VeinsInetMobility::getCurrentAngularAcceleration()
+const inet::Quaternion& VeinsInetMobility::getCurrentAngularAcceleration()
 {
     throw cRuntimeError("Invalid operation");
 }
