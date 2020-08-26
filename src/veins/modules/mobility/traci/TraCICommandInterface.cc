@@ -371,6 +371,11 @@ double TraCICommandInterface::Vehicle::getSpeed()
     return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_SPEED, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
+double TraCICommandInterface::Vehicle::getAngle()
+{
+    return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ANGLE, RESPONSE_GET_VEHICLE_VARIABLE);
+}
+
 double TraCICommandInterface::Vehicle::getAcceleration()
 {
     return traci->genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ACCELERATION, RESPONSE_GET_VEHICLE_VARIABLE);

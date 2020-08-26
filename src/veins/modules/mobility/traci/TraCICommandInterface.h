@@ -160,6 +160,7 @@ public:
         double getAccel();
         double getDeccel();
         double getSpeed();
+        double getAngle();
         double getAcceleration();
         double getDistanceTravelled();
 
