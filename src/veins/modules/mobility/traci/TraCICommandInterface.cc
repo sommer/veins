@@ -494,6 +494,49 @@ void TraCICommandInterface::Vehicle::stopAt(std::string roadId, double pos, uint
     ASSERT(buf.eof());
 }
 
+std::pair<std::string, double> TraCICommandInterface::Vehicle::getLeader(const double distance)
+{
+    TraCIBuffer request = TraCIBuffer () << VAR_LEADER << nodeId << TYPE_DOUBLE << distance;
+    TraCIBuffer response = connection->query(CMD_GET_VEHICLE_VARIABLE, request);
+
+    uint8_t cmdLength;
+    response >> cmdLength;
+    if (cmdLength == 0) {
+        uint32_t cmdLengthX;
+        response >> cmdLengthX;
+    }
+    uint8_t responseId;
+    response >> responseId;
+    ASSERT(responseId == RESPONSE_GET_VEHICLE_VARIABLE);
+    uint8_t variableType;
+    response >> variableType;
+    ASSERT(variableType == VAR_LEADER);
+    uint32_t compoundSize;
+    response >> compoundSize;
+    uint8_t responseType;
+    response >> responseType; // I don't know what 1 means here, skipping
+    response >> responseType;
+    ASSERT(responseType == TYPE_COMPOUND);
+    uint32_t numElements;
+    response >> numElements;
+    ASSERT(numElements == 2);
+    uint8_t leaderType;
+    response >> leaderType;
+    ASSERT(leaderType == TYPE_STRING);
+    std::string leaderId;
+    response >> leaderId;
+    uint8_t distanceType;
+    response >> distanceType;
+    ASSERT(distanceType == TYPE_DOUBLE);
+    double distanceToLeader;
+    response >> distanceToLeader;
+
+    ASSERT(response.eof());
+
+    return std::make_pair(leaderId, distanceToLeader);
+}
+
+
 std::list<std::string> TraCICommandInterface::getTrafficlightIds()
 {
     return genericGetStringList(CMD_GET_TL_VARIABLE, "", ID_LIST, RESPONSE_GET_TL_VARIABLE);

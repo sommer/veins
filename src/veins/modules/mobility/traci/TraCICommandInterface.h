@@ -250,6 +250,8 @@ public:
          */
         double getAccumulatedWaitingTime() const;
 
+        std::pair<std::string, double> getLeader(const double distance);
+
     protected:
         TraCICommandInterface* traci;
         TraCIConnection* connection;
