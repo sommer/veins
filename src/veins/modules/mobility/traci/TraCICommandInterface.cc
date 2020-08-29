@@ -511,10 +511,10 @@ std::pair<std::string, double> TraCICommandInterface::Vehicle::getLeader(const d
     uint8_t variableType;
     response >> variableType;
     ASSERT(variableType == VAR_LEADER);
-    uint32_t compoundSize;
-    response >> compoundSize;
+    std::string rspNodeId;
+    response >> rspNodeId;
+    ASSERT(strcmp(rspNodeId.c_str(), nodeId.c_str()) == 0);
     uint8_t responseType;
-    response >> responseType; // I don't know what 1 means here, skipping
     response >> responseType;
     ASSERT(responseType == TYPE_COMPOUND);
     uint32_t numElements;
