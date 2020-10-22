@@ -177,7 +177,9 @@ void BasePhyLayer::getParametersFromXML(cXMLElement* xmlData, ParameterMap& outp
 void BasePhyLayer::finish()
 {
     // give decider the chance to do something
-    decider->finish();
+    if (decider != nullptr) {
+        decider->finish();
+    }
 }
 
 // -----Decider initialization----------------------
