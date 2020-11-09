@@ -84,41 +84,22 @@ void ChannelAccess::sendToChannel(cPacket* msg)
 {
     EV_TRACE << "sendToChannel: sending to gates\n";
 
-    const NicEntry::GateList& gateList = cc->getGateList(getParentModule()->getId());
+    const auto& gateList = cc->getGateList(getParentModule()->getId());
 
-    if (gateList.empty()) {
-        EV_WARN << "Nic is not connected to any gates!" << endl;
-        delete msg;
-        return;
-    }
+    for (auto&& entry : gateList) {
+        const auto gate = entry.second;
+        const auto propagationDelay = calculatePropagationDelay(entry.first);
 
-    for (NicEntry::GateList::const_iterator i = gateList.begin(); i != gateList.end(); ++i) {
-        NicEntry const* nicEntry = i->first;
-        cGate* gate = i->second;
-
-        // duplicate message if not last receiving nic
-        cPacket* nicMsg = i == --gateList.end() ? msg : msg->dup();
-
-        // calculate delay (Propagation) to this receiving nic
-        simtime_t propagationDelay = calculatePropagationDelay(nicEntry);
-
-        // use Andras stuff
         if (useSendDirect) {
-            int const radioStart = gate->getBaseId();
-            int const radioEnd = radioStart + gate->size();
-
-            for (int g = radioStart; g != radioEnd; ++g) {
-                // duplicate air frame if not last gate in gate vector
-                cPacket* gateMsg = g == radioEnd - 1 ? nicMsg : nicMsg->dup();
-
-                sendDirect(gateMsg, propagationDelay, gateMsg->getDuration(), gate->getOwnerModule(), g);
+            for (int i = gate->getBaseId(); i < gate->getBaseId() + gate->size(); i++) {
+                sendDirect(msg->dup(), propagationDelay, msg->getDuration(), gate->getOwnerModule(), i);
             }
         }
-        // use our stuff
         else {
-            sendDelayed(nicMsg, propagationDelay, gate);
+            sendDelayed(msg->dup(), propagationDelay, gate);
         }
     }
+    delete msg;
 }
 
 simtime_t ChannelAccess::calculatePropagationDelay(const NicEntry* nic)
