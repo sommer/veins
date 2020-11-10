@@ -99,6 +99,7 @@ void ChannelAccess::sendToChannel(cPacket* msg)
             sendDelayed(msg->dup(), propagationDelay, gate);
         }
     }
+    // Original message no longer needed, copies have been sent to all possible receivers.
     delete msg;
 }
 
