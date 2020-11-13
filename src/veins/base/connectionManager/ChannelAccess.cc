@@ -39,7 +39,7 @@ BaseConnectionManager* ChannelAccess::getConnectionManager(cModule* nic)
 {
     std::string cmName = nic->hasPar("connectionManagerName") ? nic->par("connectionManagerName").stringValue() : "";
     if (cmName != "") {
-        cModule* ccModule = cSimulation::getActiveSimulation()->getModuleByPath(cmName.c_str());
+        cModule* ccModule = veins::findModuleByPath(cmName.c_str());
 
         return dynamic_cast<BaseConnectionManager*>(ccModule);
     }

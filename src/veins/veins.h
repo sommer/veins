@@ -82,4 +82,25 @@ std::unique_ptr<T> make_unique(Args&& ... args)
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 #endif
+
+template <typename T>
+cModule* findModuleByPath(T modulePath)
+{
+#if OMNETPP_VERSION < 0x600
+    try {
+        return cSimulation::getActiveSimulation()->getModuleByPath(modulePath);
+    }
+    catch (cRuntimeError) {
+        return nullptr;
+    }
+#else
+    return cSimulation::getActiveSimulation()->findModuleByPath(modulePath);
+#endif
+}
+
+#if OMNETPP_VERSION < 0x600
+typedef long intval_t;
+typedef unsigned long uintval_t;
+#endif
+
 } // namespace veins

@@ -42,7 +42,9 @@ network Test
 
 namespace @TESTNAME@ {
 
-using payloadType = long;
+using namespace veins;
+
+using payloadType = intval_t;
 
 void staticCallback(veins::SignalPayload<payloadType> signalPayload)
 {

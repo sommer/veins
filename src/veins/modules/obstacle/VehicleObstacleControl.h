@@ -105,7 +105,7 @@ public:
 
     VehicleObstacleControl* getIfExists()
     {
-        return dynamic_cast<VehicleObstacleControl*>(getSimulation()->getModuleByPath("vehicleObstacles"));
+        return dynamic_cast<VehicleObstacleControl*>(veins::findModuleByPath("vehicleObstacles"));
     }
 };
 

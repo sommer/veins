@@ -42,7 +42,9 @@ network Test
 
 namespace @TESTNAME@ {
 
-using payloadType = unsigned long;
+using namespace veins;
+
+using payloadType = uintval_t;
 
 void staticCallback(veins::SignalPayload<payloadType> signalPayload)
 {
@@ -86,7 +88,7 @@ void Module::initialize(int stage)
     signalManager.subscribeCallback(getSystemModule(), Module::mySignal, functorCallback());
 
     // emit message to all callbacks
-    emit(Module::mySignal, static_cast<unsigned long>(-1));
+    emit(Module::mySignal, static_cast<uintval_t>(-1));
 }
 
 } // namespace @TESTNAME@
