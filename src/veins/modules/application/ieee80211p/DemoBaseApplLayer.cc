@@ -117,7 +117,7 @@ simtime_t DemoBaseApplLayer::computeAsynchronousSendingTime(simtime_t interval, 
      * when alternate access is enabled in the MAC
      */
 
-    simtime_t randomOffset = dblrand() * beaconInterval;
+    simtime_t randomOffset = dblrand() * interval;
     simtime_t firstEvent;
     simtime_t switchingInterval = mac->getSwitchingInterval(); // usually 0.050s
     simtime_t nextCCH;
