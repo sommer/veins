@@ -319,6 +319,17 @@ void TraCITestApp::handlePositionUpdate()
     }
 
     if (testNumber == testCounter++) {
+        if (t == 6) { // both vehicles should be on the scene by now
+            auto pair0 = traci->vehicle("flow0.0").getLeader(1000);
+            auto pair1 = traci->vehicle("flow0.1").getLeader(1000);
+            assertEqual("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 0 leaderID", "", pair0.first);
+            assertClose("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 0 distance", -1.0, pair0.second);
+            assertEqual("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 1 leaderID", "flow0.0", pair1.first);
+            assertClose("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 1 distance", 146.4500273, pair1.second);
+        }
+    }
+
+    if (testNumber == testCounter++) {
         if (t == 1) {
             assertEqual("(TraCICommandInterface::Vehicle::getTypeId)", traciVehicle->getTypeId(), "vtype0");
         }
