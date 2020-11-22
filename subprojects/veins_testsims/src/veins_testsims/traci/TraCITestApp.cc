@@ -428,6 +428,12 @@ void TraCITestApp::handlePositionUpdate()
         }
     }
 
+    if (testNumber == testCounter++)  {
+        if (t == 1) {
+            assertClose("(TraCICommandInterface::Vehicle::getSpeed)", 31.0110309, traciVehicle->getSpeed());
+        }
+    }
+
     if (testNumber == testCounter++) {
         if (t == 1) {
             traciVehicle->changeVehicleRoute({"25", "28", "31", "34", "37", "40", "13", "44"});
