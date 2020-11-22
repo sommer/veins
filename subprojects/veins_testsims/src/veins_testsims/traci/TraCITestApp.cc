@@ -436,6 +436,31 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
+            assertClose("(TraCICommandInterface::Vehicle::getAngle)", 90.0, traciVehicle->getAngle());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            traciVehicle->setSpeed(0);
+            assertEqual("(TraCICommandInterface::Vehicle::getAcceleration) at t=1 should be 0", 0.0, traciVehicle->getAcceleration());
+        }
+        if (t == 2) {
+            assertClose("(TraCICommandInterface::Vehicle::getAcceleration) at t=2", -9.81, traciVehicle->getAcceleration());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 0) {
+            assertEqual("(TraCICommandInterface::Vehicle::getDistanceTravelled) at t=0", 0.0, traciVehicle->getDistanceTravelled());
+        }
+        if (t == 10) {
+            assertClose("(TraCICommandInterface::Vehicle::getDistanceTravelled) at t=10", 272.5853340, traciVehicle->getDistanceTravelled());
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
             traciVehicle->changeVehicleRoute({"25", "28", "31", "34", "37", "40", "13", "44"});
         }
         if (t == 30) {
