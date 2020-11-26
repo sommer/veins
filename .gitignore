@@ -8,7 +8,7 @@ src/**/*_m.cc
 doc/doxy
 doc/neddoc
 
-/run
+/bin/veins_run
 
 /out
 
@@ -19,13 +19,14 @@ examples/**/.cmdenv-log
 examples/**/valgrind.out
 
 subprojects/veins_catch/out
-subprojects/veins_catch/run
+subprojects/veins_catch/bin/veins_catch_run
 subprojects/veins_catch/src/*.dll
 subprojects/veins_catch/src/*.dylib
 subprojects/veins_catch/src/*.so
 subprojects/veins_catch/src/Makefile
 subprojects/veins_catch/src/veins_catch
 subprojects/veins_catch/src/veins_catch_dbg
+subprojects/veins_catch/src/veins_catch_sanitize
 
 subprojects/veins_inet3/src/Makefile
 subprojects/veins_inet3/src/*.so
@@ -34,7 +35,7 @@ subprojects/veins_inet3/src/*.dylib
 subprojects/veins_inet3/src/**/*_m.h
 subprojects/veins_inet3/src/**/*_m.cc
 subprojects/veins_inet3/out
-subprojects/veins_inet3/run
+subprojects/veins_inet3/bin/veins_inet_run
 subprojects/veins_inet3/examples/**/results
 subprojects/veins_inet3/examples/**/.tkenvrc
 subprojects/veins_inet3/examples/**/.qtenvrc
@@ -48,7 +49,7 @@ subprojects/veins_inet/src/*.dylib
 subprojects/veins_inet/src/**/*_m.h
 subprojects/veins_inet/src/**/*_m.cc
 subprojects/veins_inet/out
-subprojects/veins_inet/run
+subprojects/veins_inet/bin/veins_inet_run
 subprojects/veins_inet/examples/**/results
 subprojects/veins_inet/examples/**/.tkenvrc
 subprojects/veins_inet/examples/**/.qtenvrc
@@ -62,7 +63,7 @@ subprojects/veins_testsims/src/*.dylib
 subprojects/veins_testsims/src/**/*_m.h
 subprojects/veins_testsims/src/**/*_m.cc
 subprojects/veins_testsims/out
-subprojects/veins_testsims/run
+subprojects/veins_testsims/bin/veins_testsims_run
 subprojects/veins_testsims/sim/**/results
 subprojects/veins_testsims/sim/**/veins-runall-output
 subprojects/veins_testsims/sim/**/.tkenvrc

@@ -27,7 +27,7 @@
 ADDL_TARGETS =
 ifeq ($(wildcard out/config.py),)
 else
-    ADDL_TARGETS += run
+    ADDL_TARGETS += bin/veins_inet_run
 endif
 
 # default target
@@ -40,8 +40,8 @@ else
 endif
 
 # command line scripts
-run: % : src/scripts/%.in.py out/config.py
-	@echo "Creating script \"./$@\""
+bin/veins_inet_run: src/scripts/veins_inet_run.in.py out/config.py
+	@echo "Creating script \"$@\""
 	@sed '/# v-- contents of out\/config.py go here/r out/config.py' "$<" > "$@"
 	@chmod a+x "$@"
 
@@ -70,7 +70,7 @@ endif
 cleanall: clean
 	rm -f src/Makefile
 	rm -f out/config.py
-	rm -f run
+	rm -f bin/veins_inet_run
 
 src/Makefile:
 	@echo

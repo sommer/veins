@@ -22,11 +22,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-echo "WARNING: the format-code.sh script is deprecated in favor of bin/veins_format_code. Redirecting." >&2
-echo "WARNING: the format-code.sh script is deprecated in favor of bin/veins_format_code. Redirecting."
+echo "WARNING: the run script is deprecated in favor of bin/veins_inet_run. Redirecting." >&2
+echo "WARNING: the run script is deprecated in favor of bin/veins_inet_run. Redirecting."
 
-$(dirname "$0")/bin/veins_format_code "$@"
+test -f $(dirname "$0")/bin/veins_inet_run || echo "ERROR: bin/veins_inet_run does not exist; this will likely fail. Did you run 'make bin/veins_inet_run'?" >&2
+test -f $(dirname "$0")/bin/veins_inet_run || echo "ERROR: bin/veins_inet_run does not exist; this will likely fail. Did you run 'make bin/veins_inet_run'?"
 
-echo "WARNING: the format-code.sh script is deprecated in favor of bin/veins_format_code. Redirection done." >&2
-echo "WARNING: the format-code.sh script is deprecated in favor of bin/veins_format_code. Redirection done."
+$(dirname "$0")/bin/veins_inet_run "$@"
+
+echo "WARNING: the run script is deprecated in favor of bin/veins_inet_run. Redirection done." >&2
+echo "WARNING: the run script is deprecated in favor of bin/veins_inet_run. Redirection done."
 

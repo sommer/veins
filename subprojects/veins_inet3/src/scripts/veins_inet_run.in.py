@@ -35,7 +35,7 @@ import subprocess
 # ^-- contents of out/config.py go here
 
 def relpath(s):
-    veins_root = os.path.dirname(os.path.realpath(__file__))
+    veins_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
     return os.path.relpath(os.path.join(veins_root, s), '.')
 
 parser = argparse.ArgumentParser('Run a Veins simulation')
