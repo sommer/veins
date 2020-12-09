@@ -156,6 +156,8 @@ std::vector<std::string> TraCIBuffer::readTypeChecked(int expectedTraCIType);
 template <>
 void VEINS_API TraCIBuffer::write(std::string inv);
 template <>
+void VEINS_API TraCIBuffer::write(std::list<std::string> inv);
+template <>
 void TraCIBuffer::write(TraCICoord inv);
 template <>
 std::string VEINS_API TraCIBuffer::read();

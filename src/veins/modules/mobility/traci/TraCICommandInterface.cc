@@ -1053,14 +1053,7 @@ bool TraCICommandInterface::Vehicle::changeVehicleRoute(const std::list<std::str
     if (edges.front().compare(getRoadId()) != 0) return false;
     uint8_t variableId = VAR_ROUTE;
     uint8_t variableType = TYPE_STRINGLIST;
-    TraCIBuffer buf;
-    buf << variableId << nodeId << variableType;
-    int32_t numElem = edges.size();
-    buf << numElem;
-    for (std::list<std::string>::const_iterator i = edges.begin(); i != edges.end(); ++i) {
-        buf << static_cast<std::string>(*i);
-    }
-    TraCIBuffer obuf = connection->query(CMD_SET_VEHICLE_VARIABLE, buf);
+    TraCIBuffer obuf = connection->query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << static_cast<std::list<std::string>>(edges));
     ASSERT(obuf.eof());
     return true;
 }

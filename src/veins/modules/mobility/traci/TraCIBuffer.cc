@@ -99,6 +99,16 @@ void TraCIBuffer::write(std::string inv)
 }
 
 template <>
+void TraCIBuffer::write(std::list<std::string> inv)
+{
+    int32_t numElem = inv.size();
+    write(numElem);
+    for (std::list<std::string>::const_iterator i = inv.begin(); i != inv.end(); ++i) {
+        write(static_cast<std::string>(*i));
+    }
+}
+
+template <>
 std::string TraCIBuffer::read()
 {
     uint32_t length = read<uint32_t>();
