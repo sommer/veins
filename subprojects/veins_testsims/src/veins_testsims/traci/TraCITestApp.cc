@@ -727,6 +727,19 @@ void TraCITestApp::handlePositionUpdate()
         }
     }
 
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            traci->lane("44_0").setDisallowed({"all"});
+            traciVehicle->changeRoute("42", 9999);
+            traciVehicle->changeRoute("43", 9999);
+        }
+        if (t == 30) {
+            assertTrue("(TraCICommandInterface::Lane::setDisallowed, 9999) vehicle avoided 42", visitedEdges.find("42") == visitedEdges.end());
+            assertTrue("(TraCICommandInterface::Lane::setDisallowed, 9999) vehicle avoided 44", visitedEdges.find("44") == visitedEdges.end());
+            assertTrue("(TraCICommandInterface::Lane::setDisallowed, 9999) vehicle took 43", visitedEdges.find("43") != visitedEdges.end());
+        }
+    }
+
     //
     // TraCICommandInterface::Trafficlight
     //

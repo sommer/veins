@@ -302,6 +302,7 @@ public:
         double getLength();
         double getMaxSpeed();
         double getMeanSpeed();
+        void setDisallowed(std::list<std::string> disallowedClasses);
 
     protected:
         TraCICommandInterface* traci;
