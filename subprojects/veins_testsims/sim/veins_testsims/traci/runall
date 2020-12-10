@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env python3
 
 #
-# Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
+# Copyright (C) 2018-2020 Christoph Sommer <sommer@cms-labs.org>
 #
 # Documentation for these modules is at http://veins.car2x.org/
 #
@@ -22,26 +22,96 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-set -e
+"""
+Runs all Veins simulations in current directory
+"""
 
-echo ""
-echo "-------------------------------------------------------------------------------"
-echo "-- Removing directory ./veins-runall-output/*.out -----------------------------"
-echo "-------------------------------------------------------------------------------"
-rm -f veins-runall-output/*.out
-echo ""
-echo "-------------------------------------------------------------------------------"
-echo "-- Running tests and collecting results ---------------------------------------"
-echo "-------------------------------------------------------------------------------"
-opp_runall /bin/sh ./run -d -- -c General -u Cmdenv "$@"
-echo ""
-echo "-------------------------------------------------------------------------------"
-echo "-- Passed/skipped tests -------------------------------------------------------"
-echo "-------------------------------------------------------------------------------"
-cat veins-runall-output/*.out | egrep "^\[asserts-INFO\]" || echo "none."
-echo ""
-echo "-------------------------------------------------------------------------------"
-echo "-- Failed tests----------------------------------------------------------------"
-echo "-------------------------------------------------------------------------------"
-cat veins-runall-output/*.out | egrep "^\[asserts-ERROR\]" && exit 1 || echo "none."
-echo ""
+import os
+import sys
+import argparse
+import subprocess
+import asyncio
+
+errors = []
+
+async def my_run(cmdline, runnumber, args):
+    global errors
+    cmdline += ' -r ' + runnumber
+    if args.count_verbose >= 1:
+        print("[i] run {:>3}: starting".format(runnumber))
+    proc = await asyncio.create_subprocess_shell(
+        cmdline,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE)
+
+    stdout, stderr = await proc.communicate()
+
+    stdout = stdout.decode()
+    stderr = stderr.decode()
+
+    for l in stdout.split('\n'):
+        if l.startswith('[asserts-INFO]'):
+            if args.count_verbose >= 1:
+                print("[i] run {:>3}: {}".format(runnumber, l))
+        elif l.startswith('[asserts-ERROR]'):
+            errors += [(runnumber, l)]
+            print("[E] run {:>3}: {}".format(runnumber, l))
+        else:
+            if args.count_verbose >= 2:
+                print("[i] run {:>3}: {}".format(runnumber, l))
+    for l in stderr.split('\n'):
+        if l.startswith('[asserts-ERROR]'):
+            errors += [(runnumber, l)]
+            print("[E] run {:>3}: {}".format(runnumber, l))
+    if proc.returncode != 0:
+        l = 'exit {}'.format(proc.returncode)
+        errors += [(runnumber, l)]
+        print("[E] run {:>3}: {}".format(runnumber, l))
+
+
+
+
+parser = argparse.ArgumentParser(description='Run all Veins simulations in current directory')
+parser.add_argument("-v", "--verbose", dest="count_verbose", default=1, action="count", help="increase verbosity")
+parser.add_argument("-q", "--quiet", dest="count_quiet", default=0, action="count", help="decrease verbosity")
+parser.add_argument('-j', '--jobs', type=int, nargs='?', const=0, default=0, metavar='JOBS', help='Run JOBS simulations in parallel, 0 (or no number) for automatic selection (default: 0)')
+
+args = parser.parse_args()
+
+if args.jobs == 0:
+    args.jobs = os.cpu_count()
+
+args.count_verbose -= args.count_quiet
+
+
+(exitcode, output) = subprocess.getstatusoutput('./run -d -- -s -q runnumbers -u Cmdenv -c General')
+assert exitcode == 0
+runnumbers = output.split()
+
+async def do_run(cmdline, runnumbers):
+    semaphore = asyncio.Semaphore(args.jobs)
+    tasks = (
+        my_run(cmdline, runnumber, args) for runnumber in runnumbers
+    )
+    async def sem_task(task):
+        async with semaphore:
+            return await task
+    return await asyncio.gather(*(sem_task(task) for task in tasks))
+
+
+
+asyncio.run(do_run('./run -d -- -u Cmdenv -c General', runnumbers))
+
+
+print("")
+print("-------------------------------------------------------------------------------")
+print("-- Failed tests----------------------------------------------------------------")
+print("-------------------------------------------------------------------------------")
+
+if len(errors) == 0:
+    print("none.")
+else:
+    for (runnumber, l) in errors:
+        print("[E] run {:>3}: {}".format(runnumber, l))
+    sys.exit(1)
+
