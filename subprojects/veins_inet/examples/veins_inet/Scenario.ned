@@ -27,6 +27,8 @@ import org.car2x.veins.subprojects.veins_inet.VeinsInetCar;
 import org.car2x.veins.subprojects.veins_inet.VeinsInetManager;
 import inet.visualizer.integrated.IntegratedVisualizer;
 import inet.environment.common.PhysicalEnvironment;
+import org.car2x.veins.visualizer.roads.RoadsCanvasVisualizer;
+import org.car2x.veins.visualizer.roads.RoadsOsgVisualizer;
 
 network Scenario
 {
@@ -43,6 +45,12 @@ network Scenario
         }
         physicalEnvironment: PhysicalEnvironment {
             @display("p=192,224");
+        }
+        roadsCanvasVisualizer: RoadsCanvasVisualizer {
+            @display("p=64,416");
+        }
+        roadsOsgVisualizer: RoadsOsgVisualizer {
+            @display("p=192,416");
         }
         node[0]: VeinsInetCar;
 }

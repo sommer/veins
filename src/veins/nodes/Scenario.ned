@@ -28,6 +28,7 @@ import org.car2x.veins.modules.mobility.traci.TraCIScenarioManager*;
 import org.car2x.veins.modules.obstacle.ObstacleControl;
 import org.car2x.veins.modules.world.annotations.AnnotationManager;
 import org.car2x.veins.nodes.Car;
+import org.car2x.veins.visualizer.roads.RoadsCanvasVisualizer;
 
 network Scenario
 {
@@ -57,6 +58,9 @@ network Scenario
         manager: TraCIScenarioManagerLaunchd {
             parameters:
                 @display("p=512,128");
+        }
+        roadsCanvasVisualizer: RoadsCanvasVisualizer {
+            @display("p=300,0");
         }
         node[0]: Car {
         }
