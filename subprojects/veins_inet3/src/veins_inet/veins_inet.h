@@ -31,8 +31,8 @@
 #define VEINS_INET_VERSION_ALPHA 0
 
 // Explicitly check Veins version number
-#if !(VEINS_VERSION_MAJOR == 5 && VEINS_VERSION_MINOR >= 0)
-#error Veins version 5.0 or compatible required
+#if !(VEINS_VERSION_MAJOR == 5 && VEINS_VERSION_MINOR >= 1)
+#error Veins version 5.1 or compatible required
 #endif
 
 // VEINS_INET_API macro. Allows us to use the same .h files for both building a .dll and linking against it
