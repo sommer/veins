@@ -23,7 +23,10 @@
 #pragma once
 
 #ifdef WITH_OSG
-#include <osg/Group>
+namespace osg {
+class Geode;
+class Group;
+};
 #endif // WITH_OSG
 
 #include "veins/veins.h"

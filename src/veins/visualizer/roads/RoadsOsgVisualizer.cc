@@ -20,14 +20,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#include "veins/visualizer/roads/RoadsOsgVisualizer.h"
+
 #ifdef WITH_OSG
 #include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/Material>
+#include <osg/Group>
 #include <osg/LineWidth>
+#include <osg/Material>
 #endif // ifdef WITH_OSG
 
-#include "veins/visualizer/roads/RoadsOsgVisualizer.h"
 #include "veins/modules/mobility/traci/TraCIScenarioManager.h"
 #include "veins/modules/mobility/traci/TraCICommandInterface.h"
 
