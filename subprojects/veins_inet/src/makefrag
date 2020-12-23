@@ -1,7 +1,7 @@
 
 #
 # Copyright (C) 2017 Rudolf Hornig <rudi@omnetpp.org>
-# Copyright (C) 2018 Christoph Sommer <sommer@ccs-labs.org>
+# Copyright (C) 2018-2020 Christoph Sommer <sommer@cms-labs.org>
 #
 # Documentation for these modules is at http://veins.car2x.org/
 #
@@ -22,16 +22,42 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+
+#
+# on windows, special care is needed for linking
+# adapted from INET Framework (inet-4.2.1) makefrag
+#
+ifeq ($(PLATFORM),win32.x86_64)
+  #
+  # on windows we have to link with the ws2_32 (winsock2) library as it is no longer added
+  # to the omnetpp system libraries by default (as of OMNeT++ 5.1)
+  #
+  LIBS += -lws2_32
+  DEFINES += -DVEINS_INET_EXPORT
+  ENABLE_AUTO_IMPORT=-Wl,--enable-auto-import
+  LDFLAGS := $(filter-out $(ENABLE_AUTO_IMPORT), $(LDFLAGS))
+
+  # FIX for clang not exporting typeinfo and other thunks on Windows
+  ifeq ($(CC),clang)
+    DEFFILE = $O/typeinfo.def
+    LDFLAGS += $(DEFFILE)
+
+.PHONY: all
+
+all:
+
+$(DEFFILE): $(OBJS)  $(wildcard $(EXTRA_OBJS)) Makefile $(CONFIGFILE)
+	$(Q)$(DLLTOOL) --export-all-symbols --kill-at --output-def $O/all.def $(OBJS) $(EXTRA_OBJS)
+	$(Q)grep -E '( *_ZTI)|( *_ZThn)|( *_ZTv0)|EXPORTS' $O/all.def | sed 's/ @.*//' >$(DEFFILE)
+
+$O/$(TARGET): $(DEFFILE)
+
+  endif
+endif
+
+
 #
 # Use the new message compiler introduced in OMNeT++ 5.3
 #
 MSGC:=$(MSGC) --msg6
 
-#
-# copied from INET Framework (inet-3.6.0) makefrag
-#
-ifeq ($(PLATFORM),win32.x86_64)
-  DEFINES += -DVEINS_INET_EXPORT
-  ENABLE_AUTO_IMPORT=-Wl,--enable-auto-import
-  LDFLAGS := $(filter-out $(ENABLE_AUTO_IMPORT), $(LDFLAGS))
-endif
