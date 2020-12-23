@@ -120,10 +120,9 @@ TraCIConnection* TraCIConnection::connect(cComponent* owner, const char* host, i
     address.sin_addr.s_addr = addr.s_addr;
 
     SOCKET* socketPtr = new SOCKET();
-    if (*socketPtr < 0) throw cRuntimeError("Could not create socket to connect to TraCI server");
-
     for (int tries = 1; tries <= 10; ++tries) {
         *socketPtr = ::socket(AF_INET, SOCK_STREAM, 0);
+        if (*socketPtr == INVALID_SOCKET) throw cRuntimeError("Could not create socket to connect to TraCI server");
         if (::connect(*socketPtr, address_p, sizeof(address)) >= 0) break;
         closesocket(socket(socketPtr));
 

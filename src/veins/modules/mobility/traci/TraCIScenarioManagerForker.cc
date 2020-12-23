@@ -127,7 +127,7 @@ int TraCIScenarioManagerForker::getPortNumber() const
     if (initsocketlibonce() != 0) throw cRuntimeError("Could not init socketlib");
 
     SOCKET sock = ::socket(AF_INET, SOCK_STREAM, 0);
-    if (sock < 0) {
+    if (sock == INVALID_SOCKET) {
         throw cRuntimeError("Failed to create socket: %s", strerror(errno));
     }
 
