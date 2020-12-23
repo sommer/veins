@@ -26,7 +26,7 @@
 namespace osg {
 class Geode;
 class Group;
-};
+}; // namespace osg
 #endif // WITH_OSG
 
 #include "veins/veins.h"
