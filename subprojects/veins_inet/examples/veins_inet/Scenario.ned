@@ -32,7 +32,9 @@ import org.car2x.veins.visualizer.roads.RoadsOsgVisualizer;
 
 network Scenario
 {
-    @display("bgb=319,384");
+    parameters:
+        bool useOsg = default(false);
+        @display("bgb=319,384");
     submodules:
         radioMedium: Ieee80211DimensionalRadioMedium {
             @display("p=64,224");
@@ -49,7 +51,7 @@ network Scenario
         roadsCanvasVisualizer: RoadsCanvasVisualizer {
             @display("p=64,416");
         }
-        roadsOsgVisualizer: RoadsOsgVisualizer {
+        roadsOsgVisualizer: RoadsOsgVisualizer if useOsg {
             @display("p=192,416");
         }
         node[0]: VeinsInetCar;
