@@ -63,5 +63,11 @@ public:
     {
     }
 
+#if OMNETPP_BUILDNUM >= 1510 // 6.0pre10
+    void callPreDelete(cComponent* root) override
+    {
+    }
+#endif
+
 private:
 }; // end DummyComponent
