@@ -42,7 +42,9 @@ void RoadsCanvasVisualizer::initialize(int stage)
 
         figures = new cGroupFigure("roads");
         double zindex = par("lineZIndex");
+#if OMNETPP_VERSION >= 0x501
         figures->setZIndex(zindex);
+#endif
         cCanvas* canvas = getParentModule()->getCanvas();
         canvas->addFigure(figures);
 
