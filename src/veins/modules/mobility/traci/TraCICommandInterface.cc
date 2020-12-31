@@ -37,12 +37,12 @@ using namespace veins::TraCIConstants;
 namespace veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
-    {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
-    {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
-    {18, {18, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
-    {17, {17, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
-    {16, {16, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
-    {15, {15, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
+    {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.2.0
+    {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.1.0
+    {18, {18, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.0.0
+    {17, {17, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}}, // since SUMO 0.32.0
+    {16, {16, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}}, // since SUMO 0.31.0
+    {15, {15, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}}, // since SUMO 0.30.0
 };
 
 TraCICommandInterface::TraCICommandInterface(cComponent* owner, TraCIConnection& c, bool ignoreGuiCommands)
