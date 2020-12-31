@@ -22,6 +22,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+set -e
+
 echo "WARNING: the run script is deprecated in favor of bin/veins_catch_run. Redirecting." >&2
 echo "WARNING: the run script is deprecated in favor of bin/veins_catch_run. Redirecting."
 
