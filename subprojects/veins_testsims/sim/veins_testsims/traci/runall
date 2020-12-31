@@ -60,9 +60,14 @@ async def my_run(cmdline, runnumber, args):
             if args.count_verbose >= 2:
                 print("[i] run {:>3}: {}".format(runnumber, l))
     for l in stderr.split('\n'):
+        if len(l.strip()) < 1:
+            continue
         if l.startswith('[asserts-ERROR]'):
             errors += [(runnumber, l)]
             print("[E] run {:>3}: {}".format(runnumber, l))
+        else:
+            if args.count_verbose >= 1:
+                print("[e] run {:>3}: {}".format(runnumber, l))
     if proc.returncode != 0:
         l = 'exit {}'.format(proc.returncode)
         errors += [(runnumber, l)]
