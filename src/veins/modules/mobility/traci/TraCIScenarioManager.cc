@@ -315,15 +315,17 @@ void TraCIScenarioManager::init_traci()
         simtime_t beginTime = 0;
         simtime_t endTime = SimTime::getMaxTime();
         std::string objectId = "";
-        uint8_t variableNumber = 7;
+        uint8_t variableNumber = 8;
         uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
         uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
         uint8_t variable3 = commandInterface->getTimeStepCmd();
-        uint8_t variable4 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
-        uint8_t variable5 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
-        uint8_t variable6 = VAR_PARKING_STARTING_VEHICLES_IDS;
-        uint8_t variable7 = VAR_PARKING_ENDING_VEHICLES_IDS;
-        TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7);
+        uint8_t variable4 = VAR_COLLIDING_VEHICLES_IDS;
+        uint8_t variable5 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
+        uint8_t variable6 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
+        uint8_t variable7 = VAR_PARKING_STARTING_VEHICLES_IDS;
+        uint8_t variable8 = VAR_PARKING_ENDING_VEHICLES_IDS;
+        TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7 << variable8);
+
         processSubcriptionResult(buf);
         ASSERT(buf.eof());
     }
@@ -880,6 +882,25 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
             EV_DEBUG << "TraCI reports current time step as " << serverTimestep << " s." << endl;
             simtime_t omnetTimestep = simTime();
             ASSERT(omnetTimestep == serverTimestep);
+        }
+        else if (variable1_resp == VAR_COLLIDING_VEHICLES_IDS) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_STRINGLIST);
+            uint32_t count;
+            buf >> count;
+            EV_DEBUG << "TraCI reports " << count << " collided vehicles." << endl;
+            for (uint32_t i = 0; i < count; ++i) {
+                std::string idstring;
+                buf >> idstring;
+                cModule* mod = getManagedModule(idstring);
+                if (mod) {
+                    auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
+                    for (auto mm : mobilityModules) {
+                        mm->collisionOccurred(true);
+                    }
+                }
+            }
         }
         else {
             throw cRuntimeError("Received unhandled sim subscription result");
