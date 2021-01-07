@@ -252,7 +252,7 @@ void TraCIMobility::changeParkingState(bool newState)
     emit(parkingStateChangedSignal, this);
 }
 
-void TraCIMobility::collisionOccured(bool newState) {
+void TraCIMobility::collisionOccurred(bool newState) {
     emit(collisionSignal, newState);
 }
 

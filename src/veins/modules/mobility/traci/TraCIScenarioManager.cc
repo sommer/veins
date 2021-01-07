@@ -897,7 +897,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
                 if (mod) {
                     auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
                     for (auto mm : mobilityModules) {
-                        mm->collisionOccured(true);
+                        mm->collisionOccurred(true);
                     }
                 }
             }

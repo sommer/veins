@@ -84,7 +84,6 @@ public:
     void handleMessage(cMessage* msg) override;
     virtual void handleSelfMsg(cMessage* msg);
 
-
     bool isConnected() const
     {
         return static_cast<bool>(connection);

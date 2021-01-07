@@ -97,7 +97,7 @@ public:
     virtual void nextPosition(const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan, VehicleSignalSet signals = {VehicleSignal::undefined});
     virtual void changePosition();
     virtual void changeParkingState(bool);
-    virtual void collisionOccured(bool newState);
+    virtual void collisionOccurred(bool newState);
     virtual void setExternalId(std::string external_id)
     {
         this->external_id = external_id;
