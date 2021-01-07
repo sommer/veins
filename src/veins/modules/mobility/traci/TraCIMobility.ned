@@ -41,6 +41,7 @@ simple TraCIMobility extends BaseMobility
 {
     parameters:
         @class(veins::TraCIMobility);
+        @signal[org_car2x_veins_modules_mobility_collision](type=bool);
         @signal[org_car2x_veins_modules_mobility_parkingStateChanged](type=veins::TraCIMobility);
         @display("i=block/cogwheel");
         double hostPositionOffset @unit("m") = default(0.0m);  // shift OMNeT++ module this far from front of the car

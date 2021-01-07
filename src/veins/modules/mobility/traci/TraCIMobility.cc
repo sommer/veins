@@ -32,6 +32,7 @@ using veins::TraCIMobility;
 
 Define_Module(veins::TraCIMobility);
 
+const simsignal_t TraCIMobility::collisionSignal = registerSignal("org_car2x_veins_modules_mobility_collision");
 const simsignal_t TraCIMobility::parkingStateChangedSignal = registerSignal("org_car2x_veins_modules_mobility_parkingStateChanged");
 
 namespace {
@@ -249,6 +250,10 @@ void TraCIMobility::changeParkingState(bool newState)
     Enter_Method_Silent();
     isParking = newState;
     emit(parkingStateChangedSignal, this);
+}
+
+void TraCIMobility::collisionOccured(bool newState) {
+    emit(collisionSignal, newState);
 }
 
 void TraCIMobility::fixIfHostGetsOutside()
