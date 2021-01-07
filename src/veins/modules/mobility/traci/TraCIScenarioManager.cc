@@ -315,16 +315,24 @@ void TraCIScenarioManager::init_traci()
         simtime_t beginTime = 0;
         simtime_t endTime = SimTime::getMaxTime();
         std::string objectId = "";
-        uint8_t variableNumber = 8;
-        uint8_t variable1 = VAR_DEPARTED_VEHICLES_IDS;
-        uint8_t variable2 = VAR_ARRIVED_VEHICLES_IDS;
-        uint8_t variable3 = commandInterface->getTimeStepCmd();
-        uint8_t variable4 = VAR_COLLIDING_VEHICLES_IDS;
-        uint8_t variable5 = VAR_TELEPORT_STARTING_VEHICLES_IDS;
-        uint8_t variable6 = VAR_TELEPORT_ENDING_VEHICLES_IDS;
-        uint8_t variable7 = VAR_PARKING_STARTING_VEHICLES_IDS;
-        uint8_t variable8 = VAR_PARKING_ENDING_VEHICLES_IDS;
-        TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7 << variable8);
+        std::list<uint8_t> variables;
+        variables.push_back(VAR_DEPARTED_VEHICLES_IDS);
+        variables.push_back(VAR_ARRIVED_VEHICLES_IDS);
+        variables.push_back(commandInterface->getTimeStepCmd());
+        if (commandInterface->getApiVersion() >= 18) {
+            variables.push_back(VAR_COLLIDING_VEHICLES_IDS);
+        }
+        variables.push_back(VAR_TELEPORT_STARTING_VEHICLES_IDS);
+        variables.push_back(VAR_TELEPORT_ENDING_VEHICLES_IDS);
+        variables.push_back(VAR_PARKING_STARTING_VEHICLES_IDS);
+        variables.push_back(VAR_PARKING_ENDING_VEHICLES_IDS);
+        uint8_t variableNumber = variables.size();
+        TraCIBuffer buf1 = TraCIBuffer();
+        buf1 << beginTime << endTime << objectId << variableNumber;
+        for (auto variable : variables) {
+            buf1 << variable;
+        }
+        TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, buf1);
 
         processSubcriptionResult(buf);
         ASSERT(buf.eof());
@@ -624,17 +632,23 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId)
     simtime_t beginTime = 0;
     simtime_t endTime = SimTime::getMaxTime();
     std::string objectId = vehicleId;
-    uint8_t variableNumber = 8;
-    uint8_t variable1 = VAR_POSITION;
-    uint8_t variable2 = VAR_ROAD_ID;
-    uint8_t variable3 = VAR_SPEED;
-    uint8_t variable4 = VAR_ANGLE;
-    uint8_t variable5 = VAR_SIGNALS;
-    uint8_t variable6 = VAR_LENGTH;
-    uint8_t variable7 = VAR_HEIGHT;
-    uint8_t variable8 = VAR_WIDTH;
+    std::list<uint8_t> variables;
+    variables.push_back(VAR_POSITION);
+    variables.push_back(VAR_ROAD_ID);
+    variables.push_back(VAR_SPEED);
+    variables.push_back(VAR_ANGLE);
+    variables.push_back(VAR_SIGNALS);
+    variables.push_back(VAR_LENGTH);
+    variables.push_back(VAR_HEIGHT);
+    variables.push_back(VAR_WIDTH);
+    uint8_t variableNumber = variables.size();
 
-    TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4 << variable5 << variable6 << variable7 << variable8);
+    TraCIBuffer buf1;
+    buf1 << beginTime << endTime << objectId << variableNumber;
+    for (auto variable : variables) {
+        buf1 << variable;
+    }
+    TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, buf1);
     processSubcriptionResult(buf);
     ASSERT(buf.eof());
 }
