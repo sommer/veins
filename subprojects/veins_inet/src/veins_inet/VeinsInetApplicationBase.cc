@@ -74,7 +74,9 @@ void VeinsInetApplicationBase::handleStartOperation(LifecycleOperation* operatio
     const char* interface = par("interface");
     ASSERT(interface[0]);
     IInterfaceTable* ift = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this);
-#if INET_VERSION >= 0x0402
+#if INET_VERSION >= 0x0403
+    NetworkInterface* ie = ift->findInterfaceByName(interface);
+#elif INET_VERSION >= 0x0402
     InterfaceEntry* ie = ift->findInterfaceByName(interface);
 #else
     InterfaceEntry* ie = ift->getInterfaceByName(interface);
