@@ -67,6 +67,7 @@ if args:
 makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins_inet', '-O', 'out', '-p', 'VEINS_INET']
 run_libs = [os.path.join('src', 'veins_inet')]
 run_neds = [os.path.join('src', 'veins_inet')]
+run_excs = []
 run_imgs = [os.path.join('images')]
 
 
@@ -127,6 +128,8 @@ if options.inet:
     makemake_flags += inet_includes + inet_link + inet_defs
     run_libs = [os.path.relpath(os.path.join(options.inet, 'src', 'INET'))] + run_libs
     run_neds = [os.path.relpath(os.path.join(options.inet, 'src'))] + run_neds
+    if not version in [b'4.2.0', b'4.2.1', b'4.2.2']:
+        run_excs = [os.path.relpath(os.path.join(options.inet, '.nedexclusions'))] + run_excs
     run_imgs = [os.path.relpath(os.path.join(options.inet, 'images'))] + run_imgs
 
 
@@ -137,6 +140,7 @@ if not os.path.isdir('out'):
 f = open(os.path.join('out', 'config.py'), 'w')
 f.write('run_libs = %s\n' % repr(run_libs))
 f.write('run_neds = %s\n' % repr(run_neds))
+f.write('run_excs = %s\n' % repr(run_excs))
 f.write('run_imgs = %s\n' % repr(run_imgs))
 f.close()
 
