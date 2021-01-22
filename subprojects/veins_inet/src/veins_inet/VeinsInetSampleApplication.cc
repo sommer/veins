@@ -50,9 +50,9 @@ bool VeinsInetSampleApplication::startApplication()
             traciVehicle->setSpeed(0);
 
             auto payload = makeShared<VeinsInetSampleMessage>();
-            timestampPayload(payload);
             payload->setChunkLength(B(100));
             payload->setRoadId(traciVehicle->getRoadId().c_str());
+            timestampPayload(payload);
 
             auto packet = createPacket("accident");
             packet->insertAtBack(payload);
