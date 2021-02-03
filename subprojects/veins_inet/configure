@@ -103,19 +103,24 @@ if options.veins:
 
 # Add flags for INET
 if options.inet:
-    fname = os.path.join(options.inet, '_scripts/get_version')
-    expect_version = [b'4.2.0', b'4.2.1', b'4.2.2', b'4.3.0']
+    expect_version = [b'4.2.0', b'4.2.1', b'4.2.2', b'inet-4.2.2-5537bcd677', b'4.3.0']
     try:
-        info('Running "%s" to determine INET version.' % fname)
-        version = subprocess.check_output(['env', fname], stderr=subprocess.STDOUT).strip()
-    except subprocess.CalledProcessError as e:
-        fname2 = os.path.join(options.inet, 'bin/inet_version')
+        fname1 = os.path.join(options.inet, 'Version')
+        info('Running cat "%s" to determine INET version.' % fname1)
+        version = subprocess.check_output(['env', 'cat', fname1], stderr=subprocess.STDOUT).strip()
+    except subprocess.CalledProcessError as e1:
         try:
+            fname2 = os.path.join(options.inet, '_scripts/get_version')
             info('Running "%s" to determine INET version.' % fname2)
             version = subprocess.check_output(['env', fname2], stderr=subprocess.STDOUT).strip()
         except subprocess.CalledProcessError as e2:
-            error('Could not determine INET Version by running %s (%s) nor by running %s (%s). Check the path to INET (--with-inet=... option) and the INET version (should be version %s)' % (fname, e, fname2, e2, versions_to_hr(expect_version)))
-            sys.exit(1)
+            try:
+                fname3 = os.path.join(options.inet, 'bin/inet_version')
+                info('Running "%s" to determine INET version.' % fname3)
+                version = subprocess.check_output(['env', fname3], stderr=subprocess.STDOUT).strip()
+            except subprocess.CalledProcessError as e3:
+                error('Could not determine INET Version; neither by running cat %s (%s), nor by running %s (%s), nor by running %s (%s). Check the path to INET (--with-inet=... option) and the INET version (should be version %s)' % (fname1, e1, fname2, e2, fname3, e3, versions_to_hr(expect_version)))
+                sys.exit(1)
     if not version in expect_version:
         warning('')
         warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
