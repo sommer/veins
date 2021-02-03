@@ -102,22 +102,32 @@ if options.veins:
 
 # Add flags for INET
 if options.inet:
-    fname = os.path.join(options.inet, '_scripts/get_version')
-    expect_version = [b'3.6.5', b'3.6.6', b'3.6.7', b'3.6.8', b'3.7.0']
+    expect_version = [b'3.6.5', b'inet-3.6.5-bc89c946d', b'3.6.6', b'inet-3.6.6-9426199231', b'3.6.7', b'inet-3.6.7-5aa6bfa1ad', b'3.6.8', b'inet-3.6.8-31f915faef', b'3.7.0', b'inet-3.7.0-cbd2095364']
     try:
-        info('Running "%s" to determine INET version.' % fname)
-        version = subprocess.check_output(['env', fname]).strip()
-        if not version in expect_version:
-            warning('')
-            warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            warning('Unsupported INET Version. Expecting %s, found %s' % (versions_to_hr(expect_version), version_to_hr(version)))
-            warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            warning('')
-        else:
-            info('Found INET version %s. Okay.' % version_to_hr(version))
-    except OSError as e:
-        error('Could not determine INET Version (by running %s): %s. Check the path to INET (--with-inet=... option) and the INET version (should be version %s)' % (fname, e, versions_to_hr(expect_version)))
-        sys.exit(1)
+        fname1 = os.path.join(options.inet, 'Version')
+        info('Running cat "%s" to determine INET version.' % fname1)
+        version = subprocess.check_output(['env', 'cat', fname1], stderr=subprocess.STDOUT).strip()
+    except subprocess.CalledProcessError as e1:
+        try:
+            fname2 = os.path.join(options.inet, '_scripts/get_version')
+            info('Running "%s" to determine INET version.' % fname2)
+            version = subprocess.check_output(['env', fname2], stderr=subprocess.STDOUT).strip()
+        except subprocess.CalledProcessError as e2:
+            try:
+                fname3 = os.path.join(options.inet, 'bin/inet_version')
+                info('Running "%s" to determine INET version.' % fname3)
+                version = subprocess.check_output(['env', fname3], stderr=subprocess.STDOUT).strip()
+            except subprocess.CalledProcessError as e3:
+                error('Could not determine INET Version; neither by running cat %s (%s), nor by running %s (%s), nor by running %s (%s). Check the path to INET (--with-inet=... option) and the INET version (should be version %s)' % (fname1, e1, fname2, e2, fname3, e3, versions_to_hr(expect_version)))
+                sys.exit(1)
+    if not version in expect_version:
+        warning('')
+        warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        warning('Unsupported INET Version. Expecting %s, found %s' % (versions_to_hr(expect_version), version_to_hr(version)))
+        warning('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        warning('')
+    else:
+        info('Found INET version %s. Okay.' % version_to_hr(version))
 
     inet_header_dirs = [os.path.join(os.path.relpath(options.inet, 'src'), 'src')]
     inet_includes = ['-I' + s for s in inet_header_dirs]
