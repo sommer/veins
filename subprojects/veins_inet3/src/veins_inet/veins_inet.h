@@ -41,7 +41,7 @@
 #error INET version 3.6 or compatible required
 #endif
 #if !((INET_VERSION == 0x0306) || (INET_VERSION == 0x0307))
-#pragma message ("WARNING: Unsupported INET version. Only INET version 3.6 and 3.7 are supported.")
+#pragma message("WARNING: Unsupported INET version. Only INET version 3.6 and 3.7 are supported.")
 #endif
 
 // VEINS_INET_API macro. Allows us to use the same .h files for both building a .dll and linking against it
