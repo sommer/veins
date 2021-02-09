@@ -536,6 +536,76 @@ std::pair<std::string, double> TraCICommandInterface::Vehicle::getLeader(const d
     return std::make_pair(leaderId, distanceToLeader);
 }
 
+std::vector<std::tuple<std::string, int, double, char>> TraCICommandInterface::Vehicle::getNextTls()
+{
+    std::vector<std::tuple<std::string, int, double, char>> result;
+
+    TraCIBuffer request = TraCIBuffer() << VAR_NEXT_TLS << nodeId;
+    TraCIBuffer response = connection->query(CMD_GET_VEHICLE_VARIABLE, request);
+
+    uint8_t cmdLength;
+    response >> cmdLength;
+    if (cmdLength == 0) {
+        uint32_t cmdLengthX;
+        response >> cmdLengthX;
+    }
+    uint8_t responseId;
+    response >> responseId;
+    ASSERT(responseId == RESPONSE_GET_VEHICLE_VARIABLE);
+    uint8_t variableType;
+    response >> variableType;
+    ASSERT(variableType == VAR_NEXT_TLS);
+    std::string rspNodeId;
+    response >> rspNodeId;
+    ASSERT(strcmp(rspNodeId.c_str(), nodeId.c_str()) == 0);
+    uint8_t responseType;
+    response >> responseType;
+    ASSERT(responseType == TYPE_COMPOUND);
+    uint32_t numElements;
+    response >> numElements;
+    ASSERT((numElements - 1) % 4 == 0);
+
+    uint8_t numLinksType;
+    response >> numLinksType;
+    ASSERT(numLinksType == TYPE_INTEGER);
+
+    uint32_t numLinks;
+    response >> numLinks;
+    ASSERT(numLinks * 4 + 1 == numElements);
+
+    for (int i = 0; i < numLinks; ++i) {
+        uint8_t tlsIdType;
+        response >> tlsIdType;
+        ASSERT(tlsIdType == TYPE_STRING);
+        std::string tlsId;
+        response >> tlsId;
+
+        uint8_t tlsLinkIndexType;
+        response >> tlsLinkIndexType;
+        ASSERT(tlsLinkIndexType == TYPE_INTEGER);
+        int tlsLinkIndex;
+        response >> tlsLinkIndex;
+
+        uint8_t distanceToTlsType;
+        response >> distanceToTlsType;
+        ASSERT(distanceToTlsType == TYPE_DOUBLE);
+        double distanceToTls;
+        response >> distanceToTls;
+
+        uint8_t linkStateType;
+        response >> linkStateType;
+        ASSERT(linkStateType == TYPE_BYTE);
+        uint8_t linkState;
+        response >> linkState;
+
+        result.push_back(std::make_tuple(tlsId, tlsLinkIndex, distanceToTls, linkState));
+    }
+
+    ASSERT(response.eof());
+
+    return result;
+}
+
 std::list<std::string> TraCICommandInterface::getTrafficlightIds()
 {
     return genericGetStringList(CMD_GET_TL_VARIABLE, "", ID_LIST, RESPONSE_GET_TL_VARIABLE);

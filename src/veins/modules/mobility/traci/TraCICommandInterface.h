@@ -252,6 +252,8 @@ public:
 
         std::pair<std::string, double> getLeader(const double distance);
 
+        std::vector<std::tuple<std::string, int, double, char>> getNextTls();
+
     protected:
         TraCICommandInterface* traci;
         TraCIConnection* connection;
