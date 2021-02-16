@@ -983,7 +983,7 @@ void VehicleManagerLibsumo::processVehicleSubscription(std::string objectId, con
     if (!isSubscribed) return;
 
     // make sure we got updates for all attributes
-    if (numRead != 5) return; // XXX: change 5->8
+    if (numRead != 8) return;
 
     Coord p = connection->traci2omnet(TraCICoord(px, py));
     if ((p.x < 0) || (p.y < 0)) throw cRuntimeError("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);

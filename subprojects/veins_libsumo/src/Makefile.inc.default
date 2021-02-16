@@ -25,6 +25,7 @@
 # It will first source Makefile.inc (if it exists) and then Makefile.inc.default
 #
 
-VEINS_LIBSUMO_LIBRARY ?= ../../../../sumo/tools/libsumo
+VEINS_LIBSUMO_LIBRARY ?= sumoc
+VEINS_LIBSUMO_LIBRARY_PATH ?= ../../../../sumo/tools/libsumo
 VEINS_LIBSUMO_INCLUDES ?= ../../../../sumo/src
 VEINS_LIBSUMO_BUILD_INCLUDES ?= ../../../../sumo/build/src
