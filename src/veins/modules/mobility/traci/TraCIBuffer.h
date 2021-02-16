@@ -131,6 +131,36 @@ public:
         return read<T>();
     }
 
+    /**
+     * @brief
+     * first read a Byte. Only if read value is 0, read requested data type.
+     */
+    template <typename T>
+    T readByteOrFull()
+    {
+        uint8_t shortBuf = read<uint8_t>();
+        if (shortBuf > 0) {
+            return shortBuf;
+        }
+        return read<T>();
+    }
+
+    /**
+     * @brief
+     * write only a Byte if value fits in a Byte. Otherwise write with requested data type.
+     */
+    template <typename T>
+    void writeByteOrFull(T inv)
+    {
+        if (inv < 256) {
+            uint8_t shortBuf = inv;
+            write(shortBuf);
+            return;
+        }
+        write<uint8_t>(0);
+        write(inv);
+    }
+
     bool eof() const;
     void set(std::string buf);
     void clear();

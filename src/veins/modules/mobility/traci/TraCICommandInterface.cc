@@ -991,7 +991,8 @@ void TraCICommandInterface::addPolygon(std::string polyId, std::string polyType,
     p << static_cast<uint8_t>(TYPE_COLOR) << color.red << color.green << color.blue << color.alpha;
     p << static_cast<uint8_t>(TYPE_UBYTE) << static_cast<uint8_t>(filled);
     p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
-    p << static_cast<uint8_t>(TYPE_POLYGON) << static_cast<uint8_t>(points.size());
+    p << static_cast<uint8_t>(TYPE_POLYGON);
+    p.writeByteOrFull<uint32_t>(points.size());
     for (std::list<Coord>::const_iterator i = points.begin(); i != points.end(); ++i) {
         const TraCICoord& pos = connection.omnet2traci(*i);
         p << static_cast<double>(pos.x) << static_cast<double>(pos.y);
@@ -1649,8 +1650,7 @@ std::list<Coord> TraCICommandInterface::genericGetCoordList(uint8_t commandId, s
     uint8_t resType_r;
     buf >> resType_r;
     ASSERT(resType_r == resultTypeId);
-    uint8_t count;
-    buf >> count;
+    uint32_t count = buf.readByteOrFull<uint32_t>();
     for (uint32_t i = 0; i < count; i++) {
         double x;
         buf >> x;
