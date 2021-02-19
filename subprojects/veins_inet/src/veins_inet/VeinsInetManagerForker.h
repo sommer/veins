@@ -24,7 +24,7 @@
 
 #include "veins_inet/veins_inet.h"
 
-#include "veins/modules/mobility/traci/TraCIScenarioManagerLaunchd.h"
+#include "veins/modules/mobility/traci/TraCIScenarioManagerForker.h"
 #include "veins_inet/VeinsInetManagerBase.h"
 
 namespace veins {
@@ -38,15 +38,15 @@ namespace veins {
  * @author Christoph Sommer
  *
  */
-class VEINS_INET_API VeinsInetManager : public VeinsInetManagerBase, public TraCIScenarioManagerLaunchd {
+class VEINS_INET_API VeinsInetManagerForker : public VeinsInetManagerBase, public TraCIScenarioManagerForker {
     virtual void initialize(int stage) override;
 };
 
-class VEINS_INET_API VeinsInetManagerAccess {
+class VEINS_INET_API VeinsInetManagerForkerAccess {
 public:
-    VeinsInetManager* get()
+    VeinsInetManagerForker* get()
     {
-        return FindModule<VeinsInetManager*>::findGlobalModule();
+        return FindModule<VeinsInetManagerForker*>::findGlobalModule();
     };
 };
 

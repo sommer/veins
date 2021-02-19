@@ -30,45 +30,8 @@ using veins::VeinsInetManager;
 
 Define_Module(veins::VeinsInetManager);
 
-VeinsInetManager::~VeinsInetManager()
-{
-}
-
 void VeinsInetManager::initialize(int stage)
 {
     TraCIScenarioManagerLaunchd::initialize(stage);
-
-    if (stage != 1)
-        return;
-
-#if INET_VERSION >= 0x0402
-    signalManager.subscribeCallback(this, TraCIScenarioManager::traciModulePreInitSignal, [this](SignalPayload<cObject*> payload) {
-        cModule* module = dynamic_cast<cModule*>(payload.p);
-        ASSERT(module);
-
-        cModule* root = getSimulation()->getSystemModule();
-
-        auto* notification = new inet::cPreModuleInitNotification();
-        notification->module = module;
-        root->emit(POST_MODEL_CHANGE, notification, NULL);
-    });
-#endif
-}
-
-void VeinsInetManager::preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals)
-{
-    // pre-initialize VeinsInetMobility
-    auto mobilityModules = getSubmodulesOfType<VeinsInetMobility>(mod);
-    for (auto inetmm : mobilityModules) {
-        inetmm->preInitialize(nodeId, inet::Coord(position.x, position.y), road_id, speed, heading.getRad());
-    }
-}
-
-void VeinsInetManager::updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals)
-{
-    // update position in VeinsInetMobility
-    auto mobilityModules = getSubmodulesOfType<VeinsInetMobility>(mod);
-    for (auto inetmm : mobilityModules) {
-        inetmm->nextPosition(inet::Coord(p.x, p.y), edge, speed, heading.getRad());
-    }
+    VeinsInetManagerBase::initialize(stage);
 }
