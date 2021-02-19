@@ -20,12 +20,33 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins_inet/VeinsInetManager.h"
+#pragma once
 
-#include "veins/base/utils/Coord.h"
-#include "veins_inet/VeinsInetMobility.h"
-#include "inet/common/scenario/ScenarioManager.h"
+#include "veins_inet/veins_inet.h"
 
-using veins::VeinsInetManager;
+#include "veins/modules/mobility/traci/TraCIScenarioManagerForker.h"
+#include "veins_inet/VeinsInetManagerBase.h"
 
-Define_Module(veins::VeinsInetManager);
+namespace veins {
+
+/**
+ * @brief
+ * Creates and manages network nodes corresponding to cars.
+ *
+ * See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
+ *
+ * @author Christoph Sommer
+ *
+ */
+class VEINS_INET_API VeinsInetManagerForker : public VeinsInetManagerBase, public TraCIScenarioManagerForker {
+};
+
+class VEINS_INET_API VeinsInetManagerForkerAccess {
+public:
+    VeinsInetManagerForker* get()
+    {
+        return FindModule<VeinsInetManagerForker*>::findGlobalModule();
+    };
+};
+
+} // namespace veins
