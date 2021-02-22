@@ -24,9 +24,9 @@
 
 #include "veins/modules/messages/DemoSafetyMessage_m.h"
 
-using veins::TraCITrafficLightApp;
+using veins_libsumo::TraCITrafficLightApp;
 
-Define_Module(TraCITrafficLightApp);
+Define_Module(veins_libsumo::TraCITrafficLightApp);
 
 void TraCITrafficLightApp::onBSM(DemoSafetyMessage* bsm)
 {

@@ -23,9 +23,14 @@
 
 #include "veins_libsumo/TraCITrafficLightTestLogic.h"
 
-using veins::TraCITrafficLightTestLogic;
+using veins_libsumo::TraCITrafficLightTestLogic;
+using veins::TrafficLightAtrributeType;
+using veins::TrafficLightChangeSource;
+using veins_libsumo::TraCITrafficLightTestLogic;
+using veins_libsumo::TraCITrafficLightTestLogic;
 
-Define_Module(veins::TraCITrafficLightTestLogic);
+
+Define_Module(veins_libsumo::TraCITrafficLightTestLogic);
 
 void TraCITrafficLightTestLogic::initialize()
 {

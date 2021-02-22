@@ -28,7 +28,7 @@ import org.car2x.veins.base.modules.ITrafficLightApplLayer;
 simple TraCITrafficLightApp extends DemoBaseApplLayer like ITrafficLightApplLayer
 {
     parameters:
-        @class(veins::TraCITrafficLightApp);
+        @class(veins_libsumo::TraCITrafficLightApp);
         @display("i=block/app2");
         double aggregationInterval @unit(s) = default(1000ms);
     gates:

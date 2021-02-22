@@ -38,7 +38,7 @@
 
 using namespace veins::TraCIConstants;
 
-namespace veins {
+namespace veins_libsumo {
 
 struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
     traci2omnet_functor(const LibsumoConnection& owner)

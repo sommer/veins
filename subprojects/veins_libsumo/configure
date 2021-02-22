@@ -54,7 +54,7 @@ parser.add_option("-q", "--quiet", dest="count_quiet", default=0, action="count"
 parser.add_option("--with-veins", dest="veins", help="link with a version of Veins installed in PATH", metavar="PATH", default="../..")
 parser.add_option("--with-sumo-includes", dest="sumo_includes", help="compile with a version of sumo includes installed in PATH", metavar="PATH", default="../../../sumo/src")
 parser.add_option("--with-sumo-build-includes", dest="sumo_build_includes", help="compile with a version of sumo build includes installed in PATH", metavar="PATH", default="../../../sumo/build/src")
-parser.add_option("--with-libsumo", dest="libsumo", help="link with a version of libsumo installed in PATH", metavar="PATH", default="../../../sumo/tools/libsumo")
+parser.add_option("--with-libsumo", dest="libsumo", help="link with a version of libsumo installed in PATH", metavar="PATH", default="../../../sumo/bin")
 (options, args) = parser.parse_args()
 
 _LOGLEVELS = (logging.ERROR, logging.WARN, logging.INFO, logging.DEBUG)

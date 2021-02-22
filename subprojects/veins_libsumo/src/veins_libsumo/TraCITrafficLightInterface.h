@@ -28,7 +28,7 @@
 #include "veins_libsumo/LibsumoCommandInterface.h"
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 
-namespace veins {
+namespace veins_libsumo {
 
 class VEINS_API TraCITrafficLightInterface : public cSimpleModule {
 public:
@@ -118,7 +118,7 @@ protected:
 
 } // namespace veins
 
-namespace veins {
+namespace veins_libsumo {
 class VEINS_API TraCITrafficLightInterfaceAccess {
 public:
     TraCITrafficLightInterface* get(cModule* host)

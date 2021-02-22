@@ -28,9 +28,9 @@
 
 using namespace veins;
 
-using veins::LibsumoMobility;
+using veins_libsumo::LibsumoMobility;
 
-Define_Module(veins::LibsumoMobility);
+Define_Module(veins_libsumo::LibsumoMobility);
 
 const simsignal_t LibsumoMobility::parkingStateChangedSignal = registerSignal("org_car2x_veins_modules_mobility_parkingStateChanged");
 
@@ -150,6 +150,7 @@ void LibsumoMobility::handleSelfMsg(cMessage* msg)
 
 void LibsumoMobility::preInitialize(std::string external_id, const Coord& position, std::string road_id, double speed, Heading heading)
 {
+    EV_DEBUG << "pre_initialize" << std::endl;
     this->external_id = external_id;
     this->lastUpdate = 0;
     this->roadPosition = position;

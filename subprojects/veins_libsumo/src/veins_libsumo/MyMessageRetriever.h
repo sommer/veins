@@ -29,7 +29,7 @@
 #include "utils/common/MsgHandler.h"
 #include "utils/common/MsgRetrievingFunction.h"
 
-namespace veins {
+namespace veins_libsumo {
 
 class MyMessageRetriever {
 protected:

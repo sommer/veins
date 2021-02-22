@@ -34,7 +34,7 @@
 #include "veins/modules/mobility/traci/VehicleSignal.h"
 #include "veins/base/utils/Heading.h"
 
-namespace veins {
+namespace veins_libsumo {
 
 /**
  * @brief

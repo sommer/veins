@@ -32,9 +32,15 @@
 #include "veins/base/utils/Heading.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
-namespace veins {
+using veins::TraCICoord;
+using veins::Heading;
+using veins::Coord;
+using veins::TraCICoordinateTransformation;
+using veins::TraCIBuffer;
 
-class VEINS_API LibsumoConnection : public HasLogProxy {
+namespace veins_libsumo {
+
+class VEINS_API LibsumoConnection : public veins::HasLogProxy {
 public:
     static LibsumoConnection* connect(cComponent* owner);
     void setNetbounds(TraCICoord netbounds1, TraCICoord netbounds2, int margin);

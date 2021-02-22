@@ -33,7 +33,16 @@
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
-namespace veins {
+using veins::HasLogProxy;
+using veins::Heading;
+using veins::Coord;
+using veins::TraCICoord;
+using veins::TraCIColor;
+using veins::TraCITrafficLightLink;
+using veins::TraCITrafficLightProgram;
+using veins::Coord;
+
+namespace veins_libsumo {
 
 class VEINS_API LibsumoCommandInterface : public HasLogProxy {
 public:

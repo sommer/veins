@@ -22,6 +22,7 @@
 
 #include "veins_libsumo/DemoBaseApplLayer.h"
 
+using namespace veins_libsumo;
 using namespace veins;
 
 void DemoBaseApplLayer::initialize(int stage)

@@ -24,7 +24,7 @@ package org.car2x.veins.subprojects.veins_libsumo;
 
 simple TraCITrafficLightInterface {
     parameters:
-        @class(veins::TraCITrafficLightInterface);
+        @class(veins_libsumo::TraCITrafficLightInterface);
         @display("i=block/layer");
     gates:
         inout logic;

@@ -31,10 +31,11 @@
 #include "veins_libsumo/LibsumoMobility.h"
 #include "veins_libsumo/LibsumoCommandInterface.h"
 
-using veins::LibsumoCommandInterface;
-using veins::LibsumoMobility;
+using veins_libsumo::LibsumoCommandInterface;
+using veins_libsumo::LibsumoMobility;
+using veins::BaseApplLayer;
 
-namespace veins {
+namespace veins_libsumo {
 
 class TraCITestApp : public BaseApplLayer {
 public:

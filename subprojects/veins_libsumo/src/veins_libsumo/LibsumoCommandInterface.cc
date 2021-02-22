@@ -48,8 +48,9 @@
 #endif /* _WIN32 */
 
 using namespace veins::TraCIConstants;
+using veins::ParBuffer;
 
-namespace veins {
+namespace veins_libsumo {
 
 const std::map<uint32_t, LibsumoCommandInterface::VersionConfig> LibsumoCommandInterface::versionConfigs = {
     {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},

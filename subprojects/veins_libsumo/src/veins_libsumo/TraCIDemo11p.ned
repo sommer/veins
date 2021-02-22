@@ -25,6 +25,6 @@ import org.car2x.veins.subprojects.veins_libsumo.DemoBaseApplLayer;
 
 simple TraCIDemo11p extends DemoBaseApplLayer
 {
-    @class(veins::TraCIDemo11p);
+    @class(veins_libsumo::TraCIDemo11p);
     @display("i=block/app2");
 }

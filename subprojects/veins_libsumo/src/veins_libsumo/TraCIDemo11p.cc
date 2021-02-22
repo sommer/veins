@@ -24,9 +24,10 @@
 
 #include "veins/modules/application/traci/TraCIDemo11pMessage_m.h"
 
-using namespace veins;
+using namespace veins_libsumo;
+using veins::TraCIDemo11pMessage;
 
-Define_Module(veins::TraCIDemo11p);
+Define_Module(veins_libsumo::TraCIDemo11p);
 
 void TraCIDemo11p::initialize(int stage)
 {

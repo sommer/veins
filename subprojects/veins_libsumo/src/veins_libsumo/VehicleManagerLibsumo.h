@@ -42,15 +42,31 @@
 #include "veins/modules/mobility/traci/VehicleSignal.h"
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
+using veins::TraCIRegionOfInterest;
+using veins::VehicleObstacleControl;
+using veins::BaseMobility;
+using veins::BaseWorldUtility;
+using veins::VehicleSignalSet;
+using veins::Heading;
+using veins::Coord;
+using veins::VehicleSignal;
+using veins::FindModule;
+using veins::AnnotationManager;
+using veins::MobileHostObstacle;
+
+namespace veins {
+class MobileHostObstacle;
+};
+
 namespace libsumo {
 struct TraCIResult;
 typedef std::map<int, std::shared_ptr<TraCIResult>> TraCIResults;
 } // namespace libsumo
-namespace veins {
+namespace veins_libsumo {
 
 class LibsumoCommandInterface;
-class MobileHostObstacle;
 class MyMessageRetriever;
+
 
 /**
  * @brief

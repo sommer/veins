@@ -29,11 +29,11 @@
 #include "veins_libsumo/TraCITrafficLightTestLogic.h"
 
 using veins::BaseMobility;
-using veins::LibsumoMobility;
-using veins::LibsumoMobilityAccess;
-using veins::TraCITestApp;
+using veins_libsumo::LibsumoMobility;
+using veins_libsumo::LibsumoMobilityAccess;
+using veins_libsumo::TraCITestApp;
 
-Define_Module(veins::TraCITestApp);
+Define_Module(veins_libsumo::TraCITestApp);
 
 void TraCITestApp::initialize(int stage)
 {

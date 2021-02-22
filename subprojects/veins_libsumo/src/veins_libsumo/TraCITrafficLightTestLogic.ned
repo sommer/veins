@@ -27,7 +27,7 @@ import org.car2x.veins.base.modules.ITrafficLightLogic;
 simple TraCITrafficLightTestLogic like ITrafficLightLogic 
 {
     parameters:
-        @class(veins::TraCITrafficLightTestLogic);
+        @class(veins_libsumo::TraCITrafficLightTestLogic);
         @display("i=block/classifier");
     gates:
         inout interface;

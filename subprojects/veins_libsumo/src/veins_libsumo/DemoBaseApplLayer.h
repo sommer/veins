@@ -34,13 +34,22 @@
 #include "veins_libsumo/LibsumoMobility.h"
 #include "veins_libsumo/LibsumoCommandInterface.h"
 
-namespace veins {
+namespace veins_libsumo {
 
 using veins::AnnotationManager;
 using veins::AnnotationManagerAccess;
-using veins::LibsumoCommandInterface;
-using veins::LibsumoMobility;
-using veins::LibsumoMobilityAccess;
+using veins::BaseApplLayer;
+using veins::BaseFrame1609_4;
+using veins::FindModule;
+using veins_libsumo::LibsumoCommandInterface;
+using veins_libsumo::LibsumoMobility;
+using veins_libsumo::LibsumoMobilityAccess;
+using veins::DemoBaseApplLayerToMac1609_4Interface;
+using veins::LAddress;
+using veins::DemoServiceAdvertisment;
+using veins::DemoSafetyMessage;
+using veins::Channel;
+using veins::ChannelType;
 
 /**
  * @brief

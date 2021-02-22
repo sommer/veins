@@ -33,7 +33,7 @@
 #include "veins/modules/mobility/traci/TraCIConstants.h"
 #include "veins_libsumo/LibsumoMobility.h"
 #include "veins/modules/obstacle/ObstacleControl.h"
-#include "veins/modules/world/traci/trafficLight/TraCITrafficLightInterface.h"
+#include "veins_libsumo/TraCITrafficLightInterface.h"
 
 // SUMO includes
 #include "utils/geom/PositionVector.h"
@@ -51,10 +51,15 @@ using namespace veins::TraCIConstants;
 using veins::AnnotationManagerAccess;
 using veins::TraCIBuffer;
 using veins::TraCICoord;
-using veins::TraCITrafficLightInterface;
-using veins::VehicleManagerLibsumo;
+using veins_libsumo::VehicleManagerLibsumo;
+using veins::ObstacleControl;
+using veins::ObstacleControlAccess;
+using veins::getSubmodulesOfType;
+using veins::AntennaPosition;
+using veins::ChannelAccess;
+using veins::getSubmodulesOfType;
 
-Define_Module(veins::VehicleManagerLibsumo);
+Define_Module(veins_libsumo::VehicleManagerLibsumo);
 
 #define LIBSUMO_EXCEPTION_WRAP(x)                                      \
     try {                                                              \
@@ -346,7 +351,7 @@ void VehicleManagerLibsumo::startServer()
     EV_DEBUG << "Loading simulation" << std::endl;
 
     std::vector<std::string> options;
-    bool is_inside_quotes;
+    bool is_inside_quotes = false;
     std::string s;
     std::stringstream ss(commandLine);
     while (std::getline(ss, s, '\"')) {

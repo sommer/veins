@@ -23,13 +23,16 @@
 #include "veins_libsumo/TraCITrafficLightInterface.h"
 #include "veins/modules/messages/TraCITrafficLightMessage_m.h"
 
-using namespace veins;
+using namespace veins_libsumo;
 
-using veins::TraCITrafficLightInterface;
+using veins_libsumo::TraCITrafficLightInterface;
 using veins::TraCITrafficLightLink;
 using veins::TraCITrafficLightProgram;
+using veins::TrafficLightAtrributeType;
+using veins::TraCITrafficLightMessage;
+using veins::TrafficLightChangeSource;
 
-Define_Module(veins::TraCITrafficLightInterface);
+Define_Module(veins_libsumo::TraCITrafficLightInterface);
 
 TraCITrafficLightInterface::TraCITrafficLightInterface()
     : cSimpleModule()

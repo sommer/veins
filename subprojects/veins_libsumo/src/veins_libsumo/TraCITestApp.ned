@@ -31,7 +31,7 @@ simple TraCITestApp like IBaseApplLayer
         int testNumber;  // number of test to run (-1: no test)
 
         @display("i=block/app2");
-        @class("veins::TraCITestApp");
+        @class("veins_libsumo::TraCITestApp");
     gates:
         input lowerLayerIn; // from network layer
         output lowerLayerOut; // to network layer

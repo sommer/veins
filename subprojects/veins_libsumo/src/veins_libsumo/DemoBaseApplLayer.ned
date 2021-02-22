@@ -36,7 +36,7 @@ import org.car2x.veins.base.modules.IBaseApplLayer;
 simple DemoBaseApplLayer like IBaseApplLayer
 {
     parameters:
-        @class(veins::DemoBaseApplLayer);
+        @class(veins_libsumo::DemoBaseApplLayer);
         int headerLength = default(88bit) @unit(bit); //header length of the application
 
         bool sendBeacons = default(true); //tell the applayer to periodically send beacons

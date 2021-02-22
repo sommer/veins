@@ -40,7 +40,7 @@ import org.car2x.veins.base.modules.BaseMobility;
 simple LibsumoMobility extends BaseMobility
 {
     parameters:
-        @class(veins::LibsumoMobility);
+        @class(veins_libsumo::LibsumoMobility);
         @signal[org_car2x_veins_modules_mobility_parkingStateChanged](type=veins::LibsumoMobility);
         @display("i=block/cogwheel");
         double hostPositionOffset @unit("m") = default(0.0m);  // shift OMNeT++ module this far from front of the car

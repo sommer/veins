@@ -24,7 +24,7 @@
 
 #include "veins_libsumo/DemoBaseApplLayer.h"
 
-namespace veins {
+namespace veins_libsumo {
 
 /**
  * @brief
