@@ -29,6 +29,7 @@
 #include "veins/modules/mobility/traci/ParBuffer.h"
 
 // SUMO includes
+#include "libsumo/TraCIDefs.h"
 #include "utils/geom/PositionVector.h"
 #include "libsumo/Simulation.h"
 #include "libsumo/Vehicle.h"
@@ -43,6 +44,10 @@
 #include "utils/common/MsgHandler.h"
 #include "utils/common/MsgRetrievingFunction.h"
 
+#ifdef HAVE_VERSION_H
+#include "version.h"
+#endif
+
 #ifdef _WIN32
 #define realpath(N, R) _fullpath((R), (N), _MAX_PATH)
 #endif /* _WIN32 */
@@ -53,12 +58,12 @@ using veins::ParBuffer;
 namespace veins_libsumo {
 
 const std::map<uint32_t, LibsumoCommandInterface::VersionConfig> LibsumoCommandInterface::versionConfigs = {
-    {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
-    {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
-    {18, {18, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}},
-    {17, {17, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
-    {16, {16, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
-    {15, {15, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}},
+    {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.2.0
+    {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.1.0
+    {18, {18, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.0.0
+    {17, {17, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}}, // since SUMO 0.32.0
+    {16, {16, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}}, // since SUMO 0.31.0
+    {15, {15, TYPE_INTEGER, TYPE_BOUNDINGBOX, VAR_TIME_STEP}}, // since SUMO 0.30.0
 };
 
 LibsumoCommandInterface::LibsumoCommandInterface(cComponent* owner, LibsumoConnection& c, bool ignoreGuiCommands)
@@ -282,6 +287,26 @@ double LibsumoCommandInterface::Vehicle::getDeccel()
     return libsumo::Vehicle::getDecel(nodeId);
 }
 
+double LibsumoCommandInterface::Vehicle::getSpeed()
+{
+    return libsumo::Vehicle::getSpeed(nodeId);
+}
+
+double LibsumoCommandInterface::Vehicle::getAngle()
+{
+    return libsumo::Vehicle::getAngle(nodeId);
+}
+
+double LibsumoCommandInterface::Vehicle::getAcceleration()
+{
+    return libsumo::Vehicle::getAcceleration(nodeId);
+}
+
+double LibsumoCommandInterface::Vehicle::getDistanceTravelled()
+{
+    return libsumo::Vehicle::getDistance(nodeId);
+}
+
 double LibsumoCommandInterface::Vehicle::getCO2Emissions() const
 {
     return libsumo::Vehicle::getCO2Emission(nodeId);
@@ -347,6 +372,11 @@ double LibsumoCommandInterface::getDistance(const Coord& p1, const Coord& p2, bo
 void LibsumoCommandInterface::Vehicle::stopAt(std::string roadId, double pos, uint8_t laneid, double radius, simtime_t waittime)
 {
     libsumo::Vehicle::setStop(nodeId, roadId, pos, laneid, waittime.dbl());
+}
+
+std::pair<std::string, double> LibsumoCommandInterface::Vehicle::getLeader(const double distance)
+{
+    return libsumo::Vehicle::getLeader(nodeId, distance);
 }
 
 std::list<std::string> LibsumoCommandInterface::getTrafficlightIds()
@@ -615,6 +645,13 @@ double LibsumoCommandInterface::Lane::getMeanSpeed()
     return libsumo::Lane::getLastStepMeanSpeed(laneId);
 }
 
+void LibsumoCommandInterface::Lane::setDisallowed(std::list<std::string> disallowedClasses)
+{
+    std::vector<std::string> disallowedClassesVec(disallowedClasses.begin(), disallowedClasses.end());
+
+    libsumo::Lane::setDisallowed(laneId, disallowedClassesVec);
+}
+
 std::list<std::string> LibsumoCommandInterface::getLaneAreaDetectorIds()
 {
     std::vector<std::string> r = libsumo::LaneArea::getIDList();
@@ -811,6 +848,7 @@ std::list<std::string> LibsumoCommandInterface::getGuiViewIds()
     }
     // not implemented
     ASSERT(false);
+    return std::list<std::string>();
 }
 
 std::string LibsumoCommandInterface::GuiView::getScheme()
@@ -821,6 +859,7 @@ std::string LibsumoCommandInterface::GuiView::getScheme()
     }
     // not implemented
     ASSERT(false);
+    return std::string();
 }
 
 void LibsumoCommandInterface::GuiView::setScheme(std::string name)
@@ -841,6 +880,7 @@ double LibsumoCommandInterface::GuiView::getZoom()
     }
     // not implemented
     ASSERT(false);
+    return 0;
 }
 void LibsumoCommandInterface::GuiView::setZoom(double zoom)
 {
@@ -887,4 +927,4 @@ std::string LibsumoCommandInterface::Vehicle::getVType()
     return libsumo::Vehicle::getTypeID(nodeId);
 }
 
-} // namespace veins
+} // namespace veins_libsumo

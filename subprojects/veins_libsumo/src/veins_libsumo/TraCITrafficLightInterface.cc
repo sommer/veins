@@ -25,12 +25,12 @@
 
 using namespace veins_libsumo;
 
-using veins_libsumo::TraCITrafficLightInterface;
 using veins::TraCITrafficLightLink;
+using veins::TraCITrafficLightMessage;
 using veins::TraCITrafficLightProgram;
 using veins::TrafficLightAtrributeType;
-using veins::TraCITrafficLightMessage;
 using veins::TrafficLightChangeSource;
+using veins_libsumo::TraCITrafficLightInterface;
 
 Define_Module(veins_libsumo::TraCITrafficLightInterface);
 

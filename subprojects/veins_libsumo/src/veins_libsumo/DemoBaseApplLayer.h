@@ -40,16 +40,16 @@ using veins::AnnotationManager;
 using veins::AnnotationManagerAccess;
 using veins::BaseApplLayer;
 using veins::BaseFrame1609_4;
+using veins::Channel;
+using veins::ChannelType;
+using veins::DemoBaseApplLayerToMac1609_4Interface;
+using veins::DemoSafetyMessage;
+using veins::DemoServiceAdvertisment;
 using veins::FindModule;
+using veins::LAddress;
 using veins_libsumo::LibsumoCommandInterface;
 using veins_libsumo::LibsumoMobility;
 using veins_libsumo::LibsumoMobilityAccess;
-using veins::DemoBaseApplLayerToMac1609_4Interface;
-using veins::LAddress;
-using veins::DemoServiceAdvertisment;
-using veins::DemoSafetyMessage;
-using veins::Channel;
-using veins::ChannelType;
 
 /**
  * @brief
@@ -191,4 +191,4 @@ protected:
     cMessage* sendWSAEvt;
 };
 
-} // namespace veins
+} // namespace veins_libsumo

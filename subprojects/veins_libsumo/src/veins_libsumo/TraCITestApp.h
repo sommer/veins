@@ -31,9 +31,9 @@
 #include "veins_libsumo/LibsumoMobility.h"
 #include "veins_libsumo/LibsumoCommandInterface.h"
 
+using veins::BaseApplLayer;
 using veins_libsumo::LibsumoCommandInterface;
 using veins_libsumo::LibsumoMobility;
-using veins::BaseApplLayer;
 
 namespace veins_libsumo {
 
@@ -65,4 +65,4 @@ protected:
     void handlePositionUpdate();
 };
 
-} // namespace veins
+} // namespace veins_libsumo

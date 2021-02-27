@@ -57,4 +57,4 @@ protected:
     void handlePositionUpdate(cObject* obj) override;
 };
 
-} // namespace veins
+} // namespace veins_libsumo

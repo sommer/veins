@@ -26,7 +26,7 @@ import argparse
 import os
 import sys
 
-parser = argparse.ArgumentParser(description='Print version number of Veins Libsumo (e.g., "4.0") or a component thereof.', epilog='Not all combinations of switches are supported.')
+parser = argparse.ArgumentParser(description='Print version number of veins_libsumo (e.g., "4.0") or a component thereof.', epilog='Not all combinations of switches are supported.')
 parser.add_argument('-M', '--major', action='store_true', help='print only the major version')
 parser.add_argument('-m', '--minor', action='store_true', help='print only the minor version')
 parser.add_argument('-p', '--patch', action='store_true', help='print only the patch level')

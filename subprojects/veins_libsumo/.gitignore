@@ -9,7 +9,7 @@ src/**/*_m.cc
 doc/doxy
 doc/neddoc
 
-/run
+/bin/veins_libsumo_run
 
 /out
 

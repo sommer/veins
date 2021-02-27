@@ -116,7 +116,7 @@ protected:
     bool inOnlineSignalState; /**< whether the TLS is currently set to a manual (i.e. online) phase state */
 };
 
-} // namespace veins
+} // namespace veins_libsumo
 
 namespace veins_libsumo {
 class VEINS_API TraCITrafficLightInterfaceAccess {
@@ -128,4 +128,4 @@ public:
         return traci;
     };
 };
-} // namespace veins
+} // namespace veins_libsumo

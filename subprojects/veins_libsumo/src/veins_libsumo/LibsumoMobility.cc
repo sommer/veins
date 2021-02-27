@@ -32,6 +32,7 @@ using veins_libsumo::LibsumoMobility;
 
 Define_Module(veins_libsumo::LibsumoMobility);
 
+const simsignal_t LibsumoMobility::collisionSignal = registerSignal("org_car2x_veins_modules_mobility_collision");
 const simsignal_t LibsumoMobility::parkingStateChangedSignal = registerSignal("org_car2x_veins_modules_mobility_parkingStateChanged");
 
 namespace {
@@ -150,7 +151,6 @@ void LibsumoMobility::handleSelfMsg(cMessage* msg)
 
 void LibsumoMobility::preInitialize(std::string external_id, const Coord& position, std::string road_id, double speed, Heading heading)
 {
-    EV_DEBUG << "pre_initialize" << std::endl;
     this->external_id = external_id;
     this->lastUpdate = 0;
     this->roadPosition = position;
@@ -192,12 +192,12 @@ void LibsumoMobility::changePosition()
     // ensure we're not called twice in one time step
     ASSERT(lastUpdate != simTime());
 
-    // keep statistics (for current step)
-    currentPosXVec.record(move.getStartPos().x);
-    currentPosYVec.record(move.getStartPos().y);
-
     Coord nextPos = calculateHostPosition(roadPosition);
     nextPos.z = move.getStartPosition().z;
+
+    // keep statistics (for current step)
+    currentPosXVec.record(nextPos.x);
+    currentPosYVec.record(nextPos.y);
 
     // keep statistics (relative to last step)
     if (statistics.startTime != simTime()) {
@@ -250,6 +250,11 @@ void LibsumoMobility::changeParkingState(bool newState)
     Enter_Method_Silent();
     isParking = newState;
     emit(parkingStateChangedSignal, this);
+}
+
+void LibsumoMobility::collisionOccurred(bool newState)
+{
+    emit(collisionSignal, newState);
 }
 
 void LibsumoMobility::fixIfHostGetsOutside()

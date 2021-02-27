@@ -23,12 +23,9 @@
 
 #include "veins_libsumo/TraCITrafficLightTestLogic.h"
 
-using veins_libsumo::TraCITrafficLightTestLogic;
 using veins::TrafficLightAtrributeType;
 using veins::TrafficLightChangeSource;
 using veins_libsumo::TraCITrafficLightTestLogic;
-using veins_libsumo::TraCITrafficLightTestLogic;
-
 
 Define_Module(veins_libsumo::TraCITrafficLightTestLogic);
 
@@ -75,8 +72,9 @@ void TraCITrafficLightTestLogic::handleMessage(cMessage* msg)
         pDurMsg->setChangedAttribute(TrafficLightAtrributeType::SWITCHTIME);
         pDurMsg->setChangeSource(TrafficLightChangeSource::LOGIC);
         auto theTime = (simTime() + phaseDuration).inUnit(SIMTIME_MS);
-        auto theTimeString = std::to_string(theTime).c_str();
-        pDurMsg->setNewValue(theTimeString);
+        auto theTimeString = std::to_string(theTime);
+        auto theTimeCharPtr = theTimeString.c_str();
+        pDurMsg->setNewValue(theTimeCharPtr);
         send(pDurMsg, "interface$o");
         scheduleAt(simTime() + phaseDuration, changeProgramm);
     }

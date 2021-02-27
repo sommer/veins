@@ -49,15 +49,14 @@
 using namespace veins::TraCIConstants;
 
 using veins::AnnotationManagerAccess;
-using veins::TraCIBuffer;
-using veins::TraCICoord;
-using veins_libsumo::VehicleManagerLibsumo;
-using veins::ObstacleControl;
-using veins::ObstacleControlAccess;
-using veins::getSubmodulesOfType;
 using veins::AntennaPosition;
 using veins::ChannelAccess;
 using veins::getSubmodulesOfType;
+using veins::ObstacleControl;
+using veins::ObstacleControlAccess;
+using veins::TraCIBuffer;
+using veins::TraCICoord;
+using veins_libsumo::VehicleManagerLibsumo;
 
 Define_Module(veins_libsumo::VehicleManagerLibsumo);
 

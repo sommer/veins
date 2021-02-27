@@ -122,4 +122,4 @@ double LibsumoConnection::omnet2traciHeading(Heading heading) const
     return coordinateTransformation->omnet2traciHeading(heading);
 }
 
-} // namespace veins
+} // namespace veins_libsumo

@@ -45,4 +45,4 @@ protected:
     virtual void handleMessage(cMessage* msg);
 };
 
-} // namespace veins
+} // namespace veins_libsumo

@@ -33,14 +33,13 @@
 #include "veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
+using veins::Coord;
 using veins::HasLogProxy;
 using veins::Heading;
-using veins::Coord;
-using veins::TraCICoord;
 using veins::TraCIColor;
+using veins::TraCICoord;
 using veins::TraCITrafficLightLink;
 using veins::TraCITrafficLightProgram;
-using veins::Coord;
 
 namespace veins_libsumo {
 
@@ -134,7 +133,7 @@ public:
      * @param emitLane The new vehicle's lane. Special Also accepts special values from DepartLane.
      * @return Success indication
      */
-    bool addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = DEPART_TIME_TRIGGERED, double emitPosition = DEPART_POSITION_BASE, double emitSpeed = DEPART_SPEED_MAX, int8_t emitLane = DEPART_LANE_BEST);
+    bool addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = 0, double emitPosition = DEPART_POSITION_BASE, double emitSpeed = DEPART_SPEED_MAX, int8_t emitLane = DEPART_LANE_BEST);
     class VEINS_API Vehicle {
     public:
         Vehicle(LibsumoCommandInterface* traci, std::string nodeId)
@@ -168,6 +167,10 @@ public:
         double getHeight();
         double getAccel();
         double getDeccel();
+        double getSpeed();
+        double getAngle();
+        double getAcceleration();
+        double getDistanceTravelled();
 
         void setParameter(const std::string& parameter, int value);
         void setParameter(const std::string& parameter, double value);
@@ -255,6 +258,10 @@ public:
          */
         double getAccumulatedWaitingTime() const;
 
+        std::pair<std::string, double> getLeader(const double distance);
+
+        std::vector<std::tuple<std::string, int, double, char>> getNextTls();
+
     protected:
         LibsumoCommandInterface* traci;
         LibsumoConnection* connection;
@@ -305,6 +312,7 @@ public:
         double getLength();
         double getMaxSpeed();
         double getMeanSpeed();
+        void setDisallowed(std::list<std::string> disallowedClasses);
 
     protected:
         LibsumoCommandInterface* traci;
@@ -526,4 +534,4 @@ private:
     VersionConfig versionConfig;
 };
 
-} // namespace veins
+} // namespace veins_libsumo

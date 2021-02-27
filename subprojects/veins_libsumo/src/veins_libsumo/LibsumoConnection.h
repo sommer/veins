@@ -32,11 +32,11 @@
 #include "veins/base/utils/Heading.h"
 #include "veins/modules/utility/HasLogProxy.h"
 
-using veins::TraCICoord;
-using veins::Heading;
 using veins::Coord;
-using veins::TraCICoordinateTransformation;
+using veins::Heading;
 using veins::TraCIBuffer;
+using veins::TraCICoord;
+using veins::TraCICoordinateTransformation;
 
 namespace veins_libsumo {
 
@@ -79,4 +79,4 @@ private:
  */
 std::string makeLibsumoCommand(uint8_t commandId, const TraCIBuffer& buf = TraCIBuffer());
 
-} // namespace veins
+} // namespace veins_libsumo

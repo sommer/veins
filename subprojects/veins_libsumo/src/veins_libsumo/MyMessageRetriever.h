@@ -47,11 +47,11 @@ public:
         MsgHandler::getWarningInstance()->removeRetriever(&OutputDevice::getDevice("stderr"));
         MsgHandler::getErrorInstance()->removeRetriever(&OutputDevice::getDevice("stderr"));
 
-        myMessageRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MT_MESSAGE);
-        myWarningRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MT_WARNING);
-        myErrorRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MT_ERROR);
-        myDebugRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MT_DEBUG);
-        myGLDebugRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MT_GLDEBUG);
+        myMessageRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MsgType::MT_MESSAGE);
+        myWarningRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MsgType::MT_WARNING);
+        myErrorRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MsgType::MT_ERROR);
+        myDebugRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MsgType::MT_DEBUG);
+        myGLDebugRetriever = new MsgRetrievingFunction<MyMessageRetriever>(this, &MyMessageRetriever::retrieveMessage, MsgHandler::MsgType::MT_GLDEBUG);
 
         MsgHandler::getMessageInstance()->addRetriever(myMessageRetriever);
         MsgHandler::getWarningInstance()->addRetriever(myWarningRetriever);
@@ -71,19 +71,19 @@ public:
 
         std::string t = "UNKNOWN";
         switch (type) {
-        case MsgHandler::MT_MESSAGE:
+        case MsgHandler::MsgType::MT_MESSAGE:
             t = "default";
             break;
-        case MsgHandler::MT_WARNING:
+        case MsgHandler::MsgType::MT_WARNING:
             t = "WARNING";
             break;
-        case MsgHandler::MT_ERROR:
+        case MsgHandler::MsgType::MT_ERROR:
             t = "ERROR";
             break;
-        case MsgHandler::MT_DEBUG:
+        case MsgHandler::MsgType::MT_DEBUG:
             t = "DEBUG";
             break;
-        case MsgHandler::MT_GLDEBUG:
+        case MsgHandler::MsgType::MT_GLDEBUG:
             t = "GLDEBUG";
             break;
         }
@@ -101,4 +101,4 @@ public:
     }
 };
 
-} // namespace veins
+} // namespace veins_libsumo

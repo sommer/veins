@@ -42,17 +42,17 @@
 #include "veins/modules/mobility/traci/VehicleSignal.h"
 #include "veins/modules/mobility/traci/TraCIRegionOfInterest.h"
 
-using veins::TraCIRegionOfInterest;
-using veins::VehicleObstacleControl;
+using veins::AnnotationManager;
 using veins::BaseMobility;
 using veins::BaseWorldUtility;
-using veins::VehicleSignalSet;
-using veins::Heading;
 using veins::Coord;
-using veins::VehicleSignal;
 using veins::FindModule;
-using veins::AnnotationManager;
+using veins::Heading;
 using veins::MobileHostObstacle;
+using veins::TraCIRegionOfInterest;
+using veins::VehicleObstacleControl;
+using veins::VehicleSignal;
+using veins::VehicleSignalSet;
 
 namespace veins {
 class MobileHostObstacle;
@@ -66,7 +66,6 @@ namespace veins_libsumo {
 
 class LibsumoCommandInterface;
 class MyMessageRetriever;
-
 
 /**
  * @brief
@@ -227,4 +226,4 @@ public:
     };
 };
 
-} // namespace veins
+} // namespace veins_libsumo

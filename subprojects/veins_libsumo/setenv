@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/echo Error. Aborting. Instead of running this script, please use: source
 
 #
-# Copyright (C) 2011 Christoph Sommer <sommer@ccs-labs.org>
+# Copyright (C) 2020 Christoph Sommer <sommer@ccs-labs.org>
 #
 # Documentation for these modules is at http://veins.car2x.org/
 #
@@ -22,4 +22,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-exec ../../../bin/veins_libsumo_run "$@"
+# Check if called from veins_libsumo directory
+test -f print-veins_libsumo-version >/dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+	echo 'Error: current working directory does not look like a veins_libsumo root directory. Aborting.' >&2
+	return 1
+fi
+
+# Add Veins directory to PATH
+VEINS_LIBSUMO_DIR="$(pwd)"
+export PATH="$PATH":"$VEINS_LIBSUMO_DIR/bin"
+
