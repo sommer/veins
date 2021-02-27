@@ -70,7 +70,9 @@ void TraCITrafficLightTestLogic::handleMessage(cMessage* msg)
         pDurMsg->setChangedAttribute(TrafficLightAtrributeType::SWITCHTIME);
         pDurMsg->setChangeSource(TrafficLightChangeSource::LOGIC);
         auto theTime = (simTime() + phaseDuration).inUnit(SIMTIME_MS);
-        pDurMsg->setNewValue(std::to_string(theTime).c_str());
+        auto theTimeString = std::to_string(theTime);
+        auto theTimeCharPtr = theTimeString.c_str();
+        pDurMsg->setNewValue(theTimeCharPtr);
         send(pDurMsg, "interface$o");
         scheduleAt(simTime() + phaseDuration, changeProgramm);
     }
