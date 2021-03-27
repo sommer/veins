@@ -452,6 +452,7 @@ public:
 
     // Route methods
     std::list<std::string> getRouteIds();
+    void addRoute(std::string routeId, const std::list<std::string> &edges);
     class VEINS_API Route {
     public:
         Route(TraCICommandInterface* traci, std::string routeId)
