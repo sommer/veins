@@ -250,6 +250,26 @@ public:
          */
         double getAccumulatedWaitingTime() const;
 
+        /**
+         * Get the vehicle's stop state which carries information about whether it is currently stopping and in which context.
+         *
+         * @return the stop state which is a bit field defined as follows:
+         *     1 * stopped
+         * +   2 * parking
+         * +   4 * triggered
+         * +   8 * containerTriggered
+         * +  16 * atBusStop
+         * +  32 * atContainerStop
+         * +  64 * atChargingStation
+         * + 128 * atParkingArea
+         */
+        uint8_t getStopState() const;
+
+        /**
+         * Get whether the vehicle is currently stopped.
+         */
+        bool isStopped() const;
+
         std::pair<std::string, double> getLeader(const double distance);
 
         std::vector<std::tuple<std::string, int, double, char>> getNextTls();
