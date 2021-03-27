@@ -465,6 +465,18 @@ bool TraCICommandInterface::Vehicle::isStopped() const
     return getStopState() & 0x1;
 }
 
+void TraCICommandInterface::Vehicle::changeTarget(const std::string &newTarget) const
+{
+    TraCIBuffer p;
+    p << static_cast<uint8_t>(CMD_CHANGETARGET);
+    p << nodeId;
+    p << static_cast<uint8_t>(TYPE_STRING);
+    p << newTarget;
+
+    TraCIBuffer buf = traci->connection.query(CMD_SET_VEHICLE_VARIABLE, p);
+    ASSERT(buf.eof());
+}
+
 double TraCICommandInterface::getDistance(const Coord& p1, const Coord& p2, bool returnDrivingDistance)
 {
     uint8_t variable = DISTANCE_REQUEST;

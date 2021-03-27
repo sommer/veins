@@ -270,6 +270,11 @@ public:
          */
         bool isStopped() const;
 
+        /**
+         * Sets the vehicle's current destination edge, causing its route to be rebuilt.
+         */
+        void changeTarget(const std::string &newTarget) const;
+
         std::pair<std::string, double> getLeader(const double distance);
 
         std::vector<std::tuple<std::string, int, double, char>> getNextTls();
