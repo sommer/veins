@@ -329,6 +329,7 @@ public:
         double getLength();
         double getMaxSpeed();
         double getMeanSpeed();
+        double getWidth();
         void setDisallowed(std::list<std::string> disallowedClasses);
 
     protected:
