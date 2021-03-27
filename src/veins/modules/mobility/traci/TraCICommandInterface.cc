@@ -1156,6 +1156,11 @@ Coord TraCICommandInterface::Junction::getPosition()
     return traci->genericGetCoord(CMD_GET_JUNCTION_VARIABLE, junctionId, VAR_POSITION, RESPONSE_GET_JUNCTION_VARIABLE);
 }
 
+std::list<Coord> TraCICommandInterface::Junction::getShape()
+{
+    return traci->genericGetCoordList(CMD_GET_JUNCTION_VARIABLE, junctionId, VAR_SHAPE, RESPONSE_GET_JUNCTION_VARIABLE);
+}
+
 bool TraCICommandInterface::addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st, double emitPosition, double emitSpeed, int8_t emitLane)
 {
     TraCIConnection::Result result;
