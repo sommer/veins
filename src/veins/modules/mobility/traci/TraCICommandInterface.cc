@@ -1121,6 +1121,11 @@ double TraCICommandInterface::Lane::getMeanSpeed()
     return traci->genericGetDouble(CMD_GET_LANE_VARIABLE, laneId, LAST_STEP_MEAN_SPEED, RESPONSE_GET_LANE_VARIABLE);
 }
 
+double TraCICommandInterface::Lane::getWidth()
+{
+    return traci->genericGetDouble(CMD_GET_LANE_VARIABLE, laneId, VAR_WIDTH, RESPONSE_GET_LANE_VARIABLE);
+}
+
 void TraCICommandInterface::Lane::setDisallowed(std::list<std::string> disallowedClasses)
 {
     uint8_t variableId = LANE_DISALLOWED;
