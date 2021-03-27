@@ -465,6 +465,7 @@ public:
         }
 
         Coord getPosition();
+        std::list<Coord> getShape();
 
     protected:
         TraCICommandInterface* traci;
