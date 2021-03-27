@@ -133,13 +133,13 @@ public:
 
     /**
      * @brief
-     * first read a Byte. Only if read value is 0, read requested data type.
+     * first read a Byte. Only if read value is 0 and EOF has not been reached, read requested data type.
      */
     template <typename T>
     T readByteOrFull()
     {
         uint8_t shortBuf = read<uint8_t>();
-        if (shortBuf > 0) {
+        if (shortBuf > 0 || eof()) {
             return shortBuf;
         }
         return read<T>();
