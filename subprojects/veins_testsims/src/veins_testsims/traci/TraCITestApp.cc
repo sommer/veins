@@ -312,6 +312,18 @@ void TraCITestApp::handlePositionUpdate()
 
     if (testNumber == testCounter++) {
         if (t == 1) {
+            traciVehicle->changeTarget("39");
+        }
+        if (t == 25) {
+            assertTrue("(TraCICommandInterface::Vehicle::changeTarget, -1) vehicle took 39", visitedEdges.find("39") != visitedEdges.end());
+        }
+        if (t == 26) {
+            assertTrue("(TraCICommandInterface::Vehicle::changeTarget, -1) vehicle should have already despawed after visiting 39", false);
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 1) {
             traci->vehicle(mobility->getExternalId()).stopAt("43", 20, 0, 10, 30);
         }
         if (t == 30) {
