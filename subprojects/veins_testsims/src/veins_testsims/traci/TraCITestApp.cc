@@ -690,6 +690,13 @@ void TraCITestApp::handlePositionUpdate()
         }
     }
 
+    if (testNumber == testCounter++) {
+        if (t == 30) {
+            double width = traci->lane("10_0").getWidth();
+            assertClose("(TraCICommandInterface::Lane::getWidth) lane width is correct", 3.2, width);
+        }
+    }
+
     //
     // TraCICommandInterface::Polygon
     //
