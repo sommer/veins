@@ -711,6 +711,23 @@ void TraCITestApp::handlePositionUpdate()
         }
     }
 
+    if (testNumber == testCounter++) {
+        if (t == 1) {
+            auto routes_before = traci->getRouteIds();
+            assertEqual("(TraCICommandInterface::addRoute) number of routes is 1 before adding", size_t(1), routes_before.size());
+
+            traci->addRoute("route1", {"2", "27", "30"});
+
+            auto routes_after = traci->getRouteIds();
+            assertEqual("(TraCICommandInterface::addRoute) number of routes is 2 after adding", size_t(2), routes_after.size());
+            assertTrue("(TraCICommandInterface::addRoute) route list contains route1 after adding", std::find(routes_after.begin(), routes_after.end(), "route1") != routes_after.end());
+
+            auto roads = traci->route("route1").getRoadIds();
+            assertEqual("(TraCICommandInterface::Route::addRoute) road ids of new route has 3 entries", size_t(3), roads.size());
+            assertEqual("(TraCICommandInterface::Route::addRoute) road ids of new route starts with 2", "2", *roads.begin());
+        }
+    }
+
     //
     // TraCICommandInterface::Road
     //
