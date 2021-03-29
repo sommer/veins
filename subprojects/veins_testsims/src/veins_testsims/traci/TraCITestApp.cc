@@ -673,8 +673,18 @@ void TraCITestApp::handlePositionUpdate()
             std::list<std::string> junctions = traci->getJunctionIds();
             assertTrue("(TraCICommandInterface::Junction::getJunctionIds) returns test junction", std::find(junctions.begin(), junctions.end(), "1") != junctions.end());
             Coord pos = traci->junction("1").getPosition();
-            assertClose("(TraCICommandInterface::Junction::getPosition) shape x coordinate is correct", 25.0, pos.x);
-            assertClose("(TraCICommandInterface::Junction::getPosition) shape y coordinate is correct", 75.0, pos.y);
+            assertClose("(TraCICommandInterface::Junction::getPosition) junction x coordinate is correct", 25.0, pos.x);
+            assertClose("(TraCICommandInterface::Junction::getPosition) junction y coordinate is correct", 75.0, pos.y);
+        }
+    }
+
+    if (testNumber == testCounter++) {
+        if (t == 30) {
+            auto shape = traci->junction("10").getShape();
+            Coord shape_front_coord = shape.front();
+
+            assertClose("(TraCICommandInterface::Junction::getShape) shape's first x coordinate is correct", 321., floor(shape_front_coord.x));
+            assertClose("(TraCICommandInterface::Junction::getShape) shape's first y coordinate is correct", 73., floor(shape_front_coord.y));
         }
     }
 
