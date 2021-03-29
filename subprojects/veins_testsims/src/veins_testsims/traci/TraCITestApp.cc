@@ -333,6 +333,19 @@ void TraCITestApp::handlePositionUpdate()
     }
 
     if (testNumber == testCounter++) {
+        if (t == 1) {
+            traci->vehicle(mobility->getExternalId()).stopAt("43", 20, 0, 10, 30);
+        }
+        if (t == 2) {
+            assertFalse("(TraCICommandInterface::Vehicle::isStopped) vehicle is not stopped", traci->vehicle(mobility->getExternalId()).isStopped());
+        }
+        if (t == 30) {
+            assertTrue("(TraCICommandInterface::Vehicle::isStopped) vehicle is at 43", roadId == "43");
+            assertTrue("(TraCICommandInterface::Vehicle::isStopped) vehicle is stopped", traci->vehicle(mobility->getExternalId()).isStopped());
+        }
+    }
+
+    if (testNumber == testCounter++) {
         if (t == 6) { // both vehicles should be on the scene by now
             auto pair0 = traci->vehicle("flow0.0").getLeader(1000);
             auto pair1 = traci->vehicle("flow0.1").getLeader(1000);
