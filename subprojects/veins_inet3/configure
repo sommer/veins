@@ -67,6 +67,7 @@ if args:
 makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins_inet', '-O', 'out', '-p', 'VEINS_INET']
 run_libs = [os.path.join('src', 'veins_inet')]
 run_neds = [os.path.join('src', 'veins_inet')]
+run_excs = []
 run_imgs = [os.path.join('images')]
 
 
@@ -102,12 +103,18 @@ if options.veins:
 
 # Add flags for INET
 if options.inet:
-    expect_version = [b'3.6.5', b'inet-3.6.5-bc89c946d', b'3.6.6', b'inet-3.6.6-9426199231', b'3.6.7', b'inet-3.6.7-5aa6bfa1ad', b'3.6.8', b'inet-3.6.8-31f915faef', b'3.7.0', b'inet-3.7.0-cbd2095364']
+    expect_version = [b'3.6.5', b'3.6.6', b'3.6.7', b'3.6.8', b'3.7.0']
     try:
         fname1 = os.path.join(options.inet, 'Version')
-        info('Running cat "%s" to determine INET version.' % fname1)
-        version = subprocess.check_output(['env', 'cat', fname1], stderr=subprocess.STDOUT).strip()
-    except subprocess.CalledProcessError as e1:
+        info('Reading "%s" to determine INET version.' % fname1)
+        f = open(fname1, 'rb')
+        s = f.readline()
+        s = s.strip()
+        s = s.split(b'-', 3)
+        assert s[0] == b'inet', 'Version string does not start with "inet"'
+        version = s[1]
+        f.close()
+    except (AssertionError, EnvironmentError) as e1:
         try:
             fname2 = os.path.join(options.inet, '_scripts/get_version')
             info('Running "%s" to determine INET version.' % fname2)
@@ -118,7 +125,7 @@ if options.inet:
                 info('Running "%s" to determine INET version.' % fname3)
                 version = subprocess.check_output(['env', fname3], stderr=subprocess.STDOUT).strip()
             except subprocess.CalledProcessError as e3:
-                error('Could not determine INET Version; neither by running cat %s (%s), nor by running %s (%s), nor by running %s (%s). Check the path to INET (--with-inet=... option) and the INET version (should be version %s)' % (fname1, e1, fname2, e2, fname3, e3, versions_to_hr(expect_version)))
+                error('Could not determine INET Version; neither by reading %s (%s), nor by running %s (%s), nor by running %s (%s). Check the path to INET (--with-inet=... option) and the INET version (should be version %s)' % (fname1, e1, fname2, e2, fname3, e3, versions_to_hr(expect_version)))
                 sys.exit(1)
     if not version in expect_version:
         warning('')
@@ -147,6 +154,7 @@ if not os.path.isdir('out'):
 f = open(os.path.join('out', 'config.py'), 'w')
 f.write('run_libs = %s\n' % repr(run_libs))
 f.write('run_neds = %s\n' % repr(run_neds))
+f.write('run_excs = %s\n' % repr(run_excs))
 f.write('run_imgs = %s\n' % repr(run_imgs))
 f.close()
 
