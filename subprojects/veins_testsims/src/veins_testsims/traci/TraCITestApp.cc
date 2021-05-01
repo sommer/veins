@@ -337,11 +337,11 @@ void TraCITestApp::handlePositionUpdate()
             traci->vehicle(mobility->getExternalId()).stopAt("43", 20, 0, 10, 30);
         }
         if (t == 2) {
-            assertFalse("(TraCICommandInterface::Vehicle::isStopped) vehicle is not stopped", traci->vehicle(mobility->getExternalId()).isStopped());
+            assertFalse("(TraCICommandInterface::Vehicle::isStopped) vehicle is not stopped", traci->vehicle(mobility->getExternalId()).isStopReached());
         }
         if (t == 30) {
             assertTrue("(TraCICommandInterface::Vehicle::isStopped) vehicle is at 43", roadId == "43");
-            assertTrue("(TraCICommandInterface::Vehicle::isStopped) vehicle is stopped", traci->vehicle(mobility->getExternalId()).isStopped());
+            assertTrue("(TraCICommandInterface::Vehicle::isStopped) vehicle is stopped", traci->vehicle(mobility->getExternalId()).isStopReached());
         }
     }
 

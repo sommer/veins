@@ -460,7 +460,7 @@ uint8_t TraCICommandInterface::Vehicle::getStopState() const
     return traci->genericGetInt(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_STOPSTATE, RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
-bool TraCICommandInterface::Vehicle::isStopped() const
+bool TraCICommandInterface::Vehicle::isStopReached() const
 {
     return getStopState() & 0x1;
 }
