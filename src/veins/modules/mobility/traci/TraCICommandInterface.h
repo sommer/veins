@@ -266,9 +266,9 @@ public:
         uint8_t getStopState() const;
 
         /**
-         * Get whether the vehicle is currently stopped.
+         * Get whether the vehicle is currently stopping at a scheduled stop (e.g. a bus stop or after using stopAt).
          */
-        bool isStopped() const;
+        bool isStopReached() const;
 
         /**
          * Sets the vehicle's current destination edge, causing its route to be rebuilt.
