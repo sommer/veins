@@ -30,6 +30,6 @@ if [ "$?" -ne 0 ]; then
 fi
 
 # Add Veins directory to PATH
-VEINSDIR="$(pwd)"
-export PATH="$PATH":"$VEINSDIR/bin"
+VEINS_ROOT="$(pwd)"
+export PATH="$PATH":"$VEINS_ROOT/bin"
 
