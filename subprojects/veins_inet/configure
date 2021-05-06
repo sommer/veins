@@ -103,7 +103,7 @@ if options.veins:
 
 # Add flags for INET
 if options.inet:
-    expect_version = [b'4.2.0', b'4.2.1', b'4.2.2', b'4.2.3', b'4.3.0', b'4.3.1', b'4.3.2']
+    expect_version = [b'4.2.0', b'4.2.1', b'4.2.2', b'4.2.3', b'4.2.4', b'4.3.0', b'4.3.1', b'4.3.2']
     try:
         fname1 = os.path.join(options.inet, 'Version')
         info('Reading "%s" to determine INET version.' % fname1)
@@ -144,7 +144,7 @@ if options.inet:
     makemake_flags += inet_includes + inet_link + inet_defs
     run_libs = [os.path.relpath(os.path.join(options.inet, 'src', 'INET'))] + run_libs
     run_neds = [os.path.relpath(os.path.join(options.inet, 'src'))] + run_neds
-    if not version in [b'4.2.0', b'4.2.1', b'4.2.2']:
+    if not version in [b'4.2.0', b'4.2.1', b'4.2.2', b'4.2.3', b'4.2.4']:
         run_excs = [os.path.relpath(os.path.join(options.inet, '.nedexclusions'))] + run_excs
     run_imgs = [os.path.relpath(os.path.join(options.inet, 'images'))] + run_imgs
 
