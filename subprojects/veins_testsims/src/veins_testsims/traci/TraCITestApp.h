@@ -62,6 +62,11 @@ protected:
     void receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details);
 
     void handlePositionUpdate();
+
+    /**
+     * Perform test for time step t (special value t=0: initialize, t=999: finish)
+     */
+    void performTest(const simtime_t t);
 };
 
 } // namespace veins

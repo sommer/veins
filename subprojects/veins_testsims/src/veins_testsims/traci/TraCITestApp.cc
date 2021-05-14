@@ -49,11 +49,14 @@ void TraCITestApp::initialize(int stage)
         hasStopped = false;
 
         EV_DEBUG << "TraCITestApp initialized with testNumber=" << testNumber << std::endl;
+
+        performTest(0);
     }
 }
 
 void TraCITestApp::finish()
 {
+    performTest(999);
 }
 
 void TraCITestApp::handleSelfMsg(cMessage* msg)
@@ -75,6 +78,11 @@ void TraCITestApp::receiveSignal(cComponent* source, simsignal_t signalID, cObje
 void TraCITestApp::handlePositionUpdate()
 {
     const simtime_t t = simTime();
+    performTest(t);
+}
+
+void TraCITestApp::performTest(const simtime_t t)
+{
     const std::string roadId = mobility->getRoadId();
     visitedEdges.insert(roadId);
 
@@ -287,7 +295,7 @@ void TraCITestApp::handlePositionUpdate()
             traciVehicle->changeRoute("42", 9999);
             traciVehicle->changeRoute("43", 9999);
         }
-        if (t == 30) {
+        if (t == 999) {
             assertTrue("(TraCICommandInterface::Vehicle::changeRoute, 9999) vehicle avoided 42", visitedEdges.find("42") == visitedEdges.end());
             assertTrue("(TraCICommandInterface::Vehicle::changeRoute, 9999) vehicle avoided 43", visitedEdges.find("43") == visitedEdges.end());
             assertTrue("(TraCICommandInterface::Vehicle::changeRoute, 9999) vehicle took 44", visitedEdges.find("44") != visitedEdges.end());
@@ -303,7 +311,7 @@ void TraCITestApp::handlePositionUpdate()
             traciVehicle->changeRoute("42", -1);
             traciVehicle->changeRoute("44", 9999);
         }
-        if (t == 30) {
+        if (t == 999) {
             assertTrue("(TraCICommandInterface::Vehicle::changeRoute, -1) vehicle took 42", visitedEdges.find("42") != visitedEdges.end());
             assertTrue("(TraCICommandInterface::Vehicle::changeRoute, -1) vehicle avoided 43", visitedEdges.find("43") == visitedEdges.end());
             assertTrue("(TraCICommandInterface::Vehicle::changeRoute, -1) vehicle avoided 44", visitedEdges.find("44") == visitedEdges.end());
@@ -317,8 +325,9 @@ void TraCITestApp::handlePositionUpdate()
         if (t == 25) {
             assertTrue("(TraCICommandInterface::Vehicle::changeTarget, -1) vehicle took 39", visitedEdges.find("39") != visitedEdges.end());
         }
-        if (t == 26) {
-            assertTrue("(TraCICommandInterface::Vehicle::changeTarget, -1) vehicle should have already despawed after visiting 39", false);
+        if (t == 999) {
+            assertTrue("(TraCICommandInterface::Vehicle::changeTarget, -1) vehicle despawned after visiting 39", visitedEdges.find("42") == visitedEdges.end());
+            assertTrue("(TraCICommandInterface::Vehicle::changeTarget, -1) vehicle despawned after visiting 39", visitedEdges.find("72") == visitedEdges.end());
         }
     }
 
@@ -416,7 +425,7 @@ void TraCITestApp::handlePositionUpdate()
         if (t == 1) {
             traciVehicle->newRoute("44");
         }
-        if (t == 30) {
+        if (t == 999) {
             assertTrue("(TraCICommandInterface::Vehicle::newRoute) vehicle avoided 42", visitedEdges.find("42") == visitedEdges.end());
             assertTrue("(TraCICommandInterface::Vehicle::newRoute) vehicle avoided 43", visitedEdges.find("43") == visitedEdges.end());
             assertTrue("(TraCICommandInterface::Vehicle::newRoute) vehicle took 44", visitedEdges.find("44") != visitedEdges.end());
@@ -527,7 +536,7 @@ void TraCITestApp::handlePositionUpdate()
         if (t == 1) {
             traciVehicle->changeVehicleRoute({"25", "28", "31", "34", "37", "40", "13", "44"});
         }
-        if (t == 30) {
+        if (t == 999) {
             assertTrue("(TraCICommandInterface::Vehicle::newRoute) vehicle avoided 42", visitedEdges.find("42") == visitedEdges.end());
             assertTrue("(TraCICommandInterface::Vehicle::newRoute) vehicle avoided 43", visitedEdges.find("43") == visitedEdges.end());
             assertTrue("(TraCICommandInterface::Vehicle::newRoute) vehicle took 44", visitedEdges.find("44") != visitedEdges.end());
