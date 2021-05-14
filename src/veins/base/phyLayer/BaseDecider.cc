@@ -98,7 +98,7 @@ simtime_t BaseDecider::processSignalEnd(AirFrame* frame)
 
 simtime_t BaseDecider::processUnknownSignal(AirFrame* frame)
 {
-    throw cRuntimeError("Unknown state for the AirFrame with ID %d", frame->getId());
+    throw cRuntimeError("Unknown state for the AirFrame with ID %ld", frame->getId());
     return notAgain;
 }
 

@@ -88,7 +88,7 @@ void TraCICommandInterface::setApiVersion(uint32_t apiVersion)
         TraCIBuffer::setTimeType(versionConfig.timeType);
     }
     catch (std::out_of_range const& exc) {
-        throw cRuntimeError(std::string("TraCI server reports unsupported TraCI API version: " + std::to_string(apiVersion) + ". We recommend using Sumo version 1.0.1 or 0.32.0").c_str());
+        throw cRuntimeError("%s", std::string("TraCI server reports unsupported TraCI API version: " + std::to_string(apiVersion) + ". We recommend using Sumo version 1.0.1 or 0.32.0").c_str());
     }
 }
 

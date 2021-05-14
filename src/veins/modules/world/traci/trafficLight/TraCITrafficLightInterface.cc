@@ -149,7 +149,7 @@ void TraCITrafficLightInterface::setCurrentPhaseByNr(const unsigned int phaseNr,
 {
     if (setSumo) {
         if (phaseNr >= getCurrentLogic().phases.size()) {
-            throw cRuntimeError("Cannot set current phase to %d: current logic has only %d Phases (TraCITrafficLightInterface %s)", phaseNr, getCurrentLogic().phases.size(), external_id.c_str());
+            throw cRuntimeError("Cannot set current phase to %d: current logic has only %d Phases (TraCITrafficLightInterface %s)", phaseNr, static_cast<int>(getCurrentLogic().phases.size()), external_id.c_str());
         }
         tlCommandInterface->setPhaseIndex(phaseNr);
         const unsigned int newValueInSumo = tlCommandInterface->getCurrentPhaseIndex();

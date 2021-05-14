@@ -422,7 +422,7 @@ void BasePhyLayer::handleAirFrame(AirFrame* frame)
         break;
 
     default:
-        throw cRuntimeError("Unknown AirFrame state: %s", frame->getState());
+        throw cRuntimeError("Unknown AirFrame state: %d", frame->getState());
     }
 }
 
