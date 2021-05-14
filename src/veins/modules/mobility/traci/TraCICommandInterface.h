@@ -273,7 +273,7 @@ public:
         /**
          * Sets the vehicle's current destination edge, causing its route to be rebuilt.
          */
-        void changeTarget(const std::string &newTarget) const;
+        void changeTarget(const std::string& newTarget) const;
 
         std::pair<std::string, double> getLeader(const double distance);
 
@@ -479,7 +479,7 @@ public:
 
     // Route methods
     std::list<std::string> getRouteIds();
-    void addRoute(std::string routeId, const std::list<std::string> &edges);
+    void addRoute(std::string routeId, const std::list<std::string>& edges);
     class VEINS_API Route {
     public:
         Route(TraCICommandInterface* traci, std::string routeId)

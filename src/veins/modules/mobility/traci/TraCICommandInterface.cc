@@ -250,14 +250,14 @@ std::list<std::string> TraCICommandInterface::getRouteIds()
     return genericGetStringList(CMD_GET_ROUTE_VARIABLE, "", ID_LIST, RESPONSE_GET_ROUTE_VARIABLE);
 }
 
-void TraCICommandInterface::addRoute(std::string routeId, const std::list<std::string> &edges)
+void TraCICommandInterface::addRoute(std::string routeId, const std::list<std::string>& edges)
 {
     TraCIBuffer p;
     p << static_cast<uint8_t>(ADD);
     p << routeId;
     p << static_cast<uint8_t>(TYPE_STRINGLIST);
     p << static_cast<int32_t>(edges.size());
-    for (const std::string &edge : edges) {
+    for (const std::string& edge : edges) {
         p << edge;
     }
 
@@ -465,7 +465,7 @@ bool TraCICommandInterface::Vehicle::isStopReached() const
     return getStopState() & 0x1;
 }
 
-void TraCICommandInterface::Vehicle::changeTarget(const std::string &newTarget) const
+void TraCICommandInterface::Vehicle::changeTarget(const std::string& newTarget) const
 {
     TraCIBuffer p;
     p << static_cast<uint8_t>(CMD_CHANGETARGET);
