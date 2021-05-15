@@ -457,7 +457,13 @@ double TraCICommandInterface::Vehicle::getAccumulatedWaitingTime() const
 
 uint8_t TraCICommandInterface::Vehicle::getStopState() const
 {
-    return traci->genericGetInt(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_STOPSTATE, RESPONSE_GET_VEHICLE_VARIABLE);
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion < 18) {
+        return traci->genericGetUnsignedByte(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_STOPSTATE, RESPONSE_GET_VEHICLE_VARIABLE);
+    }
+    else {
+        return traci->genericGetInt(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_STOPSTATE, RESPONSE_GET_VEHICLE_VARIABLE);
+    }
 }
 
 bool TraCICommandInterface::Vehicle::isStopReached() const
@@ -1560,6 +1566,43 @@ simtime_t TraCICommandInterface::genericGetTime(uint8_t commandId, std::string o
 
     if ((result != nullptr) && (!result->success)) {
         return res;
+    }
+
+    uint8_t cmdLength;
+    buf >> cmdLength;
+    if (cmdLength == 0) {
+        uint32_t cmdLengthX;
+        buf >> cmdLengthX;
+    }
+    uint8_t commandId_r;
+    buf >> commandId_r;
+    ASSERT(commandId_r == responseId);
+    uint8_t varId;
+    buf >> varId;
+    ASSERT(varId == variableId);
+    std::string objectId_r;
+    buf >> objectId_r;
+    ASSERT(objectId_r == objectId);
+    uint8_t resType_r;
+    buf >> resType_r;
+    ASSERT(resType_r == resultTypeId);
+    buf >> res;
+
+    ASSERT(buf.eof());
+
+    return res;
+}
+
+uint8_t TraCICommandInterface::genericGetUnsignedByte(uint8_t commandId, std::string objectId, uint8_t variableId, uint8_t responseId, TraCIConnection::Result* result)
+{
+
+    uint8_t resultTypeId = TYPE_UBYTE;
+    int8_t res;
+
+    TraCIBuffer buf = connection.query(commandId, TraCIBuffer() << variableId << objectId, result);
+
+    if ((result != nullptr) && (!result->success)) {
+        return 0;
     }
 
     uint8_t cmdLength;
