@@ -29,7 +29,7 @@
 namespace veins {
 
 template <typename Payload>
-struct VEINS_API SignalPayload {
+struct SignalPayload {
     cComponent* source;
     simsignal_t signalID;
     Payload p;
@@ -37,7 +37,7 @@ struct VEINS_API SignalPayload {
 };
 
 template <typename Payload>
-class VEINS_API SignalCallbackListener : public cListener {
+class SignalCallbackListener : public cListener {
 public:
     using Callback = std::function<void (SignalPayload<Payload>)>;
     SignalCallbackListener(Callback callback, cModule* receptor, simsignal_t signal)
