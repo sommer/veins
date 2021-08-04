@@ -22,15 +22,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-cplusplus {{
-#include "veins/base/toolbox/Signal.h"
-#include "veins/base/utils/POA.h"
-}}
+import veins.base.toolbox.Signal;
+import veins.base.utils.POA;
 
 namespace veins;
-
-class noncobject Signal;
-class noncobject POA;
 
 //
 // Format of the packets that are sent to the channel
@@ -54,9 +49,9 @@ class noncobject POA;
 //
 packet AirFrame
 {
-    Signal signal;        // Contains the physical data of this AirFrame
+    Signal signal @getter(getConstSignal) @getterForUpdate(getSignal);  // Contains the physical data of this AirFrame
 
-    POA poa;            // contains a POA object with the position, orientation and antenna (pointer)
+    POA poa @getter(getConstPoa) @getterForUpdate(getPoa);  // contains a POA object with the position, orientation and antenna (pointer)
                             // of the sender
 
     simtime_t duration;    // time the AirFrames takes to be transmited (without propagation delay)

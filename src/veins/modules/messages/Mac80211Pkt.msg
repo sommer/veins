@@ -24,13 +24,9 @@
 
 // Original author: Marc Loebbers <loebbers@tkn.tu-berlin.de>
 
-cplusplus {{
-#include "veins/base/messages/MacPkt_m.h"
-}}
+import veins.base.messages.MacPkt;
 
 namespace veins;
-
-class MacPkt;
 
 //
 // Defines all fields of an 802.11 MAC frame

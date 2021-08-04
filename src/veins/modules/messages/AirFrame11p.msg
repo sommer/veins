@@ -20,14 +20,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-cplusplus {{
-#include "veins/base/messages/AirFrame_m.h"
-using veins::AirFrame;
-}}
+import veins.base.messages.AirFrame;
 
 namespace veins;
-
-class AirFrame;
 
 //
 // Extension of base AirFrame message to have the underMinPowerLevel field

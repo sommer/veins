@@ -20,13 +20,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-cplusplus {{
-#include "veins/base/utils/SimpleAddress.h"
-}}
+import veins.base.utils.SimpleAddress;
 
 namespace veins;
-
-class LAddress::L2Type extends void;
 
 packet BaseFrame1609_4 {
     //Channel Number on which this packet was sent

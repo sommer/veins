@@ -25,13 +25,9 @@
 // description: - base class for MAC layer packets
 //              - subclass to create your own MAC layer packets
 
-cplusplus {{
-#include "veins/base/utils/SimpleAddress.h"
-}}
+import veins.base.utils.SimpleAddress;
 
 namespace veins;
-
-class LAddress::L2Type extends void;
 
 // A basic MAC (Media Access Control) packet format definition
 // 

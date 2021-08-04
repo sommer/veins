@@ -20,17 +20,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-cplusplus {{
-#include "veins/base/utils/Coord.h"
-#include "veins/modules/messages/BaseFrame1609_4_m.h"
-#include "veins/base/utils/SimpleAddress.h"
-}}
+import veins.base.utils.Coord;
+import veins.modules.messages.BaseFrame1609_4;
+import veins.base.utils.SimpleAddress;
 
 namespace veins;
-
-class BaseFrame1609_4;
-class noncobject Coord;
-class LAddress::L2Type extends void;
 
 packet TraCIDemo11pMessage extends BaseFrame1609_4 {
     string demoData;

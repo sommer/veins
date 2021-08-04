@@ -23,13 +23,9 @@
 // author:      Daniel Willkomm
 // part of:     framework implementation developed by tkn
 
-cplusplus {{
-#include "veins/base/utils/Coord.h"
-}}
+import veins.base.utils.Coord;
 
 namespace veins;
-
-class noncobject Coord;
 
 // used as a self packet containing the position, direction and BorderPolicy
 //

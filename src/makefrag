@@ -56,9 +56,9 @@ $O/$(TARGET): $(DEFFILE)
 endif
 
 
-VEINS_NEED_MSG4 := $(shell echo ${OMNETPP_VERSION} | grep "^5" >/dev/null 2>&1; echo $$?)
-ifneq ($(VEINS_NEED_MSG4),0)
-  MSGCOPTS += --msg4
+VEINS_NEED_MSG6 := $(shell echo ${OMNETPP_VERSION} | grep "^5" >/dev/null 2>&1; echo $$?)
+ifeq ($(VEINS_NEED_MSG6),0)
+  MSGCOPTS += --msg6
 endif
 
 

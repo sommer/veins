@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2018 Gurjashan Pannu <pannu@ccs-labs.org>
+// Copyright (C) 2021 Christoph Sommer <sommer@cms-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,10 +20,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-import veins.modules.messages.Mac80211Pkt;
+import veins.common;
+
+cplusplus {{
+#include "veins/base/utils/Coord.h"
+}}
 
 namespace veins;
 
-packet Mac80211Ack extends Mac80211Pkt {
-    unsigned long messageId; // The ID of the aknowledged packet
+class Coord
+{
+    @existingClass;
+    @opaque;
 }
+
+
