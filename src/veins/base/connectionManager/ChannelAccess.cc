@@ -91,8 +91,13 @@ void ChannelAccess::sendToChannel(cPacket* msg)
         const auto propagationDelay = calculatePropagationDelay(entry.first);
 
         if (useSendDirect) {
-            for (int gateIndex = gate->getBaseId(); gateIndex < gate->getBaseId() + gate->size(); gateIndex++) {
-                sendDirect(msg->dup(), propagationDelay, msg->getDuration(), gate->getOwnerModule(), gateIndex);
+            if (gate->isVector()) {
+                for (int gateIndex = gate->getBaseId(); gateIndex < gate->getBaseId() + gate->size(); gateIndex++) {
+                    sendDirect(msg->dup(), propagationDelay, msg->getDuration(), gate->getOwnerModule(), gateIndex);
+                }
+            }
+            else {
+                sendDirect(msg->dup(), propagationDelay, msg->getDuration(), gate->getOwnerModule(), gate->getBaseId());
             }
         }
         else {

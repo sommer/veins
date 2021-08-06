@@ -86,7 +86,7 @@ std::unique_ptr<T> make_unique(Args&& ... args)
 template <typename T>
 cModule* findModuleByPath(T modulePath)
 {
-#if OMNETPP_VERSION < 0x600
+#if OMNETPP_BUILDNUM < 1506
     try {
         return cSimulation::getActiveSimulation()->getModuleByPath(modulePath);
     }

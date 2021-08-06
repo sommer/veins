@@ -360,7 +360,10 @@ void TraCIScenarioManager::init_traci()
 
         // query traffic lights via TraCI
         std::list<std::string> trafficLightIds = commandInterface->getTrafficlightIds();
+#if OMNETPP_BUILDNUM >= 1525
+#else
         size_t nrOfTrafficLights = trafficLightIds.size();
+#endif
         int cnt = 0;
         for (std::list<std::string>::iterator i = trafficLightIds.begin(); i != trafficLightIds.end(); ++i) {
             std::string tlId = *i;
@@ -370,7 +373,12 @@ void TraCIScenarioManager::init_traci()
 
             Coord position = commandInterface->junction(tlId).getPosition();
 
+#if OMNETPP_BUILDNUM >= 1525
+            parentmod->setSubmoduleVectorSize(trafficLightModuleName.c_str(), cnt + 1);
+            cModule* module = tlModuleType->create(trafficLightModuleName.c_str(), parentmod, cnt);
+#else
             cModule* module = tlModuleType->create(trafficLightModuleName.c_str(), parentmod, nrOfTrafficLights, cnt);
+#endif
             module->par("externalId") = tlId;
             module->finalizeParameters();
             module->getDisplayString().parse(trafficLightModuleDisplayString.c_str());
@@ -450,12 +458,15 @@ void TraCIScenarioManager::init_traci()
     }
 }
 
-void TraCIScenarioManager::finish()
+void TraCIScenarioManager::preNetworkFinish()
 {
     while (hosts.begin() != hosts.end()) {
         deleteManagedModule(hosts.begin()->first);
     }
+}
 
+void TraCIScenarioManager::finish()
+{
     recordScalar("roiArea", areaSum);
 }
 
@@ -523,8 +534,13 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     cModuleType* nodeType = cModuleType::get(type.c_str());
     if (!nodeType) throw cRuntimeError("Module Type \"%s\" not found", type.c_str());
 
+#if OMNETPP_BUILDNUM >= 1525
+    parentmod->setSubmoduleVectorSize(name.c_str(), nodeVectorIndex + 1);
+    cModule* mod = nodeType->create(name.c_str(), parentmod, nodeVectorIndex);
+#else
     // TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
     cModule* mod = nodeType->create(name.c_str(), parentmod, nodeVectorIndex, nodeVectorIndex);
+#endif
     mod->finalizeParameters();
     if (displayString.length() > 0) {
         mod->getDisplayString().parse(displayString.c_str());
@@ -1158,4 +1174,16 @@ int TraCIScenarioManager::getPortNumber() const
     }
 
     return port;
+}
+
+void TraCIScenarioManager::lifecycleEvent(SimulationLifecycleEventType eventType, cObject* details)
+{
+    if (eventType == LF_PRE_NETWORK_FINISH) {
+        preNetworkFinish();
+    }
+}
+
+void TraCIScenarioManager::listenerRemoved()
+{
+    delete this;
 }

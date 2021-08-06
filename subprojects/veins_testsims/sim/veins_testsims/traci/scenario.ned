@@ -23,7 +23,11 @@
 package org.car2x.veins.subprojects.veins_testsims.sim.veins_testsims.traci;
 
 import org.car2x.veins.nodes.Scenario;
+import org.car2x.veins.nodes.TrafficLight;
 
 network scenario extends Scenario
 {
+    submodules:
+        trafficLight[0]: TrafficLight {
+        }
 }

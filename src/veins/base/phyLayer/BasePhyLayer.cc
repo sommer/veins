@@ -69,7 +69,7 @@ void BasePhyLayer::initialize(int stage)
 
     if (stage == 0) {
         // if using sendDirect, make sure that messages arrive without delay
-#if OMNETPP_VERSION < 0x600
+#if OMNETPP_BUILDNUM < 1506
         gate("radioIn")->setDeliverOnReceptionStart(true);
 #else
         gate("radioIn")->setDeliverImmediately(true);
