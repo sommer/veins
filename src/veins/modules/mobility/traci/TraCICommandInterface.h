@@ -299,6 +299,8 @@ public:
         {
             connection = &traci->connection;
         }
+		
+		std::string getStreetName();
 
         double getCurrentTravelTime();
         double getMeanSpeed();
