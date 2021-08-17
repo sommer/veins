@@ -596,7 +596,7 @@
     <edge id="21" from="31" to="32" priority="-1" spreadType="center" shape="1001.65,53.10 1001.65,96.90">
         <lane id="21_0" index="0" speed="21.72" length="43.80" shape="1001.65,53.10 1001.65,96.90"/>
     </edge>
-    <edge id="25" from="1" to="4" priority="-1" spreadType="center" shape="0.00,50.00 95.25,50.00">
+    <edge id="25" from="1" to="4" priority="-1" spreadType="center" shape="0.00,50.00 95.25,50.00" name="25th street">
         <lane id="25_0" index="0" speed="27.78" length="95.25" shape="0.00,50.00 95.25,50.00"/>
     </edge>
     <edge id="27" from="3" to="6" priority="-1" spreadType="center" shape="104.75,0.00 195.25,0.00">
