@@ -81,6 +81,7 @@ const uint8_t CMD_GET_TL_VARIABLE = 0xa2;
 const uint8_t CMD_GET_VEHICLETYPE_VARIABLE = 0xa5;
 const uint8_t CMD_GET_VEHICLE_VARIABLE = 0xa4;
 const uint8_t CMD_LOAD = 0x01;
+const uint8_t CMD_NEIGHBORING_VEHICLES = 0xbf;
 const uint8_t CMD_OPENGAP = 0x16;
 const uint8_t CMD_REROUTE_EFFORT = 0x91;
 const uint8_t CMD_REROUTE_TO_PARKING = 0xc2;
