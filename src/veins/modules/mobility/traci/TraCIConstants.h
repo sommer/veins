@@ -344,6 +344,7 @@ const uint8_t VAR_MIN_EXPECTED_VEHICLES = 0x7d;
 const uint8_t VAR_MOVE_TO = 0x5c;
 const uint8_t VAR_MOVE_TO_VTD = 0xb4; // Veins specific (called MOVE_TO_XY in TraCI)
 const uint8_t VAR_NAME = 0x1b;
+const uint8_t VAR_NEIGHBORS = 0xbf;
 const uint8_t VAR_NET_BOUNDING_BOX = 0x7c;
 const uint8_t VAR_NEXT_EDGE = 0xc1;
 const uint8_t VAR_NEXT_STOPS = 0x73;
