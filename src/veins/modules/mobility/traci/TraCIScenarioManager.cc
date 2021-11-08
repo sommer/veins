@@ -233,7 +233,7 @@ void TraCIScenarioManager::parseModuleTypes()
 
     intersection.clear();
     std::set_intersection(typeKeys.begin(), typeKeys.end(), displayStringKeys.begin(), displayStringKeys.end(), std::back_inserter(intersection));
-    if (intersection.size() != displayStringKeys.size()) throw cRuntimeError("keys of mappings of moduleType and moduleName are not the same");
+    if (intersection.size() != displayStringKeys.size()) throw cRuntimeError("keys of mappings of moduleType and moduleDisplayString are not the same");
 }
 
 void TraCIScenarioManager::initialize(int stage)
