@@ -71,11 +71,6 @@ void BaseMacLayer::initialize(int stage)
                 myMacAddr = LAddress::L2Type(getParentModule()->getId());
             else
                 myMacAddr = 0;
-            // use streaming operator for string conversion, this makes it more
-            // independent from the myMacAddr type
-            std::ostringstream oSS;
-            oSS << myMacAddr;
-            par("address").setStringValue(oSS.str());
         }
         registerInterface();
     }
