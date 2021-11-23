@@ -39,6 +39,13 @@ struct veins::TimerMessage : public omnetpp::cMessage {
 TimerSpecification::TimerSpecification(std::function<void()> callback)
     : start_mode_(StartMode::immediate)
     , end_mode_(EndMode::open)
+    , callback_([callback](TimerManager::TimerHandle) { callback(); })
+{
+}
+
+TimerSpecification::TimerSpecification(std::function<void(TimerManager::TimerHandle)> callback)
+    : start_mode_(StartMode::immediate)
+    , end_mode_(EndMode::open)
     , callback_(callback)
 {
 }
@@ -181,7 +188,7 @@ bool TimerManager::handleMessage(omnetpp::cMessage* message)
     }
     ASSERT(timer->second.valid() && timer->second.validOccurence(simTime()));
 
-    timer->second.callback_();
+    timer->second.callback_(timer->first->getId());
 
     if (timers_.find(timerMessage) != timers_.end()) { // confirm that the timer has not been cancelled during the callback
         const auto nextEvent = timer->second.next();
