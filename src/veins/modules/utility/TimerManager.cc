@@ -39,7 +39,6 @@ struct veins::TimerMessage : public omnetpp::cMessage {
 TimerSpecification::TimerSpecification(std::function<void()> callback)
     : start_mode_(StartMode::immediate)
     , end_mode_(EndMode::open)
-    , period_(-1)
     , callback_(callback)
 {
 }
@@ -47,7 +46,13 @@ TimerSpecification::TimerSpecification(std::function<void()> callback)
 TimerSpecification& TimerSpecification::interval(simtime_t interval)
 {
     ASSERT(interval > 0);
-    period_ = interval;
+    period_generator_ = [interval]() { return interval; };
+    return *this;
+}
+
+TimerSpecification& TimerSpecification::interval(std::function<omnetpp::simtime_t()> generator)
+{
+    period_generator_ = generator;
     return *this;
 }
 
@@ -112,23 +117,13 @@ void TimerSpecification::finalize()
     case StartMode::absolute:
         break;
     case StartMode::immediate:
-        start_ = simTime() + period_;
+        start_ = simTime() + period_generator_();
         break;
     }
 
-    switch (end_mode_) {
-    case EndMode::relative:
+    if (end_mode_ == EndMode::relative) {
         end_time_ += simTime();
         end_mode_ = EndMode::absolute;
-        break;
-    case EndMode::absolute:
-        break;
-    case EndMode::repetition:
-        end_time_ = start_ + ((end_count_ - 1) * period_);
-        end_mode_ = EndMode::absolute;
-        break;
-    case EndMode::open:
-        break;
     }
 }
 
@@ -136,8 +131,26 @@ bool TimerSpecification::validOccurence(simtime_t time) const
 {
     const bool afterStart = time >= start_;
     const bool beforeEnd = time <= end_time_;
-    const bool atPeriod = omnetpp::fmod(time - start_, period_) == 0;
-    return afterStart && (beforeEnd || end_mode_ == EndMode::open) && atPeriod;
+    return afterStart && (beforeEnd || end_mode_ == EndMode::open || end_mode_ == EndMode::repetition);
+}
+
+omnetpp::simtime_t TimerSpecification::next()
+{
+    const auto next_relative = period_generator_();
+    if (next_relative < 0) {
+        return -1;
+    }
+    if (end_mode_ == EndMode::repetition) {
+        end_count_ -= 1;
+        if (end_count_ == 0) {
+            return -1;
+        }
+    }
+    const auto next_absolute = simTime() + next_relative;
+    if ((end_mode_ != EndMode::open && end_mode_ != EndMode::repetition) && next_absolute > end_time_) {
+        return -1;
+    }
+    return next_absolute;
 }
 
 TimerManager::TimerManager(omnetpp::cSimpleModule* parent)
@@ -171,13 +184,13 @@ bool TimerManager::handleMessage(omnetpp::cMessage* message)
     timer->second.callback_();
 
     if (timers_.find(timerMessage) != timers_.end()) { // confirm that the timer has not been cancelled during the callback
-        const auto next_event = simTime() + timer->second.period_;
-        if (timer->second.validOccurence(next_event)) {
-            parent_->scheduleAt(next_event, timer->first);
-        }
-        else {
+        const auto nextEvent = timer->second.next();
+        if (nextEvent < 0) {
             parent_->cancelAndDelete(timer->first);
             timers_.erase(timer);
+        }
+        else {
+            parent_->scheduleAt(nextEvent, timer->first);
         }
     }
 

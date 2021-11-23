@@ -75,6 +75,14 @@ public:
     TimerSpecification& interval(omnetpp::simtime_t interval);
 
     /**
+     * Set a generator for the period between two timer occurences.
+     *
+     * The generator's return value will be used whenever a new timer occurence is to be scheduled.
+     * When the return value is negative, the timer will end.
+     */
+    TimerSpecification& interval(std::function<omnetpp::simtime_t()> generator);
+
+    /**
      * Set the number of repetitions.
      *
      * @note You cannot use both this and absoluteEnd or relativeEnd.
@@ -169,7 +177,7 @@ private:
      */
     bool valid() const
     {
-        return period_ != -1;
+        return static_cast<bool>(period_generator_);
     }
 
     /**
@@ -177,12 +185,17 @@ private:
      */
     bool validOccurence(omnetpp::simtime_t time) const;
 
+    /**
+     * Return the timer of the next timer occurence, or -1 if the timer should end.
+     */
+    omnetpp::simtime_t next();
+
     StartMode start_mode_; ///< Interpretation of start time._
     omnetpp::simtime_t start_; ///< Time of the Timer's first occurence. Interpretation depends on start_mode_.
     EndMode end_mode_; ///< Interpretation of end time._
     unsigned end_count_; ///< Number of repetitions of the timer. Only valid when end_mode_ == repetition.
     omnetpp::simtime_t end_time_; ///< Last possible occurence of the timer. Only valid when end_mode_ != repetition.
-    omnetpp::simtime_t period_; ///< Time between events.
+    std::function<omnetpp::simtime_t()> period_generator_; ///< Generator for time between events.
     std::function<void()> callback_; ///< The function to be called when the Timer is triggered.
 };
 
@@ -190,7 +203,7 @@ class VEINS_API TimerManager {
 private:
 public:
     using TimerHandle = long;
-    using TimerList = std::map<TimerMessage*, const TimerSpecification>;
+    using TimerList = std::map<TimerMessage*, TimerSpecification>;
 
     TimerManager(omnetpp::cSimpleModule* parent);
 
