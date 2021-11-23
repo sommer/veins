@@ -61,6 +61,12 @@ void Module::initialize(int stage)
         veins::TimerSpecification([this]() { EV << "timer 2 called at " << simTime() << std::endl; })
         .interval(2.8).repetitions(2)
     );
+
+    int i = 1;
+    timers.create(
+        veins::TimerSpecification([this]() { EV << "timer 3 called at " << simTime() << std::endl; })
+        .interval([i]() mutable { return i <= 3 ? i++ : -1;})
+    );
 }
 
 } // namespace @TESTNAME@
@@ -76,3 +82,12 @@ timer 1 called at 3
 timer 2 called at 2.8
 %contains: stdout
 timer 2 called at 5.6
+
+%contains: stdout
+timer 3 called at 1
+%contains: stdout
+timer 3 called at 3
+%contains: stdout
+timer 3 called at 6
+%not-contains: stdout
+timer 3 called at 10
