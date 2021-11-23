@@ -62,6 +62,13 @@ void Module::initialize(int stage)
         .oneshotAt(2.5)
     );
 
+    timers.create(
+        veins::TimerSpecification([this](veins::TimerManager::TimerHandle handle) {
+            timers.cancel(handle);
+            EV << "timer 2 called at " << simTime() << std::endl;
+        })
+        .interval(1).repetitions(3)
+    );
 }
 
 } // namespace @TESTNAME@
@@ -72,3 +79,10 @@ timer 1 called at 1
 timer 1 called at 2
 %not-contains: stdout
 timer 1 called at 3
+
+%contains: stdout
+timer 2 called at 1
+%not-contains: stdout
+timer 2 called at 2
+%not-contains: stdout
+timer 2 called at 3
