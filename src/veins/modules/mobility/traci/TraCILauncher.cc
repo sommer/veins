@@ -60,7 +60,7 @@ TraCILauncher::TraCILauncher(std::string commandLine)
 
         msg = std::string() + "Error launching TraCI server (\"" + commandLine + "\"): " + msg + ". Make sure you have set $PATH correctly.";
 
-        throw cRuntimeError(msg.c_str());
+        throw cRuntimeError("%s", msg.c_str());
     }
     else {
         CloseHandle(pi.hProcess);
