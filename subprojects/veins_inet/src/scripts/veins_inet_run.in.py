@@ -80,9 +80,6 @@ if run_libs:
 ned_flags = []
 if run_neds:
     ned_flags += ['-n' + ';'.join(run_neds)]
-exc_flags = []
-if run_excs_lines:
-    exc_flags += ['-x' + ';'.join(run_excs_lines)]
 img_flags = []
 if run_imgs:
     img_flags += ['--image-path=' + ';'.join(run_imgs)]
@@ -97,10 +94,12 @@ if args.tool == 'memcheck':
 if args.tool == 'callgrind':
     prefix = ['valgrind', '--tool=callgrind', '--log-file=callgrind.out']
 
-cmdline = prefix + [opp_run] + lib_flags + ned_flags + exc_flags + img_flags + omnet_args
+cmdline = prefix + [opp_run] + lib_flags + ned_flags + img_flags + omnet_args
 
 if args.verbose:
     print("Running with command line arguments: %s" % ' '.join(['"%s"' % arg for arg in cmdline]))
+
+os.environ['OMNETPP_NED_PACKAGE_EXCLUSIONS'] = ';'.join(list(filter(None, os.getenv('OMNETPP_NED_PACKAGE_EXCLUSIONS', '').split(';'))) + run_excs_lines)
 
 if os.name == 'nt':
     subprocess.call(['env'] + cmdline)
