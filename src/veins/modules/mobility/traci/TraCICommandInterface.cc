@@ -280,9 +280,9 @@ double TraCICommandInterface::Road::getMeanSpeed()
     return traci->genericGetDouble(CMD_GET_EDGE_VARIABLE, roadId, LAST_STEP_MEAN_SPEED, RESPONSE_GET_EDGE_VARIABLE);
 }
 
-std::string TraCICommandInterface::Road::getStreetName()
+std::string TraCICommandInterface::Road::getName()
 {
-    return traci->genericGetString(CMD_GET_EDGE_VARIABLE, roadId, VAR_STREET_NAME, RESPONSE_GET_EDGE_VARIABLE);
+    return traci->genericGetString(CMD_GET_EDGE_VARIABLE, roadId, VAR_NAME, RESPONSE_GET_EDGE_VARIABLE);
 }
 
 std::string TraCICommandInterface::Vehicle::getRoadId()

@@ -785,7 +785,7 @@ void TraCITestApp::performTest(const simtime_t t)
 
     if (testNumber == testCounter++) {
         if (t == 30) {
-            assertEqual("(TraCICommandInterface::Road::getStreetName)", "25th street", traci->road("25").getStreetName());
+            assertEqual("(TraCICommandInterface::Road::getName)", "25th street", traci->road("25").getName());
         }
     }
 
