@@ -282,6 +282,10 @@ double TraCICommandInterface::Road::getMeanSpeed()
 
 std::string TraCICommandInterface::Road::getName()
 {
+    const auto apiVersion = traci->versionConfig.version;
+    if (apiVersion <= 18) {
+        throw cRuntimeError("TraCICommandInterface::Road::getName requires SUMO 1.1.0 or newer");
+    }
     return traci->genericGetString(CMD_GET_EDGE_VARIABLE, roadId, VAR_NAME, RESPONSE_GET_EDGE_VARIABLE);
 }
 

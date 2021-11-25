@@ -784,7 +784,10 @@ void TraCITestApp::performTest(const simtime_t t)
     //
 
     if (testNumber == testCounter++) {
-        if (t == 30) {
+        if (traci->getApiVersion() <= 18) {
+            skip("(TraCICommandInterface::Road::getName) skipped (requires SUMO 1.1.0 or newer)");
+        }
+        else if (t == 30) {
             assertEqual("(TraCICommandInterface::Road::getName)", "25th street", traci->road("25").getName());
         }
     }
