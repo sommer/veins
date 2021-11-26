@@ -1,0 +1,124 @@
+//
+// Copyright (C) 2021 Max Schettler <schettler@ccs-labs.org>
+//
+// Documentation for these modules is at http://veins.car2x.org/
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+
+%description
+Ensure timers are called at appropriate times.
+
+%file: test.ned
+
+simple Module {}
+
+network Test
+{
+    submodules:
+        node: Module;
+}
+
+
+%file: test.cc
+#include "veins/veins.h"
+#include "veins/modules/utility/TimerManager.h"
+
+namespace @TESTNAME@ {
+
+class Module : public cSimpleModule {
+public:
+    void initialize(int stage) override;
+    void handleMessage(cMessage* msg) override { timers.handleMessage(msg); }
+protected:
+    void createRelative();
+
+    veins::TimerManager timers{this};
+};
+
+Define_Module(Module);
+
+void Module::initialize(int stage)
+{
+    timers.create(
+        veins::TimerSpecification([this]() { createRelative(); })
+        .oneshotAt(2)
+    );
+
+    getSimulation()->setSimulationTimeLimit(1e6);
+    timers.create(
+        veins::TimerSpecification([this]() { EV << "openEnd called at " << simTime() << std::endl; })
+        .interval(1000)
+    );
+
+    timers.create(
+        veins::TimerSpecification([this]() { EV << "repetitions called at " << simTime() << std::endl; })
+        .interval(1).repetitions(3)
+    );
+
+    timers.create(
+        veins::TimerSpecification([this]() { EV << "absoluteEnd called at " << simTime() << std::endl; })
+        .interval(1).absoluteEnd(5)
+    );
+}
+
+void Module::createRelative() {
+    timers.create(
+        veins::TimerSpecification([this]() { EV << "relativeEnd called at " << simTime() << std::endl; })
+        .interval(1).relativeEnd(4)
+    );
+}
+
+} // namespace @TESTNAME@
+
+%contains: stdout
+openEnd called at 30
+%contains: stdout
+openEnd called at 535000
+
+%contains: stdout
+repetitions called at 1
+%contains: stdout
+repetitions called at 2
+%contains: stdout
+repetitions called at 3
+%not-contains: stdout
+repetitions called at 4
+
+%contains: stdout
+absoluteEnd called at 1
+%contains: stdout
+absoluteEnd called at 2
+%contains: stdout
+absoluteEnd called at 3
+%contains: stdout
+absoluteEnd called at 4
+%contains: stdout
+absoluteEnd called at 5
+%not-contains: stdout
+absoluteEnd called at 6
+
+%contains: stdout
+relativeEnd called at 3
+%contains: stdout
+relativeEnd called at 4
+%contains: stdout
+relativeEnd called at 5
+%contains: stdout
+relativeEnd called at 6
+%not-contains: stdout
+relativeEnd called at 7
