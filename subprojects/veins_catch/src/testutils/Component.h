@@ -63,6 +63,12 @@ public:
     {
     }
 
+#if OMNETPP_BUILDNUM >= 1527 // 6.0pre13 and 6.0pre14
+    virtual cModule* doFindModuleByPath(const char* s) const override
+    {
+    }
+#endif
+
 #if OMNETPP_BUILDNUM >= 1510 // 6.0pre10
     void callPreDelete(cComponent* root) override
     {
