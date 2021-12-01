@@ -391,10 +391,8 @@ void TraCIScenarioManager::init_traci()
             tlIfModule->preInitialize(tlId, position, updateInterval);
 
             // initialize mobility for positioning
-            cModule* mobiSubmodule = module->getSubmodule("mobility");
-            mobiSubmodule->par("x") = position.x;
-            mobiSubmodule->par("y") = position.y;
-            mobiSubmodule->par("z") = position.z;
+            BaseMobility* mobiSubmodule = check_and_cast<BaseMobility*>(module->getSubmodule("mobility"));
+            mobiSubmodule->setStartPosition(position);
 
             module->callInitialize();
             trafficLights[tlId] = module;

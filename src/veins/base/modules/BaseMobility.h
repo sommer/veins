@@ -138,6 +138,9 @@ protected:
     /** @brief The original size of the icon of the node.*/
     double origIconSize;
 
+    bool hasStartPosition;
+    Coord startPosition;
+
 public:
     BaseMobility();
     BaseMobility(unsigned stacksize);
@@ -188,6 +191,13 @@ public:
     virtual Coord getCurrentDirection() const
     {
         return move.getDirection();
+    }
+
+    /** @brief Overrides start position if called before initialize() */
+    virtual void setStartPosition(Coord pos)
+    {
+        hasStartPosition = true;
+        startPosition = pos;
     }
 
 protected:

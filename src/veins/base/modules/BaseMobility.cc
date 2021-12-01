@@ -55,6 +55,8 @@ BaseMobility::BaseMobility()
     , origDisplayWidth(0)
     , origDisplayHeight(0)
     , origIconSize(0)
+    , hasStartPosition(false)
+    , startPosition(0, 0, 0)
 {
 }
 
@@ -66,6 +68,8 @@ BaseMobility::BaseMobility(unsigned stacksize)
     , origDisplayWidth(0)
     , origDisplayHeight(0)
     , origIconSize(0)
+    , hasStartPosition(false)
+    , startPosition(0, 0, 0)
 {
 }
 
@@ -96,15 +100,20 @@ void BaseMobility::initialize(int stage)
         // initalize position with random values
         Coord pos = world->getRandomPosition();
 
-        // read coordinates from parameters if available
-        double x = hasPar("x") ? par("x").doubleValue() : -1;
-        double y = hasPar("y") ? par("y").doubleValue() : -1;
-        double z = hasPar("z") ? par("z").doubleValue() : -1;
+        if (hasStartPosition) {
+            pos = startPosition;
+        }
+        else {
+            // read coordinates from parameters if available
+            double x = hasPar("x") ? par("x").doubleValue() : -1;
+            double y = hasPar("y") ? par("y").doubleValue() : -1;
+            double z = hasPar("z") ? par("z").doubleValue() : -1;
 
-        // set position with values from parameters if available
-        if (x > -1) pos.x = x;
-        if (y > -1) pos.y = y;
-        if (!use2D && z > -1) pos.z = z;
+            // set position with values from parameters if available
+            if (x > -1) pos.x = x;
+            if (y > -1) pos.y = y;
+            if (!use2D && z > -1) pos.z = z;
+        }
 
         if (!hasPar("xOrientation") || !hasPar("yOrientation")) {
             throw cRuntimeError("Orientation coordinates in x and y direction have to specified (necessary for antenna gain calculation)");
