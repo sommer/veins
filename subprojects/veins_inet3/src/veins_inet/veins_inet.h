@@ -26,8 +26,8 @@
 #include "inet/common/INETDefs.h"
 
 // Version number of last release ("major.minor.patch") or an alpha version, if nonzero
-#define VEINS_INET_VERSION_MAJOR 3
-#define VEINS_INET_VERSION_MINOR 0
+#define VEINS_INET_VERSION_MAJOR 5
+#define VEINS_INET_VERSION_MINOR 2
 #define VEINS_INET_VERSION_PATCH 0
 #define VEINS_INET_VERSION_ALPHA 0
 

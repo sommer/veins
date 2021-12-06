@@ -35,7 +35,7 @@
 
 // Version number of last release ("major.minor.patch") or an alpha version, if nonzero
 #define VEINS_VERSION_MAJOR 5
-#define VEINS_VERSION_MINOR 1
+#define VEINS_VERSION_MINOR 2
 #define VEINS_VERSION_PATCH 0
 #define VEINS_VERSION_ALPHA 0
 
