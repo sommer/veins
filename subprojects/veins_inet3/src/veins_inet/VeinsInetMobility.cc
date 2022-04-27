@@ -143,9 +143,20 @@ void VeinsInetMobility::handleMessage(cMessage* message)
 void VeinsInetMobility::updateVisualRepresentation()
 {
     EV_DEBUG << "current position = " << lastPosition << endl;
+#ifdef WITH_VISUALIZERS
     if (hasGUI() && visualRepresentation != nullptr) {
-        inet::visualizer::MobilityCanvasVisualizer::setPosition(visualRepresentation, canvasProjection->computeCanvasPoint(getCurrentPosition()));
+        inet::visualizer::MobilityCanvasVisualizer::setPosition(visualRepresentation, canvasProjection->computeCanvasPoint(lastPosition));
     }
+#else
+    auto position = canvasProjection->computeCanvasPoint(lastPosition);
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%lf", position.x);
+    buf[sizeof(buf) - 1] = 0;
+    visualRepresentation->getDisplayString().setTagArg("p", 0, buf);
+    snprintf(buf, sizeof(buf), "%lf", position.y);
+    buf[sizeof(buf) - 1] = 0;
+    visualRepresentation->getDisplayString().setTagArg("p", 1, buf);
+#endif
 }
 
 void VeinsInetMobility::emitMobilityStateChangedSignal()
