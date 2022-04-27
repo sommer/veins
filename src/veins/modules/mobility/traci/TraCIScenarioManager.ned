@@ -75,5 +75,6 @@ simple TraCIScenarioManager
         string roiRects = default("");  // which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty. Note that these rectangles have to use TraCI (SUMO) coordinates and not OMNeT++. They can be easily read from sumo-gui.
         double penetrationRate = default(1); //the probability of a vehicle being equipped with Car2X technology
         bool ignoreGuiCommands = default(false); // whether to ignore all TraCI commands that only make sense when the server has a graphical user interface
+        int order = default(-1); // order not set if equal to -1, otherwise it is the client's position in the SUMO execution order (when using multiple clients in SUMO)
 }
 

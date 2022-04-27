@@ -257,6 +257,7 @@ void TraCIScenarioManager::initialize(int stage)
     parseModuleTypes();
     penetrationRate = par("penetrationRate").doubleValue();
     ignoreGuiCommands = par("ignoreGuiCommands");
+    order = par("order");
     host = par("host").stdstringValue();
     port = getPortNumber();
     if (port == -1) {
@@ -300,6 +301,9 @@ void TraCIScenarioManager::init_traci()
         auto apiVersion = commandInterface->getVersion();
         EV_DEBUG << "TraCI server \"" << apiVersion.second << "\" reports API version " << apiVersion.first << endl;
         commandInterface->setApiVersion(apiVersion.first);
+        if (order > -1){
+            commandInterface->setOrder(order);
+        }
     }
 
     {
@@ -1057,7 +1061,34 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
             numRead++;
         }
         else {
-            throw cRuntimeError("Received unhandled vehicle subscription result");
+            //FIXME: Temporary hack
+            std::cerr << "XXX Got a variable that I don't care about (" << variable1_resp << "). Trying my best to ignore it." << std::endl;
+            uint8_t varType;
+            buf >> varType;
+            if (varType == TYPE_STRING) {
+                std::string foo; buf >> foo;
+            }
+            else if (varType == TYPE_DOUBLE) {
+                double foo; buf >> foo;
+            }
+            else if (varType == TYPE_COLOR) {
+                TraCIColor res(0, 0, 0, 0);
+                buf >> res.red;
+                buf >> res.green;
+                buf >> res.blue;
+                buf >> res.alpha;
+            }
+            else if (varType == POSITION_3D) {
+                double x,y,z;
+                buf >> x;
+                buf >> y;
+                buf >> z;
+            }
+
+            else {
+                throw cRuntimeError("XXX tried my best. Don't know how to handle this type.");
+            }
+            //throw cRuntimeError("Received unhandled vehicle subscription result");
         }
     }
 

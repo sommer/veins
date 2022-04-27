@@ -89,6 +89,8 @@ public:
         return versionConfig.timeStepCmd;
     }
 
+    void setOrder(int32_t order);
+
     std::pair<TraCICoord, TraCICoord> initNetworkBoundaries(int margin);
 
     /**

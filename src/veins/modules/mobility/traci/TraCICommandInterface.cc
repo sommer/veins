@@ -139,6 +139,16 @@ void TraCICommandInterface::Vehicle::setSpeedMode(int32_t bitset)
     ASSERT(buf.eof());
 }
 
+void TraCICommandInterface::setOrder(int32_t order)
+{
+    uint8_t  variableId = 0x03;
+    uint8_t  variableType  = TYPE_COMPOUND;
+    int32_t count = 2;
+    TraCIBuffer buf = connection.query(CMD_SETORDER, TraCIBuffer() << variableId << variableType << count << order);
+    ASSERT(buf.eof());
+}
+
+
 void TraCICommandInterface::Vehicle::setSpeed(double speed)
 {
     uint8_t variableId = VAR_SPEED;
