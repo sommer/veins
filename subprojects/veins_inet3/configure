@@ -103,7 +103,7 @@ if options.veins:
 
 # Add flags for INET
 if options.inet:
-    expect_version = [b'3.6.5', b'3.6.6', b'3.6.7', b'3.6.8', b'3.7.0', b'3.7.1', b'3.8.1']
+    expect_version = [b'3.6.5', b'3.6.6', b'3.6.7', b'3.6.8', b'3.7.0', b'3.7.1', b'3.8.1', b'3.8.2']
     try:
         fname1 = os.path.join(options.inet, 'Version')
         info('Reading "%s" to determine INET version.' % fname1)
