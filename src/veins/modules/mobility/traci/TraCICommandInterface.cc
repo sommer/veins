@@ -1292,6 +1292,15 @@ std::pair<double, double> TraCICommandInterface::getLonLat(const Coord& coord)
     return std::make_pair(convPosLon, convPosLat);
 }
 
+void TraCICommandInterface::setOrder(int32_t order)
+{
+    uint8_t variableId = 0x03;
+    uint8_t variableType = TYPE_COMPOUND;
+    int32_t count = 2;
+    TraCIBuffer buf = connection.query(CMD_SETORDER, TraCIBuffer() << variableId << variableType << count << order);
+    ASSERT(buf.eof());
+}
+
 std::tuple<std::string, double, uint8_t> TraCICommandInterface::getRoadMapPos(const Coord& coord)
 {
     TraCIBuffer request;

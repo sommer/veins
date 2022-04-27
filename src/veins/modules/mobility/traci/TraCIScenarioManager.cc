@@ -257,6 +257,8 @@ void TraCIScenarioManager::initialize(int stage)
     parseModuleTypes();
     penetrationRate = par("penetrationRate").doubleValue();
     ignoreGuiCommands = par("ignoreGuiCommands");
+    order = par("order");
+    ignoreUnknownSubscriptionResults = par("ignoreUnknownSubscriptionResults");
     host = par("host").stdstringValue();
     port = getPortNumber();
     if (port == -1) {
@@ -300,6 +302,9 @@ void TraCIScenarioManager::init_traci()
         auto apiVersion = commandInterface->getVersion();
         EV_DEBUG << "TraCI server \"" << apiVersion.second << "\" reports API version " << apiVersion.first << endl;
         commandInterface->setApiVersion(apiVersion.first);
+        if (order != -1) {
+            commandInterface->setOrder(order);
+        }
     }
 
     {
@@ -1055,6 +1060,39 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
             ASSERT(varType == TYPE_DOUBLE);
             buf >> width;
             numRead++;
+        }
+        else if (ignoreUnknownSubscriptionResults) {
+            static bool haveWarned = false;
+            uint8_t varType;
+            buf >> varType;
+            if (!haveWarned) {
+                EV_WARN << "Warning: Got a variable that I don't care about (variable " << variable1_resp << ", type " << varType << "). Trying my best to ignore it. This warning will not be repeated." << std::endl;
+                haveWarned = true;
+            }
+            if (varType == TYPE_STRING) {
+                std::string foo;
+                buf >> foo;
+            }
+            else if (varType == TYPE_DOUBLE) {
+                double foo;
+                buf >> foo;
+            }
+            else if (varType == TYPE_COLOR) {
+                TraCIColor res(0, 0, 0, 0);
+                buf >> res.red;
+                buf >> res.green;
+                buf >> res.blue;
+                buf >> res.alpha;
+            }
+            else if (varType == POSITION_3D) {
+                double x, y, z;
+                buf >> x;
+                buf >> y;
+                buf >> z;
+            }
+            else {
+                throw cRuntimeError("Received unhandled (and non-ignorable) vehicle subscription result");
+            }
         }
         else {
             throw cRuntimeError("Received unhandled vehicle subscription result");

@@ -71,6 +71,7 @@ public:
     std::pair<uint32_t, std::string> getVersion();
     void setApiVersion(uint32_t apiVersion);
     std::pair<double, double> getLonLat(const Coord&);
+    void setOrder(int32_t order);
 
     unsigned getApiVersion() const
     {
