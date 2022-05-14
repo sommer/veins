@@ -79,10 +79,10 @@ void assertFalse(std::string msg, bool value);
  * value. THis is used for floating point variables.
  */
 template <class T>
-void assertClose(std::string msg, T target, T actual)
+void assertClose(std::string msg, T target, T actual, T epsilon = 0.0000001)
 {
     static_assert(std::is_floating_point<T>::value, "assertClose should only be used with floating point values");
-    if (std::abs(target - actual) > 0.0000001) {
+    if (std::abs(target - actual) > epsilon) {
         fail(msg, target, actual);
     }
     else {

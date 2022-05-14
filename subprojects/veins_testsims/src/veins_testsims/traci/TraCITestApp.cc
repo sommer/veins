@@ -151,7 +151,7 @@ void TraCITestApp::performTest(const simtime_t t)
             if (r) {
                 const cModule* mod = i->second;
                 const TraCIMobility* traci2 = FindModule<TraCIMobility*>::findSubModule(const_cast<cModule*>(mod));
-                assertTrue("(TraCICommandInterface::addVehicle) vehicle driving at speed", traci2->getSpeed() > 25);
+                assertTrue("(TraCICommandInterface::addVehicle) vehicle driving at speed", traci2->getSpeed() > 20);
             }
         }
     }
@@ -368,7 +368,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 1 distance", 145.09933985, pair1.second);
             }
             else {
-                assertClose("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 1 distance", 146.4500273, pair1.second);
+                assertClose("((TraCICommandInterface::Vehicle::getLeader, 0.0) vehicle 1 distance", 146.4500273, pair1.second, .1);
             }
         }
     }
@@ -489,7 +489,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getSpeed)", 27.78, traciVehicle->getSpeed());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getSpeed)", 31.0110309, traciVehicle->getSpeed());
+                assertClose("(TraCICommandInterface::Vehicle::getSpeed)", 31.0110309, traciVehicle->getSpeed(), .01);
             }
         }
     }
@@ -527,7 +527,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getDistanceTravelled) at t=10", 269.960445623, traciVehicle->getDistanceTravelled());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getDistanceTravelled) at t=10", 272.5853340, traciVehicle->getDistanceTravelled());
+                assertClose("(TraCICommandInterface::Vehicle::getDistanceTravelled) at t=10", 272.5853340, traciVehicle->getDistanceTravelled(), .1);
             }
         }
     }
@@ -559,7 +559,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getCO2Emissions)", 5078.335162222222607, traciVehicle->getCO2Emissions());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getCO2Emissions)", 6150.260674767667297, traciVehicle->getCO2Emissions());
+                assertClose("(TraCICommandInterface::Vehicle::getCO2Emissions)", 6150.260674767667297, traciVehicle->getCO2Emissions(), .5);
             }
         }
     }
@@ -570,7 +570,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getCOEmissions)", 46.7056784444444375, traciVehicle->getCOEmissions());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getCOEmissions)", 91.03191431262455069, traciVehicle->getCOEmissions());
+                assertClose("(TraCICommandInterface::Vehicle::getCOEmissions)", 91.03191431262455069, traciVehicle->getCOEmissions(), .01);
             }
         }
     }
@@ -581,7 +581,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getHCEmissions)", 0.3419191911111110205, traciVehicle->getHCEmissions());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getHCEmissions)", 0.574484705658927175, traciVehicle->getHCEmissions());
+                assertClose("(TraCICommandInterface::Vehicle::getHCEmissions)", 0.574484705658927175, traciVehicle->getHCEmissions(), .01);
             }
         }
     }
@@ -592,7 +592,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getPMxEmissions)", 0.09914231388888891661, traciVehicle->getPMxEmissions());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getPMxEmissions)", 0.1398785382084307971, traciVehicle->getPMxEmissions());
+                assertClose("(TraCICommandInterface::Vehicle::getPMxEmissions)", 0.1398785382084307971, traciVehicle->getPMxEmissions(), .01);
             }
         }
     }
@@ -603,7 +603,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getNOxEmissions)", 1.671023434444445011, traciVehicle->getNOxEmissions());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getNOxEmissions)", 2.106876077669999958, traciVehicle->getNOxEmissions());
+                assertClose("(TraCICommandInterface::Vehicle::getNOxEmissions)", 2.106876077669999958, traciVehicle->getNOxEmissions(), .01);
             }
         }
     }
@@ -614,7 +614,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getFuelConsumption)", 2.182966381251871368, traciVehicle->getFuelConsumption());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getFuelConsumption)", 2.643746754251547593, traciVehicle->getFuelConsumption());
+                assertClose("(TraCICommandInterface::Vehicle::getFuelConsumption)", 2.643746754251547593, traciVehicle->getFuelConsumption(), .01);
             }
         }
     }
@@ -625,7 +625,7 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getNoiseEmission)", 72.80790111906661366, traciVehicle->getNoiseEmission());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getNoiseEmission)", 74.36439646827733441, traciVehicle->getNoiseEmission());
+                assertClose("(TraCICommandInterface::Vehicle::getNoiseEmission)", 74.36439646827733441, traciVehicle->getNoiseEmission(), .01);
             }
         }
     }
