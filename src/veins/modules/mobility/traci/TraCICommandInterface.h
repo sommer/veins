@@ -112,6 +112,19 @@ public:
      */
     double getDistance(const Coord& position1, const Coord& position2, bool returnDrivingDistance);
 
+    /**
+     * Reads two positions on the road network and an indicator whether the air or the driving distance shall be computed. Returns the according distance.
+     *
+     * @param e1 id of first edge
+     * @param p1 position along first edge
+     * @param e2 id of second edge
+     * @param p2 position along second edge
+     * @param returnDrivingDistance whether to return the driving distance or the air distance
+     * @return the distance between the two positions
+     *
+     */
+    double getDistanceRoad(std::string e1, double p1, std::string e2, double p2, bool returnDrivingDistance);
+
     // Vehicle methods
     /**
      * @brief Adds a vehicle to the simulation.
