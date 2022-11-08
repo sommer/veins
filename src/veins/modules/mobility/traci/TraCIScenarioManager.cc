@@ -406,24 +406,27 @@ void TraCIScenarioManager::init_traci()
         }
     }
 
-    ObstacleControl* obstacles = ObstacleControlAccess().getIfExists();
-    if (obstacles) {
-        {
-            // get list of polygons
-            std::list<std::string> ids = commandInterface->getPolygonIds();
-            for (std::list<std::string>::iterator i = ids.begin(); i != ids.end(); ++i) {
-                std::string id = *i;
-                std::string typeId = commandInterface->polygon(id).getTypeId();
-                if (!obstacles->isTypeSupported(typeId)) continue;
-                std::list<Coord> coords = commandInterface->polygon(id).getShape();
-                std::vector<Coord> shape;
-                std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
-                for (auto p : shape) {
-                    if ((p.x < 0) || (p.y < 0) || (p.x > world->getPgs()->x) || (p.y > world->getPgs()->y)) {
-                        EV_WARN << "WARNING: Playground (" << world->getPgs()->x << ", " << world->getPgs()->y << ") will not fit radio obstacle at (" << p.x << ", " << p.y << ")" << endl;
+    std::vector<ObstacleControl*> obstaclesModules = FindModule<ObstacleControl*>::findSubModules(getSimulation()->getSystemModule());
+
+    for (ObstacleControl* obstacles : obstaclesModules) {
+        if (obstacles) {
+            {
+                // get list of polygons
+                std::list<std::string> ids = commandInterface->getPolygonIds();
+                for (std::list<std::string>::iterator i = ids.begin(); i != ids.end(); ++i) {
+                    std::string id = *i;
+                    std::string typeId = commandInterface->polygon(id).getTypeId();
+                    if (!obstacles->isTypeSupported(typeId)) continue;
+                    std::list<Coord> coords = commandInterface->polygon(id).getShape();
+                    std::vector<Coord> shape;
+                    std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
+                    for (auto p : shape) {
+                        if ((p.x < 0) || (p.y < 0) || (p.x > world->getPgs()->x) || (p.y > world->getPgs()->y)) {
+                            EV_WARN << "WARNING: Playground (" << world->getPgs()->x << ", " << world->getPgs()->y << ") will not fit radio obstacle at (" << p.x << ", " << p.y << ")" << endl;
+                        }
                     }
+                    obstacles->addFromTypeAndShape(id, typeId, shape);
                 }
-                obstacles->addFromTypeAndShape(id, typeId, shape);
             }
         }
     }
