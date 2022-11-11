@@ -42,5 +42,7 @@ simple TraCIScenarioManagerForker extends TraCIScenarioManager
         string command = default("sumo"); // substitution for $command parameter
         string configFile = default("my.sumo.cfg"); // substitution for $configFile parameter
         port = default(-1);  // substitution for $port parameter (-1: automatic)
+        int order = default(-1); // specific position in the multi-client execution order of the TraCI server to request upon connecting (-1: do not request a position)
+        bool ignoreUnknownSubscriptionResults = default(false); // whether to (try and) ignore any subscription result we did not request (but another client might have)
 }
 
