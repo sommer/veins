@@ -83,6 +83,17 @@ std::unique_ptr<T> make_unique(Args&& ... args)
 }
 #endif
 
+// user-defined replacement for std::unary_function, if needed
+#if (defined __cpp_lib_unary_function)
+using std::unary_function;
+#else
+template <typename Arg, typename Result>
+struct unary_function {
+    typedef Arg argument_type;
+    typedef Result result_type;
+};
+#endif
+
 template <typename T>
 cModule* findModuleByPath(T modulePath)
 {

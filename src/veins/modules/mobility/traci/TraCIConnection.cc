@@ -40,7 +40,7 @@ using namespace veins::TraCIConstants;
 
 namespace veins {
 
-struct traci2omnet_functor : public std::unary_function<TraCICoord, Coord> {
+struct traci2omnet_functor : public unary_function<TraCICoord, Coord> {
     traci2omnet_functor(const TraCIConnection& owner)
         : owner(owner)
     {
