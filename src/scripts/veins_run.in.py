@@ -38,19 +38,29 @@ def relpath(s):
     veins_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
     return os.path.relpath(os.path.join(veins_root, s), '.')
 
+def abspath(s):
+    veins_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+    return os.path.abspath(os.path.join(veins_root, s))
+
 parser = argparse.ArgumentParser('Run a Veins simulation')
 parser.add_argument('-d', '--debug', action='store_true', help='Set --mode=debug (deprecated in favor of --mode)')
 parser.add_argument('-M', '--mode', metavar='MODE', dest='mode', choices=['', 'release', 'debug', 'sanitize'], help='Instead of opp_run, use opp_run_VARIANT corresponding to MODE (release, debug, sanitize)')
 parser.add_argument('-t', '--tool', metavar='TOOL', dest='tool', choices=['lldb', 'gdb', 'memcheck', 'callgrind'], help='Wrap opp_run execution in TOOL (lldb, gdb, memcheck, or callgrind)')
 parser.add_argument('-v', '--verbose', action='store_true', help='Print command line before executing')
+parser.add_argument('-p', '--absolute', action='store_true', help='Use absolute paths for run_libs, run_neds, run_imgs')
 parser.add_argument('--', dest='arguments', help='Arguments to pass to opp_run')
 args, omnet_args = parser.parse_known_args()
 if (len(omnet_args) > 0) and omnet_args[0] == '--':
     omnet_args = omnet_args[1:]
 
-run_libs = [relpath(s) for s in run_libs]
-run_neds = [relpath(s) for s in run_neds] + ['.']
-run_imgs = [relpath(s) for s in run_imgs]
+if not args.absolute:
+    run_libs = [relpath(s) for s in run_libs]
+    run_neds = [relpath(s) for s in run_neds] + ['.']
+    run_imgs = [relpath(s) for s in run_imgs]
+else:
+    run_libs = [abspath(s) for s in run_libs]
+    run_neds = [abspath(s) for s in run_neds] + ['.']
+    run_imgs = [abspath(s) for s in run_imgs]
 
 opp_run = 'opp_run'
 if args.debug:
