@@ -459,13 +459,13 @@ def read_launch_config(conn):
 
     # Get TraCI command length
     cmd_len_buf = b""
+    cmd_len_buf2 = b""
     cmd_len_buf += conn.recv(1)
     cmd_len = struct.unpack("!B", cmd_len_buf)[0] - 1
     if cmd_len == -1:
-        cmd_len_buf = b""
-        while len(cmd_len_buf) < 4:
-            cmd_len_buf += conn.recv(4 - len(cmd_len_buf))
-        cmd_len = struct.unpack("!i", cmd_len_buf)[0] - 5
+        while len(cmd_len_buf2) < 4:
+            cmd_len_buf2 += conn.recv(4 - len(cmd_len_buf2))
+        cmd_len = struct.unpack("!i", cmd_len_buf2)[0] - 5
 
     logging.debug("Got TraCI command of length %d" % cmd_len)
 
@@ -482,6 +482,14 @@ def read_launch_config(conn):
         # ...and try reading the launch config again
         return read_launch_config(conn)
     elif cmd_id != _CMD_FILE_SEND:
+        # try to reinterpret everything sent so far (4 byte message length, 1+ byte command length, 1 byte command ID) as HTTP request
+        http_interpretation_buf = msg_len_buf + cmd_len_buf + cmd_len_buf2 + cmd_id_buf
+        if http_interpretation_buf.startswith(b"GET /"):
+            # looks like HTTP - send a HTTP response and give up on this connection
+            logging.debug("Got something that looks like a HTTP request: %s. Sending a dummy reply." % http_interpretation_buf)
+            response = b"HTTP/1.0 501 Not Implemented\r\nContent-Type: text/plain\r\n\r\nThis is a veins_launchd server, not a HTTP server. It is meant to be used with Veins, not with a web browser. See http://veins.car2x.org/ for more information.\r\n"
+            conn.send(response)      
+
         raise RuntimeError("Expected CMD_FILE_SEND (0x%x), but got 0x%x" % (_CMD_FILE_SEND, cmd_id))
 
     # Get File name
