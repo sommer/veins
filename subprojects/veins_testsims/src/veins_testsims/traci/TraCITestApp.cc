@@ -614,7 +614,11 @@ void TraCITestApp::performTest(const simtime_t t)
                 assertClose("(TraCICommandInterface::Vehicle::getFuelConsumption)", 2.182966381251871368, traciVehicle->getFuelConsumption());
             }
             else {
-                assertClose("(TraCICommandInterface::Vehicle::getFuelConsumption)", 2.643746754251547593, traciVehicle->getFuelConsumption(), .01);
+                // SUMO 1.14.0 changed default fuel consumption reporting to mg/s (instead of ml/s), so either is fine
+                auto d1 = 2.643746754251547593;
+                auto d2 = 1961.635379631266914;
+                assertCloseAny("(TraCICommandInterface::Vehicle::getFuelConsumption)", {d1, d2}, traciVehicle->getFuelConsumption(), .01);
+
             }
         }
     }

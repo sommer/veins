@@ -91,6 +91,23 @@ void assertClose(std::string msg, T target, T actual, T epsilon = 0.0000001)
 }
 
 /**
+ * Asserts that the passed value is close to any of the passed expected
+ * values. This is used for floating point variables.
+ */
+template <class T>
+void assertCloseAny(std::string msg, std::vector<T> target, T actual, T epsilon = 0.0000001)
+{
+    static_assert(std::is_floating_point<T>::value, "assertCloseAny should only be used with floating point values");
+    for (auto& t : target) {
+        if (std::abs(t - actual) <= epsilon) {
+            pass(msg);
+            return;
+        }
+    }
+    fail(msg, "any of multiple target values", actual);
+}
+
+/**
  * Asserts that the passed value is equal to the passed expected
  * value.
  */
