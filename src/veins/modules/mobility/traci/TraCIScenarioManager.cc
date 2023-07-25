@@ -257,10 +257,9 @@ void TraCIScenarioManager::initialize(int stage)
     parseModuleTypes();
     penetrationRate = par("penetrationRate").doubleValue();
     ignoreGuiCommands = par("ignoreGuiCommands");
-    order = par("order");
-    ignoreUnknownSubscriptionResults = par("ignoreUnknownSubscriptionResults");
     host = par("host").stdstringValue();
     port = getPortNumber();
+    allowPedestrians = par("allowPedestrians").boolValue();
     if (port == -1) {
         throw cRuntimeError("TraCI Port autoconfiguration failed, set 'port' != -1 in omnetpp.ini or provide VEINS_TRACI_PORT environment variable.");
     }
@@ -276,6 +275,7 @@ void TraCIScenarioManager::initialize(int stage)
     nextNodeVectorIndex = 0;
     hosts.clear();
     subscribedVehicles.clear();
+    subscribedPersons.clear();
     trafficLights.clear();
     activeVehicleCount = 0;
     parkingVehicleCount = 0;
@@ -302,9 +302,6 @@ void TraCIScenarioManager::init_traci()
         auto apiVersion = commandInterface->getVersion();
         EV_DEBUG << "TraCI server \"" << apiVersion.second << "\" reports API version " << apiVersion.first << endl;
         commandInterface->setApiVersion(apiVersion.first);
-        if (order != -1) {
-            commandInterface->setOrder(order);
-        }
     }
 
     {
@@ -331,6 +328,7 @@ void TraCIScenarioManager::init_traci()
         variables.push_back(VAR_TELEPORT_ENDING_VEHICLES_IDS);
         variables.push_back(VAR_PARKING_STARTING_VEHICLES_IDS);
         variables.push_back(VAR_PARKING_ENDING_VEHICLES_IDS);
+
         uint8_t variableNumber = variables.size();
         TraCIBuffer buf1 = TraCIBuffer();
         buf1 << beginTime << endTime << objectId << variableNumber;
@@ -339,7 +337,7 @@ void TraCIScenarioManager::init_traci()
         }
         TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_SIM_VARIABLE, buf1);
 
-        processSubcriptionResult(buf);
+        processSubscriptionResult(buf);
         ASSERT(buf.eof());
     }
 
@@ -351,7 +349,7 @@ void TraCIScenarioManager::init_traci()
         uint8_t variableNumber = 1;
         uint8_t variable1 = ID_LIST;
         TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1);
-        processSubcriptionResult(buf);
+        processSubscriptionResult(buf);
         ASSERT(buf.eof());
     }
 
@@ -406,27 +404,24 @@ void TraCIScenarioManager::init_traci()
         }
     }
 
-    std::vector<ObstacleControl*> obstaclesModules = FindModule<ObstacleControl*>::findSubModules(getSimulation()->getSystemModule());
-
-    for (ObstacleControl* obstacles : obstaclesModules) {
-        if (obstacles) {
-            {
-                // get list of polygons
-                std::list<std::string> ids = commandInterface->getPolygonIds();
-                for (std::list<std::string>::iterator i = ids.begin(); i != ids.end(); ++i) {
-                    std::string id = *i;
-                    std::string typeId = commandInterface->polygon(id).getTypeId();
-                    if (!obstacles->isTypeSupported(typeId)) continue;
-                    std::list<Coord> coords = commandInterface->polygon(id).getShape();
-                    std::vector<Coord> shape;
-                    std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
-                    for (auto p : shape) {
-                        if ((p.x < 0) || (p.y < 0) || (p.x > world->getPgs()->x) || (p.y > world->getPgs()->y)) {
-                            EV_WARN << "WARNING: Playground (" << world->getPgs()->x << ", " << world->getPgs()->y << ") will not fit radio obstacle at (" << p.x << ", " << p.y << ")" << endl;
-                        }
+    ObstacleControl* obstacles = ObstacleControlAccess().getIfExists();
+    if (obstacles) {
+        {
+            // get list of polygons
+            std::list<std::string> ids = commandInterface->getPolygonIds();
+            for (std::list<std::string>::iterator i = ids.begin(); i != ids.end(); ++i) {
+                std::string id = *i;
+                std::string typeId = commandInterface->polygon(id).getTypeId();
+                if (!obstacles->isTypeSupported(typeId)) continue;
+                std::list<Coord> coords = commandInterface->polygon(id).getShape();
+                std::vector<Coord> shape;
+                std::copy(coords.begin(), coords.end(), std::back_inserter(shape));
+                for (auto p : shape) {
+                    if ((p.x < 0) || (p.y < 0) || (p.x > world->getPgs()->x) || (p.y > world->getPgs()->y)) {
+                        EV_WARN << "WARNING: Playground (" << world->getPgs()->x << ", " << world->getPgs()->y << ") will not fit radio obstacle at (" << p.x << ", " << p.y << ")" << endl;
                     }
-                    obstacles->addFromTypeAndShape(id, typeId, shape);
                 }
+                obstacles->addFromTypeAndShape(id, typeId, shape);
             }
         }
     }
@@ -582,6 +577,72 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type, std::
     emit(traciModuleAddedSignal, mod);
 }
 
+
+void TraCIScenarioManager::addPerson(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id, double speed, Heading heading, double length, double width)
+{
+    if (hosts.find(nodeId) != hosts.end()) throw cRuntimeError("tried adding duplicate module");
+
+    double option1 = hosts.size() / (hosts.size() + unEquippedHosts.size() + 1.0);
+    double option2 = (hosts.size() + 1) / (hosts.size() + unEquippedHosts.size() + 1.0);
+
+    if (fabs(option1 - penetrationRate) < fabs(option2 - penetrationRate)) {
+        unEquippedHosts.insert(nodeId);
+        return;
+    }
+
+    int32_t nodeVectorIndex = nextNodeVectorIndex++;
+
+    cModule* parentmod = getParentModule();
+    if (!parentmod) throw cRuntimeError("Parent Module not found");
+
+    cModuleType* nodeType = cModuleType::get(type.c_str());
+    if (!nodeType) throw cRuntimeError("Module Type \"%s\" not found", type.c_str());
+
+#if OMNETPP_BUILDNUM >= 1525
+    parentmod->setSubmoduleVectorSize(name.c_str(), nodeVectorIndex + 1);
+    cModule* mod = nodeType->create(name.c_str(), parentmod, nodeVectorIndex);
+#else
+    // TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
+    cModule* mod = nodeType->create(name.c_str(), parentmod, nodeVectorIndex, nodeVectorIndex);
+#endif
+
+    mod->finalizeParameters();
+    if (displayString.length() > 0) {
+        mod->getDisplayString().parse(displayString.c_str());
+    }
+    mod->buildInside();
+    mod->scheduleStart(simTime() + updateInterval);
+
+    preInitializeModule(mod, nodeId, position, road_id, speed, heading, VehicleSignalSet(14));
+
+    emit(traciModulePreInitSignal, mod);
+
+    mod->callInitialize();
+    hosts[nodeId] = mod;
+    std::string figura = "i=veins/node/pedestrian;is=vs";
+    mod->setDisplayString(figura.c_str());
+
+    // post-initialize TraCIMobility
+    auto mobilityModules = getSubmodulesOfType<TraCIMobility>(mod);
+    for (auto mm : mobilityModules) {
+        mm->changePosition();
+    }
+
+    if (vehicleObstacleControl) {
+        std::vector<AntennaPosition> initialAntennaPositions;
+        for (auto& caModule : getSubmodulesOfType<ChannelAccess>(mod, true)) {
+            initialAntennaPositions.push_back(caModule->getAntennaPosition());
+        }
+        ASSERT(mobilityModules.size() == 1);
+        auto mm = mobilityModules[0];
+        double offset = mm->getHostPositionOffset();
+        const MobileHostObstacle* vo = vehicleObstacleControl->add(MobileHostObstacle(initialAntennaPositions, mm, length, offset, width, 1.5));
+        vehicleObstacles[mm] = vo;
+    }
+
+    emit(traciModuleAddedSignal, mod);
+}
+
 cModule* TraCIScenarioManager::getManagedModule(std::string nodeId)
 {
     if (hosts.find(nodeId) == hosts.end()) return nullptr;
@@ -639,7 +700,19 @@ void TraCIScenarioManager::executeOneTimestep()
         buf >> count;
         EV_DEBUG << "Getting " << count << " subscription results" << endl;
         for (uint32_t i = 0; i < count; ++i) {
-            processSubcriptionResult(buf);
+            processSubscriptionResult(buf);
+        }
+
+        if(allowPedestrians){
+            simtime_t beginTime = 0;
+            simtime_t endTime = SimTime::getMaxTime();
+            std::string objectId = "";
+            uint8_t variableNumber = 1;
+            uint8_t variable1 = ID_LIST;
+            TraCIBuffer buf7 = connection->query(CMD_SUBSCRIBE_PERSON_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1);
+            processSubscriptionResult(buf7);
+            ASSERT(buf7.eof());
+            allowPedestrians = false;
         }
     }
 
@@ -671,7 +744,32 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId)
         buf1 << variable;
     }
     TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, buf1);
-    processSubcriptionResult(buf);
+    processSubscriptionResult(buf);
+    ASSERT(buf.eof());
+}
+
+void TraCIScenarioManager::subscribeToPersonVariables(std::string personId)
+{
+    // subscribe to some attributes of the person
+    simtime_t beginTime = 0;
+    simtime_t endTime = SimTime::getMaxTime();
+    std::string objectId = personId;
+    std::list<uint8_t> variables;
+    variables.push_back(VAR_POSITION);
+    variables.push_back(VAR_ROAD_ID);
+    variables.push_back(VAR_SPEED);
+    variables.push_back(VAR_ANGLE);
+    variables.push_back(VAR_LENGTH);
+    variables.push_back(VAR_WIDTH);
+    uint8_t variableNumber = variables.size();
+
+    TraCIBuffer buf1;
+    buf1 << beginTime << endTime << objectId << variableNumber;
+    for (auto variable : variables) {
+        buf1 << variable;
+    }
+    TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_PERSON_VARIABLE, buf1);
+    processSubscriptionResult(buf);
     ASSERT(buf.eof());
 }
 
@@ -686,6 +784,20 @@ void TraCIScenarioManager::unsubscribeFromVehicleVariables(std::string vehicleId
     TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_VEHICLE_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber);
     ASSERT(buf.eof());
 }
+
+void TraCIScenarioManager::unsubscribeFromPersonVariables(std::string personId)
+{
+    // subscribe to some attributes of the person
+    simtime_t beginTime = 0;
+    simtime_t endTime = SimTime::getMaxTime();
+    std::string objectId = personId;
+    uint8_t variableNumber = 0;
+
+    TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_PERSON_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber);
+    ASSERT(buf.eof());
+}
+
+
 void TraCIScenarioManager::subscribeToTrafficLightVariables(std::string tlId)
 {
     // subscribe to some attributes of the traffic light system
@@ -699,7 +811,7 @@ void TraCIScenarioManager::subscribeToTrafficLightVariables(std::string tlId)
     uint8_t variable4 = TL_RED_YELLOW_GREEN_STATE;
 
     TraCIBuffer buf = connection->query(CMD_SUBSCRIBE_TL_VARIABLE, TraCIBuffer() << beginTime << endTime << objectId << variableNumber << variable1 << variable2 << variable3 << variable4);
-    processSubcriptionResult(buf);
+    processSubscriptionResult(buf);
     ASSERT(buf.eof());
 }
 
@@ -943,6 +1055,189 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
         }
     }
 }
+void TraCIScenarioManager::processPersonSubscription(std::string objectId, TraCIBuffer& buf){
+    bool isSubscribed = (subscribedPersons.find(objectId) != subscribedPersons.end());
+    double px;
+    double py;
+    std::string edge;
+    double speed;
+    double angle_traci;
+    double length;
+    double width;
+    int numRead = 0;
+
+    uint8_t variableNumber_resp;
+    buf >> variableNumber_resp;
+    for (uint8_t j = 0; j < variableNumber_resp; ++j) {
+        uint8_t variable1_resp;
+        buf >> variable1_resp;
+        uint8_t isokay;
+        buf >> isokay;
+        if (isokay != RTYPE_OK) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_STRING);
+            std::string errormsg;
+            buf >> errormsg;
+            if (isSubscribed) {
+                if (isokay == RTYPE_NOTIMPLEMENTED) throw cRuntimeError("TraCI server reported subscribing to person variable 0x%2x not implemented (\"%s\"). Might need newer version.", variable1_resp, errormsg.c_str());
+                throw cRuntimeError("TraCI server reported error subscribing to person variable 0x%2x (\"%s\").", variable1_resp, errormsg.c_str());
+            }
+        }
+        else if (variable1_resp == ID_LIST) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_STRINGLIST);
+            uint32_t count;
+            buf >> count;
+            EV_DEBUG << "TraCI reports " << count << " active persons." << endl;
+            std::set<std::string> drivingPersons;
+            for (uint32_t i = 0; i < count; ++i) {
+                std::string idstring;
+                buf >> idstring;
+                drivingPersons.insert(idstring);
+            }
+
+            // check for persons that need subscribing to
+            std::set<std::string> needSubscribe;
+            std::set_difference(drivingPersons.begin(), drivingPersons.end(), subscribedPersons.begin(), subscribedPersons.end(), std::inserter(needSubscribe, needSubscribe.begin()));
+            for (std::set<std::string>::const_iterator i = needSubscribe.begin(); i != needSubscribe.end(); ++i) {
+                subscribedPersons.insert(*i);
+                subscribeToPersonVariables(*i);
+            }
+
+            // check for persons that need unsubscribing from
+            std::set<std::string> needUnsubscribe;
+            std::set_difference(subscribedPersons.begin(), subscribedPersons.end(), drivingPersons.begin(), drivingPersons.end(), std::inserter(needUnsubscribe, needUnsubscribe.begin()));
+            for (std::set<std::string>::const_iterator i = needUnsubscribe.begin(); i != needUnsubscribe.end(); ++i) {
+                subscribedPersons.erase(*i);
+                unsubscribeFromPersonVariables(*i);
+            }
+        }
+        else if (variable1_resp == VAR_POSITION) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == POSITION_2D);
+            buf >> px;
+            buf >> py;
+            numRead++;
+        }
+        else if (variable1_resp == VAR_ROAD_ID) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_STRING);
+            buf >> edge;
+            numRead++;
+        }
+        else if (variable1_resp == VAR_SPEED) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_DOUBLE);
+            buf >> speed;
+            numRead++;
+        }
+        else if (variable1_resp == VAR_ANGLE) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_DOUBLE);
+            buf >> angle_traci;
+            numRead++;
+        }
+        else if (variable1_resp == VAR_LENGTH) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_DOUBLE);
+            buf >> length;
+            numRead++;
+        }
+        else if (variable1_resp == VAR_WIDTH) {
+            uint8_t varType;
+            buf >> varType;
+            ASSERT(varType == TYPE_DOUBLE);
+            buf >> width;
+            numRead++;
+        }
+        else {
+            throw cRuntimeError("Received unhandled vehicle subscription result");
+        }
+    }
+
+    // bail out if we didn't want to receive these subscription results
+    if (!isSubscribed) return;
+
+    // make sure we got updates for all attributes
+    if (numRead != 6) return;
+
+    Coord p = connection->traci2omnet(TraCICoord(px, py));
+    if ((p.x < 0) || (p.y < 0)) throw cRuntimeError("received bad node position (%.2f, %.2f), translated to (%.2f, %.2f)", px, py, p.x, p.y);
+
+
+    Heading heading = connection->traci2omnetHeading(angle_traci);
+
+    cModule* mod = getManagedModule(objectId);
+
+    // is it in the ROI?
+    bool inRoi = !roi.hasConstraints() ? true : (roi.onAnyRectangle(TraCICoord(px, py)) || roi.partOfRoads(edge));
+    if (!inRoi) {
+        if (mod) {
+            deleteManagedModule(objectId);
+            EV_DEBUG << "Person #" << objectId << " left region of interest" << endl;
+        }
+        else if (unEquippedHosts.find(objectId) != unEquippedHosts.end()) {
+            unEquippedHosts.erase(objectId);
+            EV_DEBUG << "Person (unequipped) # " << objectId << " left region of interest" << endl;
+        }
+        return;
+    }
+
+    if (isModuleUnequipped(objectId)) {
+        return;
+    }
+
+    if (!mod) {
+        // no such module - need to create
+        std::string vType = commandIfc->person(objectId).getTypeId();
+        std::string mType, mName, mDisplayString;
+        TypeMapping::iterator iType, iName, iDisplayString;
+
+
+        TypeMapping::iterator i;
+        iType = moduleType.find(vType);
+        if (iType == moduleType.end()) {
+            iType = moduleType.find("*");
+            if (iType == moduleType.end()) throw cRuntimeError("cannot find a module type for person type \"%s\"", vType.c_str());
+        }
+        mType = iType->second;
+        // search for module name
+        iName = moduleName.find(vType);
+        if (iName == moduleName.end()) {
+            iName = moduleName.find(std::string("*"));
+            if (iName == moduleName.end()) throw cRuntimeError("cannot find a module name for person type \"%s\"", vType.c_str());
+        }
+        mName = iName->second;
+        if (moduleDisplayString.size() != 0) {
+            iDisplayString = moduleDisplayString.find(vType);
+            if (iDisplayString == moduleDisplayString.end()) {
+                iDisplayString = moduleDisplayString.find("*");
+                if (iDisplayString == moduleDisplayString.end()) throw cRuntimeError("cannot find a module display string for person type \"%s\"", vType.c_str());
+            }
+            mDisplayString = iDisplayString->second;
+        }
+        else {
+            mDisplayString = "";
+        }
+
+        if (mType != "0") {
+            addPerson(objectId, mType, mName, mDisplayString, p, edge, speed, heading, length, width);
+            EV_DEBUG << "Added person #" << objectId << endl;
+        }
+    }
+    else {
+        // module existed - update position
+        EV_DEBUG << "module " << objectId << " moving to " << p.x << "," << p.y << endl;
+        updateModulePosition(mod, p, edge, speed, heading, VehicleSignalSet(1));
+    }
+}
 
 void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraCIBuffer& buf)
 {
@@ -1064,39 +1359,6 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
             buf >> width;
             numRead++;
         }
-        else if (ignoreUnknownSubscriptionResults) {
-            static bool haveWarned = false;
-            uint8_t varType;
-            buf >> varType;
-            if (!haveWarned) {
-                EV_WARN << "Warning: Got a variable that I don't care about (variable " << variable1_resp << ", type " << varType << "). Trying my best to ignore it. This warning will not be repeated." << std::endl;
-                haveWarned = true;
-            }
-            if (varType == TYPE_STRING) {
-                std::string foo;
-                buf >> foo;
-            }
-            else if (varType == TYPE_DOUBLE) {
-                double foo;
-                buf >> foo;
-            }
-            else if (varType == TYPE_COLOR) {
-                TraCIColor res(0, 0, 0, 0);
-                buf >> res.red;
-                buf >> res.green;
-                buf >> res.blue;
-                buf >> res.alpha;
-            }
-            else if (varType == POSITION_3D) {
-                double x, y, z;
-                buf >> x;
-                buf >> y;
-                buf >> z;
-            }
-            else {
-                throw cRuntimeError("Received unhandled (and non-ignorable) vehicle subscription result");
-            }
-        }
         else {
             throw cRuntimeError("Received unhandled vehicle subscription result");
         }
@@ -1177,7 +1439,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId, TraC
     }
 }
 
-void TraCIScenarioManager::processSubcriptionResult(TraCIBuffer& buf)
+void TraCIScenarioManager::processSubscriptionResult(TraCIBuffer& buf)
 {
     uint8_t cmdLength_resp;
     buf >> cmdLength_resp;
@@ -1190,6 +1452,8 @@ void TraCIScenarioManager::processSubcriptionResult(TraCIBuffer& buf)
 
     if (commandId_resp == RESPONSE_SUBSCRIBE_VEHICLE_VARIABLE)
         processVehicleSubscription(objectId_resp, buf);
+    else if (commandId_resp == RESPONSE_SUBSCRIBE_PERSON_VARIABLE)
+        processPersonSubscription(objectId_resp, buf);
     else if (commandId_resp == RESPONSE_SUBSCRIBE_SIM_VARIABLE)
         processSimSubscription(objectId_resp, buf);
     else if (commandId_resp == RESPONSE_SUBSCRIBE_TL_VARIABLE)
