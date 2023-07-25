@@ -58,7 +58,7 @@ class MobileHostObstacle;
  *
  * See the Veins website <a href="http://veins.car2x.org/"> for a tutorial, documentation, and publications </a>.
  *
- * @author Christoph Sommer, David Eckhoff, Falko Dressler, Zheng Yao, Tobias Mayer, Alvaro Torres Cortes, Luca Bedogni, Ion Turcanu
+ * @author Christoph Sommer, David Eckhoff, Falko Dressler, Zheng Yao, Tobias Mayer, Alvaro Torres Cortes, Luca Bedogni
  *
  * @see TraCIMobility
  * @see TraCIScenarioManagerLaunchd
@@ -133,6 +133,8 @@ protected:
     std::string host;
     int port;
 
+    bool allowPedestrians; /** Created by Well: Allow pedestrians inside the simulation*/
+
     std::string trafficLightModuleType; /**< module type to be used in the simulation for each managed traffic light */
     std::string trafficLightModuleName; /**< module name to be used in the simulation for each managed traffic light */
     std::string trafficLightModuleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
@@ -141,8 +143,6 @@ protected:
     bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
     double penetrationRate;
     bool ignoreGuiCommands; /**< whether to ignore all TraCI commands that only make sense when the server has a graphical user interface */
-    int order; // specific position in the multi-client execution order of the TraCI server to request upon connecting (-1: do not request a position)
-    bool ignoreUnknownSubscriptionResults; // whether to (try and) ignore any subscription result we did not request (but another client might have)
     TraCIRegionOfInterest roi; /**< Can return whether a given position lies within the simulation's region of interest. Modules are destroyed and re-created as managed vehicles leave and re-enter the ROI */
     double areaSum;
 
@@ -154,6 +154,7 @@ protected:
     std::map<std::string, cModule*> hosts; /**< vector of all hosts managed by us */
     std::set<std::string> unEquippedHosts;
     std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
+    std::set<std::string> subscribedPersons; /**< Created by Well: all persons we have already subscribed to */
     std::map<std::string, cModule*> trafficLights; /**< vector of all traffic lights managed by us */
     uint32_t activeVehicleCount; /**< number of vehicles, be it parking or driving **/
     uint32_t parkingVehicleCount; /**< number of parking vehicles, derived from parking start/end events */
@@ -173,16 +174,20 @@ protected:
     virtual void preInitializeModule(cModule* mod, const std::string& nodeId, const Coord& position, const std::string& road_id, double speed, Heading heading, VehicleSignalSet signals);
     virtual void updateModulePosition(cModule* mod, const Coord& p, const std::string& edge, double speed, Heading heading, VehicleSignalSet signals);
     void addModule(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan, VehicleSignalSet signals = {VehicleSignal::undefined}, double length = 0, double height = 0, double width = 0);
+    void addPerson(std::string nodeId, std::string type, std::string name, std::string displayString, const Coord& position, std::string road_id = "", double speed = -1, Heading heading = Heading::nan, double length = 0, double width = 0);
     cModule* getManagedModule(std::string nodeId); /**< returns a pointer to the managed module named moduleName, or 0 if no module can be found */
     void deleteManagedModule(std::string nodeId);
 
     bool isModuleUnequipped(std::string nodeId); /**< returns true if this vehicle is Unequipped */
 
     void subscribeToVehicleVariables(std::string vehicleId);
+    void subscribeToPersonVariables(std::string personId); /**< Created by Well */
     void unsubscribeFromVehicleVariables(std::string vehicleId);
+    void unsubscribeFromPersonVariables(std::string personId); /**< Created by Well */
     void processSimSubscription(std::string objectId, TraCIBuffer& buf);
     void processVehicleSubscription(std::string objectId, TraCIBuffer& buf);
-    void processSubcriptionResult(TraCIBuffer& buf);
+    void processPersonSubscription(std::string objectId, TraCIBuffer& buf); /**< Created by Well */
+    void processSubscriptionResult(TraCIBuffer& buf);
 
     void subscribeToTrafficLightVariables(std::string tlId);
     void unsubscribeFromTrafficLightVariables(std::string tlId);
