@@ -618,7 +618,6 @@ void TraCITestApp::performTest(const simtime_t t)
                 auto d1 = 2.643746754251547593;
                 auto d2 = 1961.635379631266914;
                 assertCloseAny("(TraCICommandInterface::Vehicle::getFuelConsumption)", {d1, d2}, traciVehicle->getFuelConsumption(), .01);
-
             }
         }
     }

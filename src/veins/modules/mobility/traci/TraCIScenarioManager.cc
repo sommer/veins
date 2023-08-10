@@ -1188,12 +1188,15 @@ void TraCIScenarioManager::processSubcriptionResult(TraCIBuffer& buf)
     std::string objectId_resp;
     buf >> objectId_resp;
 
-    if (commandId_resp == RESPONSE_SUBSCRIBE_VEHICLE_VARIABLE)
+    if (commandId_resp == RESPONSE_SUBSCRIBE_VEHICLE_VARIABLE) {
         processVehicleSubscription(objectId_resp, buf);
-    else if (commandId_resp == RESPONSE_SUBSCRIBE_SIM_VARIABLE)
+    }
+    else if (commandId_resp == RESPONSE_SUBSCRIBE_SIM_VARIABLE) {
         processSimSubscription(objectId_resp, buf);
-    else if (commandId_resp == RESPONSE_SUBSCRIBE_TL_VARIABLE)
+    }
+    else if (commandId_resp == RESPONSE_SUBSCRIBE_TL_VARIABLE) {
         processTrafficLightSubscription(objectId_resp, buf);
+    }
     else {
         throw cRuntimeError("Received unhandled subscription result");
     }

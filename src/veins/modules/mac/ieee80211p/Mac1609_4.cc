@@ -797,7 +797,7 @@ void Mac1609_4::EDCA::stopContent(bool allowBackoff, bool generateTxOp)
                 edcaQueue.currentBackoff -= 1;
 
                 // check how many slots we waited after the first DIFS
-                int64_t passedSlots = (int64_t)((passedTime - SimTime(edcaQueue.aifsn * SLOTLENGTH_11P + SIFS_11P)) / SLOTLENGTH_11P);
+                int64_t passedSlots = (int64_t) ((passedTime - SimTime(edcaQueue.aifsn * SLOTLENGTH_11P + SIFS_11P)) / SLOTLENGTH_11P);
 
                 EV_TRACE << "Passed slots after DIFS: " << passedSlots << std::endl;
 
@@ -1090,14 +1090,14 @@ void Mac1609_4::handleAckTimeOut(AckTimeOutMessage* ackTimeOutMsg)
         // Rx is already in process. Wait for it to complete.
         // In case it is not an ack, we will retransmit
         // This assigning might be redundant as it was set already in handleSelfMsg but no harm in reassigning here.
-        lastAC = (t_access_category)(ackTimeOutMsg->getKind());
+        lastAC = (t_access_category) (ackTimeOutMsg->getKind());
         return;
     }
     // We did not start receiving any packet.
     // stop receiving notification for rx start as we will retransmit
     phy11p->notifyMacAboutRxStart(false);
     // back off and try retransmission again
-    handleRetransmit((t_access_category)(ackTimeOutMsg->getKind()));
+    handleRetransmit((t_access_category) (ackTimeOutMsg->getKind()));
     // Phy was requested not to send channel idle status on TX_OVER
     // So request the channel status now. For the case when we receive ACK, decider updates channel status itself after ACK RX
     phy11p->requestChannelStatusIfIdle();

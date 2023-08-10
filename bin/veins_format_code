@@ -71,7 +71,7 @@ def check_uncrustify():
     check (minimum) version of uncrustify
     """
 
-    min_version = "0.68"
+    min_version = "0.72"
     check_version("uncrustify", ["uncrustify", "--version"], "^Uncrustify-(?P<version>[0-9.]+)", min_version)
 
 
@@ -81,7 +81,7 @@ def check_clang_format():
     """
 
     min_version = "6.0"
-    check_version("clang-format", ["clang-format", "--version"], "^clang-format version (?P<version>[0-9.]+)", min_version)
+    check_version("clang-format", ["clang-format", "--version"], "^(Debian )?clang-format version (?P<version>[0-9.]+)", min_version)
 
 
 def format_file(fname, strict, uncrustify_style_path, clang_format_styles):
