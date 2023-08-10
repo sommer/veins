@@ -70,6 +70,11 @@ public:
     static const simsignal_t traciModulePreInitSignal;
     static const simsignal_t traciModuleAddedSignal;
     static const simsignal_t traciModuleRemovedSignal;
+    static const simsignal_t traciModuleUpdatedSignal;
+    static const simsignal_t traciTrafficLightPreInitSignal;
+    static const simsignal_t traciTrafficLightAddedSignal;
+    static const simsignal_t traciTrafficLightRemovedSignal;
+    static const simsignal_t traciTrafficLightUpdatedSignal;
     static const simsignal_t traciTimestepBeginSignal;
     static const simsignal_t traciTimestepEndSignal;
 

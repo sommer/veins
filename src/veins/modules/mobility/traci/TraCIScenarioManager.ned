@@ -42,6 +42,11 @@ simple TraCIScenarioManager
         @signal[org_car2x_veins_modules_mobility_traciModulePreInit](type=cModule);
         @signal[org_car2x_veins_modules_mobility_traciModuleAdded](type=cModule);
         @signal[org_car2x_veins_modules_mobility_traciModuleRemoved](type=cModule);
+        @signal[org_car2x_veins_modules_mobility_traciModuleUpdated](type=cModule);
+        @signal[org_car2x_veins_modules_mobility_traciTrafficLightPreInit](type=cModule);
+        @signal[org_car2x_veins_modules_mobility_traciTrafficLightAdded](type=cModule);
+        @signal[org_car2x_veins_modules_mobility_traciTrafficLightRemoved](type=cModule);
+        @signal[org_car2x_veins_modules_mobility_traciTrafficLightUpdated](type=cModule);
         @signal[org_car2x_veins_modules_mobility_traciTimestepBegin](type=simtime_t);
         @signal[org_car2x_veins_modules_mobility_traciTimestepEnd](type=simtime_t);
         @class(veins::TraCIScenarioManager);
