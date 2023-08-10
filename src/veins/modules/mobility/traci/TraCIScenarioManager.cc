@@ -355,7 +355,7 @@ void TraCIScenarioManager::init_traci()
         ASSERT(buf.eof());
     }
 
-    if (!trafficLightModuleType.empty() && !trafficLightModuleIds.empty()) {
+    if (!trafficLightModuleType.empty()) {
         // initialize traffic lights
         cModule* parentmod = getParentModule();
         if (!parentmod) {
@@ -372,7 +372,7 @@ void TraCIScenarioManager::init_traci()
         int cnt = 0;
         for (std::list<std::string>::iterator i = trafficLightIds.begin(); i != trafficLightIds.end(); ++i) {
             std::string tlId = *i;
-            if (std::find(trafficLightModuleIds.begin(), trafficLightModuleIds.end(), tlId) == trafficLightModuleIds.end()) {
+            if ((!trafficLightModuleIds.empty()) && (std::find(trafficLightModuleIds.begin(), trafficLightModuleIds.end(), tlId) == trafficLightModuleIds.end())) {
                 continue; // filter only selected elements
             }
 
