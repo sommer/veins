@@ -41,6 +41,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace veins {
 namespace TraCIConstants {
 
@@ -167,7 +169,10 @@ const uint8_t ID_COUNT = 0x01;
 const uint8_t ID_LIST = 0x00;
 const uint8_t JAM_LENGTH_METERS = 0x19;
 const uint8_t JAM_LENGTH_VEHICLE = 0x18;
+const int8_t LANECHANGE_LEFT = 0x01;
+const int8_t LANECHANGE_RIGHT = -0x01;
 const uint8_t LANE_ALLOWED = 0x34;
+const uint8_t LANE_CHANGES = 0x3c;
 const uint8_t LANE_DISALLOWED = 0x35;
 const uint8_t LANE_EDGE_ID = 0x31;
 const uint8_t LANE_LINKS = 0x33;

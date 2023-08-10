@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2017 Christoph Sommer <sommer@ccs-labs.org>
+// Copyright (C) 2018 Tobias Hardes <hardes@ccs-labs.org>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,17 +20,37 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-import org.car2x.veins.nodes.RSU;
-import org.car2x.veins.nodes.Scenario;
-import org.car2x.veins.nodes.TrafficLight;
+#include "veins/modules/application/traci/TraCIDemoTrafficLightApp.h"
 
-network RSUExampleScenario extends Scenario
+#include "veins/modules/messages/DemoSafetyMessage_m.h"
+
+using veins::TraCIDemoTrafficLightApp;
+
+Define_Module(TraCIDemoTrafficLightApp);
+
+TraCIDemoTrafficLightApp::TraCIDemoTrafficLightApp()
 {
-    submodules:
-        rsu[1]: RSU {
-            @display("p=150,140;i=veins/sign/yellowdiamond;is=vs");
-        }
+}
 
-        tls[0]: TrafficLight {
-        }
+TraCIDemoTrafficLightApp::~TraCIDemoTrafficLightApp()
+{
+}
+
+void TraCIDemoTrafficLightApp::initialize(int stage)
+{
+}
+
+void TraCIDemoTrafficLightApp::onBSM(DemoSafetyMessage* bsm)
+{
+    delete bsm;
+}
+
+void TraCIDemoTrafficLightApp::handleLowerMsg(cMessage* msg)
+{
+    delete msg;
+}
+
+void TraCIDemoTrafficLightApp::handleMessage(cMessage* msg)
+{
+    delete msg;
 }

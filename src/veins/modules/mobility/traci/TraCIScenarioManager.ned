@@ -70,7 +70,7 @@ simple TraCIScenarioManager
         string trafficLightModuleType = default("");  // module type to be used in the simulation for each managed traffic light
         string trafficLightModuleName = default("tls");  // module name to be used in the simulation for each managed traffic light
         string trafficLightFilter = default("");  // filter string to select which tls shall be subscribed, list sumo IDs separated by spaces
-        string trafficLightModuleDisplayString = default("i=misc/node2;is=vs;r=0,,#707070,1");  // module displayString to be used in the simulation for each managed traffic light
+        string trafficLightModuleDisplayString = default("i=veins/node/trafficlight;is=vs");  // module displayString to be used in the simulation for each managed traffic light
         string host = default("localhost");  // server hostname
         int port = default(9999);  // server port (-1: automatic)
         int seed = default(-1); // seed value to set in launch configuration, if missing (-1: current run number)

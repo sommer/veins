@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2017 Christoph Sommer <sommer@ccs-labs.org>
+// Copyright (C) 2006-2011 Christoph Sommer <christoph.sommer@uibk.ac.at>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,17 +20,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-import org.car2x.veins.nodes.RSU;
-import org.car2x.veins.nodes.Scenario;
-import org.car2x.veins.nodes.TrafficLight;
+package org.car2x.veins.modules.application.traci;
 
-network RSUExampleScenario extends Scenario
+import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
+import org.car2x.veins.base.modules.ITrafficLightApplLayer;
+
+simple TraCIDemoTrafficLightApp extends DemoBaseApplLayer like ITrafficLightApplLayer
 {
-    submodules:
-        rsu[1]: RSU {
-            @display("p=150,140;i=veins/sign/yellowdiamond;is=vs");
-        }
-
-        tls[0]: TrafficLight {
-        }
+    parameters:
+        @class(veins::TraCIDemoTrafficLightApp);
+        @display("i=block/app2");
+        double aggregationInterval @unit(s) = default(1000ms);
+    gates:
+        inout logic;
 }
