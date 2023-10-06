@@ -27,7 +27,7 @@
 # on windows, special care is needed for linking
 # adapted from INET Framework (inet-4.2.2) makefrag
 #
-ifeq ($(PLATFORM),win32.x86_64)
+ifneq (,$(findstring win32,$(PLATFORM)))
   #
   # on windows we have to link with the ws2_32 (winsock2) library as it is no longer added
   # to the omnetpp system libraries by default (as of OMNeT++ 5.1)
