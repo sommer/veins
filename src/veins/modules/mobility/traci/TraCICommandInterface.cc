@@ -1621,7 +1621,7 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
     }
 
     const auto apiVersion = traci->versionConfig.version;
-    if (apiVersion == 15 || apiVersion == 16 || apiVersion == 17) {
+    if (apiVersion == 18 || apiVersion == 19 || apiVersion == 20) {
         uint8_t variableType = TYPE_COMPOUND;
         int32_t count = 3;
         uint8_t filenameType = TYPE_STRING;
@@ -1630,7 +1630,7 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
         TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << variableType << count << filenameType << filename << widthType << width << heightType << height);
         ASSERT(buf.eof());
     }
-    else if (apiVersion == 18 || apiVersion == 19 || apiVersion == 20) {
+    else if (apiVersion == 15 || apiVersion == 16 || apiVersion == 17) {
         uint8_t filenameType = TYPE_STRING;
         TraCIBuffer buf = connection->query(CMD_SET_GUI_VARIABLE, TraCIBuffer() << static_cast<uint8_t>(VAR_SCREENSHOT) << viewId << filenameType << filename);
         ASSERT(buf.eof());
