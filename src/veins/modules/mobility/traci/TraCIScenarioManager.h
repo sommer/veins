@@ -160,7 +160,8 @@ protected:
     std::set<std::string> unEquippedHosts;
     std::set<std::string> subscribedVehicles; /**< all vehicles we have already subscribed to */
     std::map<std::string, cModule*> trafficLights; /**< vector of all traffic lights managed by us */
-    uint32_t activeVehicleCount; /**< number of vehicles, be it parking or driving **/
+    uint32_t vehiclesTotalCount; /**< number of total vehicles */
+    uint32_t activeVehicleCount; /**< number of vehicles, be it parking or driving */
     uint32_t parkingVehicleCount; /**< number of parking vehicles, derived from parking start/end events */
     uint32_t drivingVehicleCount; /**< number of driving, as reported by sumo */
     bool autoShutdownTriggered;
