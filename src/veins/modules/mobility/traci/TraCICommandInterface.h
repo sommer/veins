@@ -478,7 +478,7 @@ public:
 
     // Poi methods
     std::list<std::string> getPoiIds();
-    void addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos);
+    void addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos, std::string imgFile = "", double width = 1, double height = 1, double angle = 0, std::string icon = "");
     class VEINS_API Poi {
     public:
         Poi(TraCICommandInterface* traci, std::string poiId)

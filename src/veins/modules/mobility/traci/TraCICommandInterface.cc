@@ -1162,13 +1162,13 @@ std::list<std::string> TraCICommandInterface::getPoiIds()
     return genericGetStringList(CMD_GET_POI_VARIABLE, "", ID_LIST, RESPONSE_GET_POI_VARIABLE);
 }
 
-void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos_)
+void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos_, std::string imgFile, double width, double height, double angle, std::string icon)
 {
     TraCIBuffer p;
 
     TraCICoord pos = connection.omnet2traci(pos_);
     p << static_cast<uint8_t>(ADD) << poiId;
-    p << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(4);
+    p << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(9);
     p << static_cast<uint8_t>(TYPE_STRING) << poiType;
     p << static_cast<uint8_t>(TYPE_COLOR) << color.red << color.green << color.blue << color.alpha;
     p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
@@ -1177,6 +1177,11 @@ void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const
 #else
     p << static_cast<uint8_t>(POSITION_2D) << pos;
 #endif
+    p << static_cast<uint8_t>(TYPE_STRING) << imgFile;
+    p << static_cast<uint8_t>(TYPE_DOUBLE) << width;
+    p << static_cast<uint8_t>(TYPE_DOUBLE) << height;
+    p << static_cast<uint8_t>(TYPE_DOUBLE) << angle;
+    p << static_cast<uint8_t>(TYPE_STRING) << icon;
 
     TraCIBuffer buf = connection.query(CMD_SET_POI_VARIABLE, p);
     ASSERT(buf.eof());
