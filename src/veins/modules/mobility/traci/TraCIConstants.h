@@ -46,7 +46,7 @@
 namespace veins {
 namespace TraCIConstants {
 
-const uint32_t TRACI_VERSION = 19;
+const uint32_t TRACI_VERSION = 21;
 
 const double INVALID_DOUBLE_VALUE = -1073741824;
 const int32_t INVALID_INT_VALUE = -1073741824;

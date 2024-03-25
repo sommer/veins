@@ -39,6 +39,7 @@ using namespace veins::TraCIConstants;
 namespace veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
+    {21, {21, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.19.0
     {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.2.0
     {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.1.0
     {18, {18, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.0.0
@@ -838,7 +839,7 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
             program.addLogic(logic);
         }
     }
-    else if (apiVersion == 19 || apiVersion == 20) {
+    else if (apiVersion == 19 || apiVersion >= 20) {
         uint8_t commandId = CMD_GET_TL_VARIABLE;
         uint8_t variableId = TL_COMPLETE_DEFINITION_RYG;
         std::string objectId = trafficLightId;
@@ -877,7 +878,7 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
             for (int32_t j = 0; j < nrOfPhases; ++j) {
                 TraCITrafficLightProgram::Phase phase;
                 int32_t nrOfComps = buf.readTypeChecked<int32_t>(TYPE_COMPOUND);
-                ASSERT((apiVersion == 19 && nrOfComps == 5) || (apiVersion == 20 && nrOfComps == 6));
+                ASSERT((apiVersion == 19 && nrOfComps == 5) || (apiVersion >= 20 && nrOfComps == 6));
                 phase.duration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // default duration of phase
                 phase.state = buf.readTypeChecked<std::string>(TYPE_STRING); // phase definition (like "[ryg]*")
                 phase.minDuration = buf.readTypeChecked<simtime_t>(traci->getTimeType()); // minimum duration of phase
@@ -892,7 +893,7 @@ TraCITrafficLightProgram TraCICommandInterface::Trafficlight::getProgramDefiniti
                         phase.next.push_back(buf.readTypeChecked<int32_t>(TYPE_INTEGER));
                     }
                 }
-                if (apiVersion == 20) {
+                if (apiVersion >= 20) {
                     phase.name = buf.readTypeChecked<std::string>(TYPE_STRING);
                 }
                 logic.phases.push_back(phase);
@@ -968,7 +969,7 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
             inbuf << phase.state;
         }
     }
-    else if (apiVersion == 19 || apiVersion == 20) {
+    else if (apiVersion == 19 || apiVersion >= 20) {
         inbuf << static_cast<uint8_t>(TL_COMPLETE_PROGRAM_RYG);
         inbuf << trafficLightId;
         inbuf << static_cast<uint8_t>(TYPE_COMPOUND);
@@ -1014,7 +1015,7 @@ void TraCICommandInterface::Trafficlight::setProgramDefinition(TraCITrafficLight
                     inbuf << next;
                 }
             }
-            if (apiVersion == 20) {
+            if (apiVersion >= 20) {
                 inbuf << static_cast<uint8_t>(TYPE_STRING);
                 inbuf << phase.name;
             }
@@ -1621,7 +1622,7 @@ void TraCICommandInterface::GuiView::takeScreenshot(std::string filename, int32_
     }
 
     const auto apiVersion = traci->versionConfig.version;
-    if (apiVersion == 18 || apiVersion == 19 || apiVersion == 20) {
+    if (apiVersion == 18 || apiVersion == 19 || apiVersion >= 20) {
         uint8_t variableType = TYPE_COMPOUND;
         int32_t count = 3;
         uint8_t filenameType = TYPE_STRING;
