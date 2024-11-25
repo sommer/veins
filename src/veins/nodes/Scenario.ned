@@ -36,7 +36,7 @@ network Scenario
         double playgroundSizeX @unit(m); // x size of the area the nodes are in (in meters)
         double playgroundSizeY @unit(m); // y size of the area the nodes are in (in meters)
         double playgroundSizeZ @unit(m); // z size of the area the nodes are in (in meters)
-        @display("bgb=$playgroundSizeX,$playgroundSizeY");
+        @display("bgb=dropUnit($playgroundSizeX),dropUnit($playgroundSizeY)");
     submodules:
         obstacles: ObstacleControl {
             @display("p=240,50");
