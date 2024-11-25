@@ -64,7 +64,7 @@ if args:
 
 
 # Start with default flags
-makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins_inet', '-O', 'out', '-p', 'VEINS_INET']
+makemake_flags = ['-f', '--deep', '--make-so', '-I', '.', '-o', 'veins_inet', '-O', 'out', '-p', 'VEINS_INET']
 run_libs = [os.path.join('src', 'veins_inet')]
 run_neds = [os.path.join('src', 'veins_inet')]
 run_excs = []

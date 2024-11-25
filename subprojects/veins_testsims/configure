@@ -63,7 +63,7 @@ if args:
 
 
 # Start with default flags
-makemake_flags = ['-f', '--deep', '--no-deep-includes', '--make-so', '-I', '.', '-o', 'veins_testsims', '-O', 'out']
+makemake_flags = ['-f', '--deep', '--make-so', '-I', '.', '-o', 'veins_testsims', '-O', 'out']
 run_libs = [os.path.join('src', 'veins_testsims')]
 run_neds = [os.path.join('src', 'veins_testsims')]
 run_imgs = [os.path.join('images')]
