@@ -158,6 +158,9 @@ void BaseMobility::initialize(int stage)
                 if (origPGHeight > 0) {
                     playgroundScaleY = origPGHeight / playgroundSizeY();
                 }
+                if ((playgroundScaleX != 1.0) || (playgroundScaleY != 1.0)) {
+                    throw cRuntimeError("playground scaling is not supported");
+                }
             }
         }
 
