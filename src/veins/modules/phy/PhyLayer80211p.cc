@@ -254,7 +254,12 @@ unique_ptr<AnalogueModel> PhyLayer80211p::initializeVehicleObstacleShadowing(Par
 unique_ptr<Decider> PhyLayer80211p::initializeDecider80211p(ParameterMap& params)
 {
     double centerFreq = params["centerFrequency"];
-    auto dec = make_unique<Decider80211p>(this, this, minPowerLevel, ccaThreshold, allowTxDuringRx, centerFreq, findHost()->getIndex(), collectCollisionStatistics);
+    auto myIndex = -1;
+    auto host = findHost();
+    if (host->isVector()) {
+        myIndex = host->getIndex();
+    }
+    auto dec = make_unique<Decider80211p>(this, this, minPowerLevel, ccaThreshold, allowTxDuringRx, centerFreq, myIndex, collectCollisionStatistics);
     dec->setPath(getParentModule()->getFullPath());
     return unique_ptr<Decider>(std::move(dec));
 }
