@@ -140,6 +140,12 @@ public:
      * @return Success indication
      */
     bool addVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = 0, double emitPosition = DEPART_POSITION_BASE, double emitSpeed = DEPART_SPEED_MAX, int8_t emitLane = DEPART_LANE_BEST);
+
+    /**
+     * @brief Queries a list of all vehicles ids.
+     * @return a list of ids of all vehicles currently running within the scenario
+     */
+    std::list<std::string> getVehicleIds(); 
     class VEINS_API Vehicle {
     public:
         Vehicle(TraCICommandInterface* traci, std::string nodeId)

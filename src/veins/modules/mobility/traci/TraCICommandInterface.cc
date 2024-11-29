@@ -237,6 +237,10 @@ std::list<std::string> TraCICommandInterface::getVehicleTypeIds()
 {
     return genericGetStringList(CMD_GET_VEHICLETYPE_VARIABLE, "", ID_LIST, RESPONSE_GET_VEHICLETYPE_VARIABLE);
 }
+std::list<std::string> TraCICommandInterface::getVehicleIds()
+{
+    return genericGetStringList(CMD_GET_VEHICLE_VARIABLE, "", ID_LIST, RESPONSE_GET_VEHICLE_VARIABLE);
+}
 
 double TraCICommandInterface::getVehicleTypeMaxSpeed(std::string typeId)
 {
@@ -660,7 +664,7 @@ std::vector<std::tuple<std::string, int, double, char>> TraCICommandInterface::V
     response >> numLinks;
     ASSERT(numLinks * 4 + 1 == numElements);
 
-    for (int i = 0; i < numLinks; ++i) {
+    for (unsigned int i = 0; i < numLinks; ++i) {
         uint8_t tlsIdType;
         response >> tlsIdType;
         ASSERT(tlsIdType == TYPE_STRING);

@@ -698,6 +698,13 @@ void TraCITestApp::performTest(const simtime_t t)
         }
     }
 
+    if (testNumber == testCounter++) {
+        if (t == 11) {
+            auto result = traci->getVehicleIds();
+            assertEqual("(TraCICommandInterface::getVehicleIds)", 3, result.size());
+        }
+    }
+
     //
     // TraCICommandInterface::Junction
     //
@@ -926,7 +933,7 @@ void TraCITestApp::performTest(const simtime_t t)
     if (testNumber == testCounter++) {
         if (t == 1) {
             std::list<std::string> changePermissions = traci->lane("44_0").getChangePermissions(TraCIConstants::LANECHANGE_LEFT);
-            assertEqual("(TraCICommandInterface::Lane::getChangePermissions)", 26, changePermissions.size());
+            assertEqual("(TraCICommandInterface::Lane::getChangePermissions)", 33, changePermissions.size());
             assertEqual("(TraCICommandInterface::Lane::getChangePermissions)", "private", *changePermissions.begin());
         }
     }
@@ -1248,7 +1255,7 @@ void TraCITestApp::performTest(const simtime_t t)
         }
     }
 
-    ASSERT(testCounter - 1 == 106);
+    ASSERT(testCounter - 1 == 107);
 
     //
     // End
