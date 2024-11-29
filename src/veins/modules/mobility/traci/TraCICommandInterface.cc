@@ -1168,11 +1168,15 @@ std::list<std::string> TraCICommandInterface::getPoiIds()
 
 void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const TraCIColor& color, int32_t layer, const Coord& pos_, std::string imgFile, double width, double height, double angle, std::string icon)
 {
+    // Check if SUMO is new than version 1.18.0 in order to check image support for POI
+    bool support_icon = (getVersion().first > 20);
+    uint8_t size = (support_icon) ? 9 : 8;
+
     TraCIBuffer p;
 
     TraCICoord pos = connection.omnet2traci(pos_);
     p << static_cast<uint8_t>(ADD) << poiId;
-    p << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(9);
+    p << static_cast<uint8_t>(TYPE_COMPOUND) << static_cast<int32_t>(size);
     p << static_cast<uint8_t>(TYPE_STRING) << poiType;
     p << static_cast<uint8_t>(TYPE_COLOR) << color.red << color.green << color.blue << color.alpha;
     p << static_cast<uint8_t>(TYPE_INTEGER) << layer;
@@ -1185,7 +1189,9 @@ void TraCICommandInterface::addPoi(std::string poiId, std::string poiType, const
     p << static_cast<uint8_t>(TYPE_DOUBLE) << width;
     p << static_cast<uint8_t>(TYPE_DOUBLE) << height;
     p << static_cast<uint8_t>(TYPE_DOUBLE) << angle;
-    p << static_cast<uint8_t>(TYPE_STRING) << icon;
+    if (support_icon) {
+        p << static_cast<uint8_t>(TYPE_STRING) << icon;
+    }
 
     TraCIBuffer buf = connection.query(CMD_SET_POI_VARIABLE, p);
     ASSERT(buf.eof());

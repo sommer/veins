@@ -145,7 +145,7 @@ public:
      * @brief Queries a list of all vehicles ids.
      * @return a list of ids of all vehicles currently running within the scenario
      */
-    std::list<std::string> getVehicleIds(); 
+    std::list<std::string> getVehicleIds();
     class VEINS_API Vehicle {
     public:
         Vehicle(TraCICommandInterface* traci, std::string nodeId)
