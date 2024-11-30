@@ -931,10 +931,20 @@ void TraCITestApp::performTest(const simtime_t t)
     }
 
     if (testNumber == testCounter++) {
-        if (t == 1) {
-            std::list<std::string> changePermissions = traci->lane("44_0").getChangePermissions(TraCIConstants::LANECHANGE_LEFT);
-            assertEqual("(TraCICommandInterface::Lane::getChangePermissions)", 33, changePermissions.size());
-            assertEqual("(TraCICommandInterface::Lane::getChangePermissions)", "private", *changePermissions.begin());
+        // check if sumo version is newer than SUMO 1.16.0
+        std::set<std::string> sumoVersions{"SUMO 1.17.0", "SUMO 1.18.0"};
+        if (!(traci->getVersion().first <= 20 && sumoVersions.find(traci->getVersion().second) == sumoVersions.end())) {
+            if (t == 1) {
+                std::list<std::string> changePermissions = traci->lane("44_0").getChangePermissions(TraCIConstants::LANECHANGE_LEFT);
+                auto version = traci->getVersion();
+                if (version.first >= 21 && version.second.compare(std::string("SUMO 1.19.0")) != 0) {
+                    assertEqual("(TraCICommandInterface::Lane::getChangePermissions)", 33, changePermissions.size());
+                }
+                else {
+                    assertEqual("(TraCICommandInterface::Lane::getChangePermissions)", 26, changePermissions.size());
+                }
+                assertEqual("(TraCICommandInterface::Lane::getChangePermissions)", "private", *changePermissions.begin());
+            }
         }
     }
 
@@ -1212,7 +1222,14 @@ void TraCITestApp::performTest(const simtime_t t)
     if (testNumber == testCounter++) {
         if (t == 1) {
             std::list<std::string> vtIds = traci->getVehicleTypeIds();
-            assertEqual("(TraCICommandInterface::getVehicleTypeIds) number is correct", 7, vtIds.size());
+            // In SUMO 1.17.0 a new vehicle type was introduced, but the API version was not increased
+            std::set<std::string> sumoVersions{"SUMO 1.17.0", "SUMO 1.18.0"};
+            if (traci->getVersion().first <= 20 && sumoVersions.find(traci->getVersion().second) == sumoVersions.end()) {
+                assertEqual("(TraCICommandInterface::getVehicleTypeIds) number is correct", 6, vtIds.size());
+            }
+            else {
+                assertEqual("(TraCICommandInterface::getVehicleTypeIds) number is correct", 7, vtIds.size());
+            }
             bool found = false;
             for (auto& s : vtIds) {
                 if (s == "vtype0") {
