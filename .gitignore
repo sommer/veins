@@ -11,6 +11,7 @@ doc/neddoc
 /bin/veins_run
 
 /compile_commands.json
+/.cache/
 /out
 
 examples/**/results
@@ -19,6 +20,8 @@ examples/**/.qtenvrc
 examples/**/.cmdenv-log
 examples/**/valgrind.out
 
+subprojects/veins_catch/compile_commands.json
+subprojects/veins_catch/.cache/
 subprojects/veins_catch/out
 subprojects/veins_catch/bin/veins_catch_run
 subprojects/veins_catch/src/*.dll
@@ -35,6 +38,8 @@ subprojects/veins_inet3/src/*.dll
 subprojects/veins_inet3/src/*.dylib
 subprojects/veins_inet3/src/**/*_m.h
 subprojects/veins_inet3/src/**/*_m.cc
+subprojects/veins_inet3/compile_commands.json
+subprojects/veins_inet3/.cache/
 subprojects/veins_inet3/out
 subprojects/veins_inet3/bin/veins_inet_run
 subprojects/veins_inet3/examples/**/results
@@ -49,6 +54,8 @@ subprojects/veins_inet/src/*.dll
 subprojects/veins_inet/src/*.dylib
 subprojects/veins_inet/src/**/*_m.h
 subprojects/veins_inet/src/**/*_m.cc
+subprojects/veins_inet/compile_commands.json
+subprojects/veins_inet/.cache/
 subprojects/veins_inet/out
 subprojects/veins_inet/bin/veins_inet_run
 subprojects/veins_inet/examples/**/results
@@ -63,6 +70,8 @@ subprojects/veins_testsims/src/*.dll
 subprojects/veins_testsims/src/*.dylib
 subprojects/veins_testsims/src/**/*_m.h
 subprojects/veins_testsims/src/**/*_m.cc
+subprojects/veins_testsims/compile_commands.json
+subprojects/veins_testsims/.cache/
 subprojects/veins_testsims/out
 subprojects/veins_testsims/bin/veins_testsims_run
 subprojects/veins_testsims/sim/**/results
