@@ -22,14 +22,14 @@
 
 #pragma once
 
+#include "veins/veins.h"
+
 #ifdef WITH_OSG
 namespace osg {
 class Geode;
 class Group;
 }; // namespace osg
 #endif // WITH_OSG
-
-#include "veins/veins.h"
 
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/utility/SignalManager.h"
