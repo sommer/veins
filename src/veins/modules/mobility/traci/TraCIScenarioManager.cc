@@ -283,6 +283,7 @@ void TraCIScenarioManager::initialize(int stage)
     hosts.clear();
     subscribedVehicles.clear();
     trafficLights.clear();
+    vehiclesTotalCount = 0;
     activeVehicleCount = 0;
     parkingVehicleCount = 0;
     drivingVehicleCount = 0;
@@ -809,7 +810,7 @@ void TraCIScenarioManager::processSimSubscription(std::string objectId, TraCIBuf
                 buf >> idstring;
                 // adding modules is handled on the fly when entering/leaving the ROI
             }
-
+            vehiclesTotalCount += count;
             activeVehicleCount += count;
             drivingVehicleCount += count;
         }
