@@ -65,3 +65,6 @@ endif
 ifeq ($(WITH_OSG), yes)
   OMNETPP_LIBS += $(OSG_LIBS)
 endif
+
+# ===== Vanetza (headers) =====
+INCLUDE_PATH += -I/home/ceci/vanetza
