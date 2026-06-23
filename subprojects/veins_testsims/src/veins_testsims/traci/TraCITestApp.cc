@@ -580,6 +580,10 @@ void TraCITestApp::performTest(const simtime_t t)
             if (traci->getApiVersion() <= 17) {
                 assertClose("(TraCICommandInterface::Vehicle::getCO2Emissions)", 5078.335162222222607, traciVehicle->getCO2Emissions());
             }
+            else if (traci->getApiVersion() >= 22) {
+                // HBEFA4 changed emission model; use SUMO 1.23+ expected values
+                assertClose("(TraCICommandInterface::Vehicle::getCO2Emissions)", 5580.138888167233745, traciVehicle->getCO2Emissions(), .5);
+            }
             else {
                 assertClose("(TraCICommandInterface::Vehicle::getCO2Emissions)", 6150.260674767667297, traciVehicle->getCO2Emissions(), .5);
             }
@@ -590,6 +594,9 @@ void TraCITestApp::performTest(const simtime_t t)
         if (t == 1) {
             if (traci->getApiVersion() <= 17) {
                 assertClose("(TraCICommandInterface::Vehicle::getCOEmissions)", 46.7056784444444375, traciVehicle->getCOEmissions());
+            }
+            else if (traci->getApiVersion() >= 22) {
+                assertClose("(TraCICommandInterface::Vehicle::getCOEmissions)", 91.2260719874748105, traciVehicle->getCOEmissions(), .01);
             }
             else {
                 assertClose("(TraCICommandInterface::Vehicle::getCOEmissions)", 91.03191431262455069, traciVehicle->getCOEmissions(), .01);
@@ -602,6 +609,9 @@ void TraCITestApp::performTest(const simtime_t t)
             if (traci->getApiVersion() <= 17) {
                 assertClose("(TraCICommandInterface::Vehicle::getHCEmissions)", 0.3419191911111110205, traciVehicle->getHCEmissions());
             }
+            else if (traci->getApiVersion() >= 22) {
+                assertClose("(TraCICommandInterface::Vehicle::getHCEmissions)", 0.6358090404619034519, traciVehicle->getHCEmissions(), .01);
+            }
             else {
                 assertClose("(TraCICommandInterface::Vehicle::getHCEmissions)", 0.574484705658927175, traciVehicle->getHCEmissions(), .01);
             }
@@ -612,6 +622,9 @@ void TraCITestApp::performTest(const simtime_t t)
         if (t == 1) {
             if (traci->getApiVersion() <= 17) {
                 assertClose("(TraCICommandInterface::Vehicle::getPMxEmissions)", 0.09914231388888891661, traciVehicle->getPMxEmissions());
+            }
+            else if (traci->getApiVersion() >= 22) {
+                assertClose("(TraCICommandInterface::Vehicle::getPMxEmissions)", 1.091165047641879271, traciVehicle->getPMxEmissions(), .01);
             }
             else {
                 assertClose("(TraCICommandInterface::Vehicle::getPMxEmissions)", 0.1398785382084307971, traciVehicle->getPMxEmissions(), .01);
@@ -624,6 +637,9 @@ void TraCITestApp::performTest(const simtime_t t)
             if (traci->getApiVersion() <= 17) {
                 assertClose("(TraCICommandInterface::Vehicle::getNOxEmissions)", 1.671023434444445011, traciVehicle->getNOxEmissions());
             }
+            else if (traci->getApiVersion() >= 22) {
+                assertClose("(TraCICommandInterface::Vehicle::getNOxEmissions)", 2.247446991995094123, traciVehicle->getNOxEmissions(), .01);
+            }
             else {
                 assertClose("(TraCICommandInterface::Vehicle::getNOxEmissions)", 2.106876077669999958, traciVehicle->getNOxEmissions(), .01);
             }
@@ -634,6 +650,9 @@ void TraCITestApp::performTest(const simtime_t t)
         if (t == 1) {
             if (traci->getApiVersion() <= 17) {
                 assertClose("(TraCICommandInterface::Vehicle::getFuelConsumption)", 2.182966381251871368, traciVehicle->getFuelConsumption());
+            }
+            else if (traci->getApiVersion() >= 22) {
+                assertClose("(TraCICommandInterface::Vehicle::getFuelConsumption)", 1809.017087481055569, traciVehicle->getFuelConsumption(), .01);
             }
             else {
                 // SUMO 1.14.0 changed default fuel consumption reporting to mg/s (instead of ml/s), so either is fine
