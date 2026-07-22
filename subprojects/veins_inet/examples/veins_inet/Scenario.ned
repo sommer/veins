@@ -24,8 +24,10 @@ package org.car2x.veins.subprojects.veins_inet.examples.veins_inet;
 
 //#if INET_VERSION < 0x0403
 import inet.physicallayer*.ieee80211.packetlevel.Ieee80211DimensionalRadioMedium;
-//#else
+//#else if INET_VERSION < 0x0406
 import inet.physicallayer*.wireless.ieee80211.packetlevel.Ieee80211DimensionalRadioMedium;
+//#else
+import inet.physicallayer.wireless.common.medium.RadioMedium;
 //#endif
 import org.car2x.veins.subprojects.veins_inet.VeinsInetCar;
 import org.car2x.veins.subprojects.veins_inet.VeinsInetManager;
@@ -44,9 +46,16 @@ network Scenario
         bool useOsg = default(false);
         @display("bgb=319,384");
     submodules:
+        // For INET_VERSION < 0x0406
         radioMedium: Ieee80211DimensionalRadioMedium {
             @display("p=64,224");
         }
+
+        // For INET_VERSION >= 0x0406
+        // radioMedium: RadioMedium {
+        //    @display("p=64,224")
+        // }
+
         manager: VeinsInetManager {
             @display("p=192,320");
         }

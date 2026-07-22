@@ -34,7 +34,9 @@
 #include "inet/common/TimeTag_m.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/networklayer/common/L3AddressTag_m.h"
+#if INET_VERSION < 0x0406
 #include "inet/transportlayer/contract/udp/UdpControlInfo_m.h"
+#endif
 
 namespace veins {
 
