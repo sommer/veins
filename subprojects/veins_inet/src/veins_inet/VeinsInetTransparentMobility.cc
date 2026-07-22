@@ -57,8 +57,7 @@ void VeinsInetTransparentMobility::initialize(int stage)
         check_and_cast<cModule*>(mobility.get())->subscribe(BaseMobility::mobilityStateChangedSignal, this);
         WATCH(lastVelocity);
         WATCH(lastAngularPosition);
-    }
-    ;
+    };
     // We patch the OMNeT++ Display String to set the initial position. Make sure this works.
     ASSERT(hasPar("initFromDisplayString") && par("initFromDisplayString"));
 }
@@ -80,7 +79,7 @@ void VeinsInetTransparentMobility::receiveSignal(cComponent* source, simsignal_t
 const inet::Coord& VeinsInetTransparentMobility::getCurrentPosition()
 {
     auto lastVeinsPosition = mobility->getPositionAt(simTime());
-    lastPosition = inet::Coord(lastVeinsPosition.x + positionOffset.x, lastVeinsPosition.y + positionOffset.y, lastVeinsPosition.z = positionOffset.z);
+    lastPosition = inet::Coord(lastVeinsPosition.x + positionOffset.x, lastVeinsPosition.y + positionOffset.y, lastVeinsPosition.z + positionOffset.z);
     return lastPosition;
 }
 
