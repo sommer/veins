@@ -39,6 +39,7 @@ using namespace veins::TraCIConstants;
 namespace veins {
 
 const std::map<uint32_t, TraCICommandInterface::VersionConfig> TraCICommandInterface::versionConfigs = {
+    {22, {22, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.23.0
     {21, {21, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.19.0
     {20, {20, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.2.0
     {19, {19, TYPE_DOUBLE, TYPE_POLYGON, VAR_TIME}}, // since SUMO 1.1.0
