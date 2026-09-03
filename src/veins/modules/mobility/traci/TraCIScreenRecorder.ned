@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.mobility.traci;
+package veins.modules.mobility.traci;
 
 //
 // Simple support module to take (a series of) screenshots of a simulation running in the TraCI server.

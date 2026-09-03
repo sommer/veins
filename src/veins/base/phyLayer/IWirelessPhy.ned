@@ -22,9 +22,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.base.phyLayer;
+package veins.base.phyLayer;
 
-import org.car2x.veins.base.connectionManager.IChannelAccess;
+import veins.base.connectionManager.IChannelAccess;
 
 // Wireless physical layer module interface.
 moduleinterface IWirelessPhy extends IChannelAccess

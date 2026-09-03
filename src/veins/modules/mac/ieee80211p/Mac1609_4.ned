@@ -20,9 +20,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.mac.ieee80211p;
+package veins.modules.mac.ieee80211p;
 
-import org.car2x.veins.base.modules.BaseMacLayer;
+import veins.base.modules.BaseMacLayer;
 
 //
 // Manages timeslots for CCH and SCH listening and sending.

@@ -20,15 +20,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.nodes;
+package veins.nodes;
 
-import org.car2x.veins.base.connectionManager.ConnectionManager;
-import org.car2x.veins.base.modules.BaseWorldUtility;
-import org.car2x.veins.modules.mobility.traci.TraCIScenarioManager*;
-import org.car2x.veins.modules.obstacle.ObstacleControl;
-import org.car2x.veins.modules.world.annotations.AnnotationManager;
-import org.car2x.veins.nodes.Car;
-import org.car2x.veins.visualizer.roads.RoadsCanvasVisualizer;
+import veins.base.connectionManager.ConnectionManager;
+import veins.base.modules.BaseWorldUtility;
+import veins.modules.mobility.traci.TraCIScenarioManager*;
+import veins.modules.obstacle.ObstacleControl;
+import veins.modules.world.annotations.AnnotationManager;
+import veins.nodes.Car;
+import veins.visualizer.roads.RoadsCanvasVisualizer;
 
 network Scenario
 {

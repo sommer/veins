@@ -65,3 +65,38 @@ endif
 ifeq ($(WITH_OSG), yes)
   OMNETPP_LIBS += $(OSG_LIBS)
 endif
+
+# Definisce la posizione della libreria usando la variabile di sistema $(HOME)
+# Questo funzionerà su qualsiasi PC Linux se Vanetza è installata nella cartella 'vanetza' della home
+VANETZA_HOME = $(HOME)/vanetza
+
+# Usa la variabile per definire gli include path
+INCLUDE_PATH += -I$(VANETZA_HOME)
+INCLUDE_PATH += -I$(VANETZA_HOME)/vanetza/asn1/support
+INCLUDE_PATH += -I$(VANETZA_HOME)/vanetza/asn1/its
+
+# Usa la variabile per definire il percorso della libreria statica
+LIBS += -L$(VANETZA_HOME)/build/lib/static
+
+LIBS += -Wl,--start-group
+LIBS += -lvanetza_facilities
+LIBS += -lvanetza_geonet
+LIBS += -lvanetza_net
+LIBS += -lvanetza_access
+LIBS += -lvanetza_btp
+LIBS += -lvanetza_dcc
+LIBS += -lvanetza_gnss
+LIBS += -lvanetza_security
+LIBS += -lvanetza_asn1_security
+LIBS += -lvanetza_asn1_security_r2
+LIBS += -lvanetza_asn1_its
+LIBS += -lvanetza_asn1_its_r2
+LIBS += -lvanetza_asn1_support
+LIBS += -lvanetza_asn1
+LIBS += -lvanetza_common
+LIBS += -Wl,--end-group
+
+LIBS += -lcryptopp
+LIBS += -lboost_system
+LIBS += -lboost_date_time
+LIBS += -lGeographicLib

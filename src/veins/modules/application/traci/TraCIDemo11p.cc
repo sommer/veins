@@ -56,7 +56,12 @@ void TraCIDemo11p::onWSM(BaseFrame1609_4* frame)
 
     findHost()->getDisplayString().setTagArg("i", 1, "green");
 
-    if (mobility->getRoadId()[0] != ':') traciVehicle->changeRoute(wsm->getDemoData(), 9999);
+    if (auto traciMob = dynamic_cast<veins::TraCIMobility*>(mobility)) {
+        if (!traciMob->getRoadId().empty() && traciMob->getRoadId()[0] != ':') {
+            traciVehicle->changeRoute(wsm->getDemoData(), 9999);
+        }
+    }
+
     if (!sentMessage) {
         sentMessage = true;
         // repeat the received traffic update once in 2 seconds plus some random delay
@@ -92,14 +97,26 @@ void TraCIDemo11p::handlePositionUpdate(cObject* obj)
     DemoBaseApplLayer::handlePositionUpdate(obj);
 
     // stopped for for at least 10s?
-    if (mobility->getSpeed() < 1) {
+    double speed = 0.0;
+
+    if (auto traciMob = dynamic_cast<veins::TraCIMobility*>(mobility)) {
+        speed = traciMob->getSpeed();
+    } else if (mobility) {
+        speed = mobility->getCurrentSpeed().length();
+    }
+
+    if (speed < 1) {
         if (simTime() - lastDroveAt >= 10 && sentMessage == false) {
             findHost()->getDisplayString().setTagArg("i", 1, "red");
             sentMessage = true;
 
             TraCIDemo11pMessage* wsm = new TraCIDemo11pMessage();
             populateWSM(wsm);
-            wsm->setDemoData(mobility->getRoadId().c_str());
+            if (auto traciMob = dynamic_cast<veins::TraCIMobility*>(mobility)) {
+                wsm->setDemoData(traciMob->getRoadId().c_str());
+            } else {
+                wsm->setDemoData("static"); // fallback per RSU
+            }
 
             // host is standing still due to crash
             if (dataOnSch) {

@@ -20,10 +20,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.application.traci;
+package veins.modules.application.traci;
 
-import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
-import org.car2x.veins.base.modules.ITrafficLightApplLayer;
+import veins.modules.application.ieee80211p.DemoBaseApplLayer;
+import veins.base.modules.ITrafficLightApplLayer;
 
 simple TraCIDemoTrafficLightApp extends DemoBaseApplLayer like ITrafficLightApplLayer
 {

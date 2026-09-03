@@ -19,11 +19,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-package org.car2x.veins.nodes;
+package veins.nodes;
 
-import org.car2x.veins.base.modules.*;
-import org.car2x.veins.modules.nic.Nic80211p;
-import org.car2x.veins.modules.world.traci.trafficLight.TraCITrafficLightInterface;
+import veins.base.modules.*;
+import veins.modules.nic.Nic80211p;
+import veins.modules.world.traci.trafficLight.TraCITrafficLightInterface;
 module TrafficLight
 {
     parameters:
@@ -34,12 +34,12 @@ module TrafficLight
     gates:
         input veinsradioIn; // gate for sendDirect
     submodules:
-        appl: <applType> like org.car2x.veins.base.modules.ITrafficLightApplLayer {
+        appl: <applType> like veins.base.modules.ITrafficLightApplLayer {
             parameters:
                 @display("p=60,50");
         }
         
-        nic: <nicType> like org.car2x.veins.modules.nic.INic80211p {
+        nic: <nicType> like veins.modules.nic.INic80211p {
             parameters:
                 @display("p=60,166");
         }
@@ -52,7 +52,7 @@ module TrafficLight
             @display("p=200,50");
         }
 
-        logic: <logicType> like org.car2x.veins.base.modules.ITrafficLightLogic {
+        logic: <logicType> like veins.base.modules.ITrafficLightLogic {
             @display("p=130,50");
         }
 

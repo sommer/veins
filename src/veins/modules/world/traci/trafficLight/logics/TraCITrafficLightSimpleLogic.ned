@@ -20,9 +20,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.world.traci.trafficLight.logics;
+package veins.modules.world.traci.trafficLight.logics;
 
-import org.car2x.veins.base.modules.ITrafficLightLogic;
+import veins.base.modules.ITrafficLightLogic;
 
 simple TraCITrafficLightSimpleLogic like ITrafficLightLogic {
     parameters:

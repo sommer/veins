@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.obstacle;
+package veins.modules.obstacle;
 
 //
 // ObstacleControl models obstacles that block radio transmissions

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.mobility.traci;
+package veins.modules.mobility.traci;
 
 //
 // Base class for a TraCIScenarioManager.
@@ -53,7 +53,7 @@ simple TraCIScenarioManager
         double connectAt @unit("s") = default(0s);  // when to connect to TraCI server (must be the initial timestep of the server)
         double firstStepAt @unit("s") = default(-1s);  // when to start synchronizing with the TraCI server (-1: immediately after connecting)
         double updateInterval @unit("s") = default(1s);  // time interval of hosts' position updates
-        string moduleType = default("org.car2x.veins.nodes.Car");  // module type to be used in the simulation for each managed vehicle
+        string moduleType = default("veins.nodes.Car");  // module type to be used in the simulation for each managed vehicle
         string moduleName = default("node");  // module name to be used in the simulation for each managed vehicle
         // module displayString to be used in the simulation for each managed vehicle
         // display strings key-value pairs needs to be protected with single quotes, as they use an = sign as the type mappings. For example

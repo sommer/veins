@@ -22,7 +22,7 @@
 
 // AnnotationManager - manages annotations on the OMNeT++ canvas
 
-package org.car2x.veins.modules.world.annotations;
+package veins.modules.world.annotations;
 
 //
 // manages annotations on the OMNeT++ canvas

@@ -20,8 +20,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.application.traci;
-import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
+package veins.modules.application.traci;
+import veins.modules.application.ieee80211p.DemoBaseApplLayer;
 
 simple TraCIDemoRSU11p extends DemoBaseApplLayer
 {

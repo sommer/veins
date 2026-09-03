@@ -22,7 +22,7 @@
 
 // AnnotationDummy - workaround to visualize annotations
 
-package org.car2x.veins.modules.world.annotations;
+package veins.modules.world.annotations;
 
 //
 // workaround to visualize annotations

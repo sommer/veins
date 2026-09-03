@@ -20,41 +20,78 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.nodes;
+package veins.nodes;
 
-import org.car2x.veins.base.modules.*;
-import org.car2x.veins.modules.nic.Nic80211p;
+import veins.base.modules.*;
+import veins.modules.nic.Nic80211p;
 
 module Car
 {
     parameters:
         string applType; //type of the application layer
         string nicType = default("Nic80211p"); // type of network interface card
-        string veinsmobilityType = default("org.car2x.veins.modules.mobility.traci.TraCIMobility"); //type of the mobility module
+        string veinsmobilityType = default("veins.modules.mobility.traci.TraCIMobility"); //type of the mobility module
     gates:
         input veinsradioIn; // gate for sendDirect
     submodules:
-        appl: <applType> like org.car2x.veins.base.modules.IBaseApplLayer {
+        appl: <applType> like veins.base.modules.IBaseApplLayer {
             parameters:
                 @display("p=60,50");
         }
 
-        nic: <nicType> like org.car2x.veins.modules.nic.INic80211p {
+        nic: <nicType> like veins.modules.nic.INic80211p {
             parameters:
                 @display("p=60,166");
         }
 
-        veinsmobility: <veinsmobilityType> like org.car2x.veins.base.modules.IMobility {
+        veinsmobility: <veinsmobilityType> like veins.base.modules.IMobility {
             parameters:
                 @display("p=130,172;i=block/cogwheel");
         }
-        
+
+        bridge: veins.modules.application.ieee80211p.VanetzaToVeinsBridge {
+            parameters:
+                @display("p=130,50;i=block/network2");
+        }
+
+        converter: veins.modules.application.ieee80211p.ApplicationToVanetzaConverter {
+            parameters:
+                @display("p=200,50");
+        }
+
     connections:
-        nic.upperLayerOut --> appl.lowerLayerIn;
-        nic.upperLayerIn <-- appl.lowerLayerOut;
-        nic.upperControlOut --> appl.lowerControlIn;
-        nic.upperControlIn <-- appl.lowerControlOut;
+        // =========================
+        // DATA PLANE
+        // =========================
 
+        // before: appl.lowerLayerOut --> nic.upperLayerIn;
+        appl.lowerLayerOut --> bridge.upperLayerIn;
+        bridge.lowerLayerOut --> nic.upperLayerIn;
+
+
+        // before: nic.upperLayerOut --> appl.lowerLayerIn;
+        nic.upperLayerOut --> bridge.lowerLayerIn;
+        bridge.upperLayerOut --> appl.lowerLayerIn;
+
+
+        // =========================
+        // CONTROL PLANE
+        // =========================
+
+        // before: nic.upperControlIn <-- appl.lowerControlOut;
+        appl.lowerControlOut --> bridge.upperControlIn;
+        bridge.lowerControlOut --> nic.upperControlIn;
+
+
+        // before: nic.upperControlOut --> appl.lowerControlIn;
+        nic.upperControlOut --> bridge.lowerControlIn;
+        bridge.upperControlOut --> appl.lowerControlIn;
+
+
+        // =========================
+        // RADIO
+        // =========================
+
+        // before: veinsradioIn --> nic.radioIn;
         veinsradioIn --> nic.radioIn;
-
 }

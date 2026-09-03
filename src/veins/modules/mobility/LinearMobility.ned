@@ -22,9 +22,9 @@
 
 // Author: Emin Ilker Cetinbas (niw3_at_yahoo_d0t_com)
 
-package org.car2x.veins.modules.mobility;
+package veins.modules.mobility;
 
-import org.car2x.veins.base.modules.BaseMobility;
+import veins.base.modules.BaseMobility;
 
 //
 // This is a linear mobility model with speed, angle and acceleration parameters.
