@@ -938,7 +938,14 @@ void TraCITestApp::performTest(const simtime_t t)
     if (testNumber == testCounter++) {
         if (t == 1) {
             std::list<std::string> allowed = traci->lane("44_0").getAllowed();
-            assertEqual("(TraCICommandInterface::Lane::getAllowed)", 0, allowed.size());
+            // SUMO 1.28.0 returns the complete list of vehicle classes (instead of an empty list) if all classes are allowed, but the API version was not increased
+            if (allowed.size() == 0) {
+                assertTrue("(TraCICommandInterface::Lane::getAllowed)", true);
+            }
+            else {
+                std::list<std::string> allClasses = traci->lane("44_0").getChangePermissions(TraCIConstants::LANECHANGE_LEFT);
+                assertEqual("(TraCICommandInterface::Lane::getAllowed)", allClasses.size(), allowed.size());
+            }
         }
     }
 
