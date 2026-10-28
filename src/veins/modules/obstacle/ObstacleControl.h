@@ -53,7 +53,7 @@ public:
     void handleSelfMsg(cMessage* msg);
 
     void addFromXml(cXMLElement* xml);
-    void addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape);
+    void addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape,double height = 0.0);
     void add(Obstacle obstacle);
     void erase(const Obstacle* obstacle);
     bool isTypeSupported(std::string type);

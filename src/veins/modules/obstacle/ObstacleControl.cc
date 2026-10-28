@@ -128,6 +128,8 @@ void ObstacleControl::addFromXml(cXMLElement* xml)
             ASSERT(e->getAttribute("shape"));
             std::string shape = e->getAttribute("shape");
 
+            double height = e->getAttribute("height") ?  std::stof(e->getAttribute("height")) : 0;
+
             Obstacle obs(id, type, getAttenuationPerCut(type), getAttenuationPerMeter(type));
             std::vector<Coord> sh;
             cStringTokenizer st(shape.c_str());
@@ -137,7 +139,7 @@ void ObstacleControl::addFromXml(cXMLElement* xml)
                 ASSERT(xya.size() == 2);
                 sh.push_back(Coord(xya[0], xya[1]));
             }
-            obs.setShape(sh);
+            obs.setShape(sh,height);
             add(obs);
         }
         else {
@@ -146,13 +148,17 @@ void ObstacleControl::addFromXml(cXMLElement* xml)
     }
 }
 
-void ObstacleControl::addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape)
+void ObstacleControl::addFromTypeAndShape(std::string id, std::string typeId, std::vector<Coord> shape, double height)
 {
     if (!isTypeSupported(typeId)) {
         throw cRuntimeError("Unsupported obstacle type: \"%s\"", typeId.c_str());
     }
     Obstacle obs(id, typeId, getAttenuationPerCut(typeId), getAttenuationPerMeter(typeId));
-    obs.setShape(shape);
+    if(par("enable3d"))
+        obs.setShape(shape, height);
+    else
+        obs.setShape(shape, 0);
+
     add(obs);
 }
 

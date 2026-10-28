@@ -37,22 +37,56 @@ Obstacle::Obstacle(std::string id, std::string type, double attenuationPerCut, d
 {
 }
 
-void Obstacle::setShape(Coords shape)
+void Obstacle::setShape(Coords shape, double height )
 {
     coords = shape;
+    this-> height = height;
+    mesh = {};
     bboxP1 = Coord(1e7, 1e7);
     bboxP2 = Coord(-1e7, -1e7);
-    for (Coords::const_iterator i = coords.begin(); i != coords.end(); ++i) {
+    Coords::const_iterator i = coords.begin();
+    Coords::const_iterator j = i + 1;
+    for (; i != coords.end(); j = ++i + 1) {
         bboxP1.x = std::min(i->x, bboxP1.x);
         bboxP1.y = std::min(i->y, bboxP1.y);
         bboxP2.x = std::max(i->x, bboxP2.x);
         bboxP2.y = std::max(i->y, bboxP2.y);
+
+        if(height > 0 && j != coords.end())
+        {
+            // generating mesh for the walls
+            mesh.push_back({ Coord(i->x,i->y,0), Coord(i->x,i->y,height), Coord(j->x,j->y,height)});
+            mesh.push_back({ Coord(j->x,j->y,0), Coord(j->x,j->y,height), Coord(i->x,i->y,0)});
+
+        }
     }
+    
+    Coords shapeWithoutLast(shape.begin(), shape.end() - 1);
+    for(Coords monotonePolygon : partitionPolygonIntoMonotone(shapeWithoutLast))
+    {
+    	for(Triangle triangle : triangulateMonotonePolygon(monotonePolygon))
+    	{
+    		triangle.p1.z = 0;triangle.p2.z = 0;triangle.p3.z = 0;
+		    mesh.push_back(triangle);
+		    triangle.p1.z = height;triangle.p2.z = height;triangle.p3.z = height;
+		    mesh.push_back(triangle);
+    	}
+    }	
 }
 
 const Obstacle::Coords& Obstacle::getShape() const
 {
     return coords;
+}
+
+const Obstacle::Mesh& Obstacle::getMesh() const
+{
+    return mesh;
+}
+
+const double Obstacle::getHeight() const
+{
+    return height;
 }
 
 const Coord Obstacle::getBboxP1() const
@@ -68,6 +102,7 @@ const Coord Obstacle::getBboxP2() const
 bool Obstacle::containsPoint(Coord point) const
 {
     bool isInside = false;
+    if(point.z < 0 || (point.z > getHeight() && getHeight() > 0)) return false;
     const Obstacle::Coords& shape = getShape();
     Obstacle::Coords::const_iterator i = shape.begin();
     Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
@@ -85,7 +120,7 @@ bool Obstacle::containsPoint(Coord point) const
 
 namespace {
 
-double segmentsIntersectAt(const Coord& p1From, const Coord& p1To, const Coord& p2From, const Coord& p2To)
+double segmentsIntersectSegment(const Coord& p1From, const Coord& p1To, const Coord& p2From, const Coord& p2To) 
 {
     double p1x = p1To.x - p1From.x;
     double p1y = p1To.y - p1From.y;
@@ -103,23 +138,97 @@ double segmentsIntersectAt(const Coord& p1From, const Coord& p1To, const Coord& 
 
     return p1Frac;
 }
+
+/**
+ * Fast segment-triangle intersection test based on the
+ * Möller–Trumbore algorithm (1997).
+ *
+ * Uses barycentric coordinates to determine whether the segment pierces the
+ * triangle and returns the normalized intersection distance along the segment.
+ */
+double segmentsIntersectTriangle(const Segment& segment, const Triangle& triangle) 
+{
+    Coord edge1, edge2, segmentVector, h, s, q;
+    double a, f, u, v, t;
+
+    edge1.x = triangle.p2.x - triangle.p1.x;
+    edge1.y = triangle.p2.y - triangle.p1.y;
+    edge1.z = triangle.p2.z - triangle.p1.z;
+    edge2.x = triangle.p3.x - triangle.p1.x;
+    edge2.y = triangle.p3.y - triangle.p1.y;
+    edge2.z = triangle.p3.z - triangle.p1.z;
+    segmentVector.x = segment.p2.x - segment.p1.x;
+    segmentVector.y = segment.p2.y - segment.p1.y;
+    segmentVector.z = segment.p2.z - segment.p1.z;
+
+    h = computeCrossProduct(segmentVector,edge2);
+    a = computeDotProduct(edge1,h);
+
+    if (a > -0.00001 && a < 0.00001) {
+        return -1;
+    }
+
+    f = 1 / a;
+    s.x = segment.p1.x - triangle.p1.x;
+    s.y = segment.p1.y - triangle.p1.y;
+    s.z = segment.p1.z - triangle.p1.z;
+
+    u = f * computeDotProduct(s,h);
+
+    if (u < 0 || u > 1) {
+        return -1;
+    }
+
+    q = computeCrossProduct(s,edge1);
+    v = f * computeDotProduct(segmentVector,q);
+
+    if (v < 0 || u + v > 1) {
+        return -1;
+    }
+
+    t = f * computeDotProduct(edge2,q);
+
+    if (t > 0 && t < 1) {
+        return t;
+    }
+
+    return -1;
+}
+
 } // namespace
 
 std::vector<double> Obstacle::getIntersections(const Coord& senderPos, const Coord& receiverPos) const
 {
     std::vector<double> intersectAt;
-    const Obstacle::Coords& shape = getShape();
-    Obstacle::Coords::const_iterator i = shape.begin();
-    Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
-    for (; i != shape.end(); j = i++) {
-        const Coord& c1 = *i;
-        const Coord& c2 = *j;
 
-        double i = segmentsIntersectAt(senderPos, receiverPos, c1, c2);
-        if (i != -1) {
-            intersectAt.push_back(i);
+    if(getHeight() <= 0 )
+    {
+        const Obstacle::Coords& shape = getShape();
+        Obstacle::Coords::const_iterator i = shape.begin();
+        Obstacle::Coords::const_iterator j = (shape.rbegin() + 1).base();
+        for (; i != shape.end(); j = i++) {
+            const Coord& c1 = *i;
+            const Coord& c2 = *j;
+
+            double i = segmentsIntersectSegment(senderPos, receiverPos, c1, c2);
+            if (i != -1) {
+                intersectAt.push_back(i);
+            }
         }
     }
+    else
+    {
+        const Obstacle::Mesh& mesh = getMesh();
+        Obstacle::Mesh::const_iterator i = mesh.begin();
+        for (; i != mesh.end(); i++) {
+
+            double res = segmentsIntersectTriangle({senderPos, receiverPos}, *i);
+            if (res != -1) {
+                intersectAt.push_back(res);
+            }
+        }
+    }
+
     std::sort(intersectAt.begin(), intersectAt.end());
     return intersectAt;
 }
