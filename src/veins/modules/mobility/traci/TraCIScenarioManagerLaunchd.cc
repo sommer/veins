@@ -58,8 +58,18 @@ void TraCIScenarioManagerLaunchd::initialize(int stage)
     seed = par("seed");
     cXMLElementList basedir_nodes = launchConfig->getElementsByTagName("basedir");
     if (basedir_nodes.size() == 0) {
-        // default basedir is where current network file was loaded from
-        std::string basedir = cSimulation::getActiveSimulation()->getEnvir()->getConfig()->getConfigEntry("network").getBaseDirectory();
+        // set default basedir to where launchConfig is located
+        std::string basedir = launchConfig->getSourceLocation();
+        if (!basedir.empty()) {
+            // Cut the filename from the path
+            size_t pos = basedir.find_last_of("/\\");
+            if (pos != std::string::npos) basedir = basedir.substr(0, pos);
+            else basedir.clear(); // clear basedir on invalid filename
+        }
+        // alternative basedir is where current network file was loaded from
+        if(basedir.empty()){
+            basedir = cSimulation::getActiveSimulation()->getEnvir()->getConfig()->getConfigEntry("network").getBaseDirectory();
+        }
         cXMLElement* basedir_node = new cXMLElement("basedir", __FILE__, launchConfig);
         basedir_node->setAttribute("path", basedir.c_str());
         launchConfig->appendChild(basedir_node);
